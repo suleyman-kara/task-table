@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Task Table</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+a{color:#1D5FD1}a:hover{color:#16479E}
+.app{--bg:#F3F3F1;--panel:#FFFFFF;--panel-2:#FAFAF9;--line:#E4E4E0;--line-strong:#CBCBC5;--ink:#18181B;--muted:#5F5F67;--soft:#EDEDE9;--primary:#18181B;--on-primary:#FFFFFF;--danger:#B42318;--q-do:#D2460C;--q-plan:#1D5FD1;--q-delegate:#9A6200;--q-drop:#6B6B73;--ring:#1D5FD1;--shadow:0 1px 2px rgba(20,20,20,.05),0 8px 24px -12px rgba(20,20,20,.18);
+display:flex;min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.app.theme-dark{--bg:#0E0E10;--panel:#161619;--panel-2:#1C1C20;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF8A7A;--q-do:#FF7A45;--q-plan:#78A6FF;--q-delegate:#E8AE45;--q-drop:#A3A3AC;--ring:#78A6FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.7)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.mono{font-family:'Geist Mono',ui-monospace,monospace;font-feature-settings:"tnum"}
+
+/* sidebar */
+.side{width:236px;flex:0 0 236px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 12px;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 8px;font-weight:600;font-size:15px;letter-spacing:-.01em}
+.brand-mark{width:22px;height:22px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
+.brand-mark span{border-radius:3px;background:var(--ink)}
+.brand-mark span:nth-child(2),.brand-mark span:nth-child(3){opacity:.35}
+.brand-mark span:nth-child(4){opacity:.15}
+.nav{display:flex;flex-direction:column;gap:2px}
+.side-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:0 10px;margin-bottom:6px}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;min-height:36px;padding:7px 10px;border:0;border-radius:8px;background:transparent;text-align:left;color:var(--muted);font-weight:500}
+.nav-btn:hover{background:var(--soft);color:var(--ink)}
+.nav-btn.active{background:var(--soft);color:var(--ink)}
+.nav-btn svg{flex:0 0 auto}
+.nav-btn .grow{flex:1}
+.nav-count{font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:12px}
+
+/* main */
+.main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;height:100vh}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 28px 16px}
+.top h1{margin:0;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.top .sub{margin:2px 0 0;color:var(--muted);font-size:13px}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.stat{display:flex;align-items:baseline;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:12px;color:var(--muted)}
+.stat b{font-weight:600;color:var(--ink);font-size:13px}
+.stat.warn b{color:var(--danger)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-weight:500;font-size:13px;white-space:nowrap}
+.btn:hover{border-color:var(--line-strong)}
+.btn.primary{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.btn.primary:hover{opacity:.9}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--soft);color:var(--ink)}
+.btn.danger{color:var(--danger)}
+.btn.danger-solid{background:var(--danger);border-color:var(--danger);color:#fff}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted)}
+.icon-btn:hover{background:var(--soft);color:var(--ink)}
+
+/* matrix */
+.matrix-wrap{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:28px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:8px 10px;padding:0 28px 24px}
+.axis-x{grid-column:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.axis-y{grid-row:2;display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px}
+.axis-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.axis-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.axis-y .axis-label{writing-mode:vertical-rl;transform:rotate(180deg);justify-content:flex-start}
+.axis-y .axis-label::after{width:1px;height:auto;flex:1}
+.matrix{grid-column:2;grid-row:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:12px;min-height:0}
+.quad{display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,background .15s}
+.quad.is-over{border-color:var(--ring);border-style:dashed;background:var(--panel-2)}
+.quad-head{display:flex;align-items:center;gap:10px;padding:12px 10px 10px 14px;border-bottom:1px solid var(--line)}
+.q-mark{width:10px;height:10px;border-radius:3px;flex:0 0 10px}
+.q-do .q-mark{background:var(--q-do)}.q-plan .q-mark{background:var(--q-plan)}.q-delegate .q-mark{background:var(--q-delegate)}.q-drop .q-mark{background:var(--q-drop)}
+.quad-head h2{margin:0;font-size:14px;font-weight:600;letter-spacing:-.01em}
+.quad-head p{margin:0;font-size:12px;color:var(--muted)}
+.quad-head .grow{flex:1;min-width:0}
+.q-count{font-size:12px;color:var(--muted);padding:2px 8px;border-radius:999px;background:var(--soft)}
+.cards{flex:1 1 auto;min-height:0;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:10px;min-height:80px}
+
+/* card */
+.card{position:relative;display:flex;gap:6px;padding:10px 12px 10px 6px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;cursor:grab;transition:opacity .25s,border-color .15s,box-shadow .15s}
+.card:hover{border-color:var(--line-strong);box-shadow:var(--shadow)}
+.card.is-dragging{opacity:.4}
+.card.is-pending{opacity:.55}
+.card.is-pending .card-title{text-decoration:line-through}
+.check{position:relative;z-index:2;flex:0 0 32px;width:32px;height:32px;margin-top:-5px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;border-radius:8px}
+.check span{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:transparent;transition:all .15s}
+.check:hover span{border-color:var(--ink)}
+.is-pending .check span{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.card-proj{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.card-title{position:static;display:block;width:100%;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:14px;line-height:1.35;color:var(--ink);cursor:pointer}
+.card-title::after{content:"";position:absolute;inset:0;border-radius:10px;z-index:1}
+.card-title:focus-visible{outline:none}
+.card-title:focus-visible::after{outline:2px solid var(--ring);outline-offset:2px}
+.card-desc{margin:0;font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px;font-size:12px;color:var(--muted)}
+.who{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:0 0 20px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:10px;font-weight:600;color:var(--ink)}
+.av.lg{width:32px;height:32px;flex-basis:32px;font-size:12px}
+.when{white-space:nowrap}
+.when.late{color:var(--danger);font-weight:500}
+.undo-bar{position:absolute;z-index:3;left:8px;right:8px;bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 6px 6px 12px;border-radius:8px;background:var(--primary);color:var(--on-primary);font-size:12px;font-weight:500;overflow:hidden;opacity:1}
+.card.is-pending .undo-bar{opacity:1}
+.undo-bar button{border:0;background:transparent;color:var(--on-primary);font-weight:600;font-size:12px;padding:6px 10px;border-radius:6px;text-decoration:underline;text-underline-offset:2px}
+.undo-bar::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--on-primary);opacity:.5;transform-origin:left;animation:drain 4s linear forwards}
+@keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.card.is-pending{opacity:1}
+.card.is-pending .card-body,.card.is-pending .check{opacity:.45}
+
+/* lists (done / people) */
+.page{flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 28px 28px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+.panel-head h2{margin:0;font-size:14px;font-weight:600}
+.row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row:last-child{border-bottom:0}
+.row .grow{flex:1 1 220px;min-width:0}
+.row-title{font-weight:500}
+.row-title.struck{text-decoration:line-through;color:var(--muted)}
+.row-sub{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.done-mark{width:18px;height:18px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--muted);flex:0 0 18px}
+.confirm{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.people-grid{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:16px;align-items:start}
+.form-body{padding:14px;display:flex;flex-direction:column;gap:12px}
+
+/* fields */
+.field{display:flex;flex-direction:column;gap:6px}
+.field-label{font-size:12px;font-weight:500;color:var(--muted)}
+.field-label i{font-style:normal;font-weight:400;opacity:.8}
+.input{width:100%;min-height:38px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:14px}
+.input:hover{border-color:var(--line-strong)}
+textarea.input{min-height:84px;resize:vertical;line-height:1.45}
+.input::placeholder{color:var(--muted);opacity:.75}
+.app.theme-dark .input{color-scheme:dark}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.err{margin:0;font-size:12px;color:var(--danger)}
+
+/* modal */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(10,10,12,.45);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px 16px;overflow-y:auto}
+.dialog{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 64px -24px rgba(0,0,0,.45)}
+.dialog-head{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px 18px;border-bottom:1px solid var(--line)}
+.dialog-head h2{margin:0;font-size:16px;font-weight:600}
+.dialog-body{padding:16px 18px;display:flex;flex-direction:column;gap:16px}
+.dialog-foot{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.dialog-foot .grow{flex:1}
+.title-input{font-size:16px;font-weight:500;min-height:42px}
+.qpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.qopt{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);text-align:left}
+.qopt:hover{border-color:var(--line-strong)}
+.qopt.sel{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.qopt b{display:block;font-size:13px;font-weight:600}
+.qopt small{display:block;font-size:11px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 12px 0 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:13px;font-weight:500}
+.chip:hover{border-color:var(--line-strong)}
+.chip.sel{border-color:var(--ink);background:var(--soft);box-shadow:inset 0 0 0 1px var(--ink)}
+.chip.add{border-style:dashed;color:var(--muted);padding:0 12px}
+.chip .av{width:22px;height:22px;flex-basis:22px;margin-left:-4px}
+.inline-add{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;padding:10px;border:1px dashed var(--line-strong);border-radius:10px}
+
+@media (max-width:900px){
+.app{flex-direction:column}
+.side{width:auto;flex:0 0 auto;border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 16px}
+.nav{flex-direction:row;flex-wrap:wrap}
+.nav-btn{width:auto}
+.side-projects{display:none}
+.side-foot{margin-top:0;border-top:0;padding-top:0;margin-left:auto}
+.main{height:auto}
+.top{padding:16px}
+.matrix-wrap{display:block;padding:0 16px 16px}
+.axis-x,.axis-y{display:none}
+.matrix{grid-template-columns:minmax(0,1fr);grid-template-rows:none}
+.quad{min-height:220px}
+.cards{overflow:visible}
+.page{padding:0 16px 16px}
+.people-grid{grid-template-columns:minmax(0,1fr)}
+.inline-add{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:520px){.two,.qpick{grid-template-columns:minmax(0,1fr)}.stat{display:none}}
+</style>
+</helmet>
+
+<div class="app {{themeClass}}">
+
+  <aside class="side">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      Task Table
+    </div>
+
+    <nav class="nav" aria-label="Görünümler">
+      <button class="nav-btn {{navMatrix}}" onClick="{{goMatrix}}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"></rect></svg>
+        <span class="grow">Matris</span><span class="nav-count mono">{{openCount}}</span>
+      </button>
+      <button class="nav-btn {{navDone}}" onClick="{{goDone}}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg>
+        <span class="grow">Tamamlananlar</span><span class="nav-count mono">{{doneCount}}</span>
+      </button>
+      <button class="nav-btn {{navPeople}}" onClick="{{goPeople}}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.8 2.7 2.5 3 5.2"></path></svg>
+        <span class="grow">Kişiler</span><span class="nav-count mono">{{peopleCount}}</span>
+      </button>
+    </nav>
+
+    <div class="side-projects">
+      <div class="side-label">Projeler</div>
+      <div class="nav">
+        <button class="nav-btn {{allProjCls}}" onClick="{{clearFilter}}">
+          <span class="dot" style="background: var(--line-strong)"></span>
+          <span class="grow">Tüm projeler</span>
+        </button>
+        <sc-for list="{{sideProjects}}" as="p" hint-placeholder-count="4">
+          <button class="nav-btn {{p.cls}}" onClick="{{p.pick}}">
+            <span class="dot" style="background: {{p.color}}"></span>
+            <span class="grow">{{p.name}}</span><span class="nav-count mono">{{p.count}}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div class="side-foot">
+      <button class="nav-btn" onClick="{{toggleTheme}}">
+        <sc-if value="{{isDark}}" hint-placeholder-val="{{ false }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path></svg>
+        </sc-if>
+        <sc-if value="{{isLight}}" hint-placeholder-val="{{ true }}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path></svg>
+        </sc-if>
+        <span class="grow">{{themeLabel}}</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1>{{viewTitle}}</h1>
+        <p class="sub">{{viewSub}}</p>
+      </div>
+      <div class="top-actions">
+        <sc-if value="{{isMatrix}}" hint-placeholder-val="{{ true }}">
+          <span class="stat"><b class="mono">{{openCount}}</b> açık</span>
+          <span class="stat {{lateCls}}"><b class="mono">{{lateCount}}</b> geciken</span>
+          <span class="stat"><b class="mono">{{weekCount}}</b> bu hafta bitiyor</span>
+        </sc-if>
+        <button class="btn primary" onClick="{{newTask}}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Yeni görev
+        </button>
+      </div>
+    </header>
+
+    <!-- MATRIX -->
+    <sc-if value="{{isMatrix}}" hint-placeholder-val="{{ true }}">
+      <div class="matrix-wrap">
+        <div class="axis-x">
+          <div class="axis-label">Acil</div>
+          <div class="axis-label">Acil değil</div>
+        </div>
+        <div class="axis-y">
+          <div class="axis-label">Önemli</div>
+          <div class="axis-label">Önemli değil</div>
+        </div>
+        <div class="matrix">
+          <sc-for list="{{quads}}" as="q" hint-placeholder-count="4">
+            <section class="quad {{q.cls}}" aria-label="{{q.name}}" onDragOver="{{q.dragOver}}" onDragLeave="{{q.dragLeave}}" onDrop="{{q.drop}}">
+              <header class="quad-head">
+                <span class="q-mark" aria-hidden="true"></span>
+                <div class="grow">
+                  <h2>{{q.name}}</h2>
+                  <p>{{q.tag}}</p>
+                </div>
+                <span class="q-count mono">{{q.count}}</span>
+                <button class="icon-btn" onClick="{{q.add}}" aria-label="{{q.addLabel}}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                </button>
+              </header>
+              <div class="cards">
+                <sc-for list="{{q.tasks}}" as="t" hint-placeholder-count="2">
+                  <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragEnd="{{dragEnd}}">
+                    <button class="check" onClick="{{t.toggle}}" aria-label="{{t.checkLabel}}">
+                      <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+                    </button>
+                    <div class="card-body">
+                      <div class="card-proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</div>
+                      <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
+                      <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ true }}">
+                        <p class="card-desc">{{t.desc}}</p>
+                      </sc-if>
+                      <div class="card-meta">
+                        <span class="who"><span class="av">{{t.initials}}</span>{{t.assignee}}</span>
+                        <span class="when mono {{t.whenCls}}">{{t.when}}</span>
+                      </div>
+                    </div>
+                    <sc-if value="{{t.pending}}" hint-placeholder-val="{{ false }}">
+                      <div class="undo-bar" role="status">
+                        <span>Tamamlandı olarak işaretlendi</span>
+                        <button onClick="{{t.toggle}}">Geri al</button>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+                <sc-if value="{{q.empty}}" hint-placeholder-val="{{ false }}">
+                  <div class="empty">Burada görev yok. Bir kartı sürükleyip bırakın ya da + ile ekleyin.</div>
+                </sc-if>
+              </div>
+            </section>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- DONE -->
+    <sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+      <div class="page">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Tamamlanan görevler</h2>
+            <sc-if value="{{showClearBtn}}" hint-placeholder-val="{{ true }}">
+              <button class="btn danger" onClick="{{askClear}}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                Tümünü sil
+              </button>
+            </sc-if>
+            <sc-if value="{{confirmClear}}" hint-placeholder-val="{{ false }}">
+              <div class="confirm">
+                <span>{{doneCount}} görev kalıcı olarak silinecek.</span>
+                <button class="btn ghost" onClick="{{cancelClear}}">Vazgeç</button>
+                <button class="btn danger-solid" onClick="{{clearDone}}">Evet, sil</button>
+              </div>
+            </sc-if>
+          </div>
+          <sc-for list="{{doneList}}" as="d" hint-placeholder-count="2">
+            <div class="row">
+              <span class="done-mark" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+              <div class="grow">
+                <div class="row-title struck">{{d.title}}</div>
+                <div class="row-sub"><span class="dot" style="background: {{d.color}}"></span>{{d.project}} · {{d.assignee}} · {{d.quad}}</div>
+              </div>
+              <span class="row-sub mono">{{d.doneText}}</span>
+              <button class="btn" onClick="{{d.restore}}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg>
+                Geri al
+              </button>
+              <button class="icon-btn" onClick="{{d.remove}}" aria-label="{{d.removeLabel}}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+              </button>
+            </div>
+          </sc-for>
+          <sc-if value="{{doneEmpty}}" hint-placeholder-val="{{ false }}">
+            <div class="row"><span class="row-sub">Henüz tamamlanan görev yok. Matristeki kartın yuvarlağına tıklayınca buraya gelir.</span></div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- PEOPLE -->
+    <sc-if value="{{isPeople}}" hint-placeholder-val="{{ false }}">
+      <div class="page">
+        <div class="people-grid">
+          <div class="panel">
+            <div class="panel-head"><h2>Kişi ekle</h2></div>
+            <div class="form-body">
+              <div class="field">
+                <label class="field-label" for="p-name">Ad soyad</label>
+                <input class="input" id="p-name" type="text" placeholder="Örn. Zeynep Arslan" value="{{pf.name}}" onChange="{{pfName}}">
+              </div>
+              <div class="field">
+                <label class="field-label" for="p-mail">E-posta</label>
+                <input class="input" id="p-mail" type="email" placeholder="ad@sirket.com" value="{{pf.email}}" onChange="{{pfEmail}}">
+              </div>
+              <sc-if value="{{pfHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{pf.error}}</p></sc-if>
+              <button class="btn primary" onClick="{{addPersonPage}}">Kişiyi ekle</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Ekip</h2><span class="row-sub">Görev atarken bu listeden seçilir</span></div>
+            <sc-for list="{{peopleList}}" as="m" hint-placeholder-count="3">
+              <div class="row">
+                <span class="av lg">{{m.initials}}</span>
+                <div class="grow">
+                  <div class="row-title">{{m.name}}</div>
+                  <div class="row-sub">{{m.email}}</div>
+                </div>
+                <span class="row-sub mono">{{m.load}}</span>
+                <button class="icon-btn" onClick="{{m.remove}}" aria-label="{{m.removeLabel}}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+            <sc-if value="{{peopleEmpty}}" hint-placeholder-val="{{ false }}">
+              <div class="row"><span class="row-sub">Henüz kimse eklenmedi.</span></div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+
+  <!-- TASK MODAL -->
+  <sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
+    <div class="overlay">
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+        <div class="dialog-head">
+          <h2 id="dlg-title">{{modalTitle}}</h2>
+          <button class="icon-btn" onClick="{{closeModal}}" aria-label="Kapat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+        <div class="dialog-body">
+          <div class="field">
+            <label class="field-label" for="f-title">Görev</label>
+            <input class="input title-input" id="f-title" type="text" placeholder="Ne yapılması gerekiyor?" value="{{form.title}}" onChange="{{fTitle}}">
+          </div>
+
+          <div class="field">
+            <span class="field-label">Kutu</span>
+            <div class="qpick">
+              <sc-for list="{{qOptions}}" as="o" hint-placeholder-count="4">
+                <button class="qopt {{o.cls}} {{o.sel}}" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}">
+                  <span class="q-mark" aria-hidden="true"></span>
+                  <span><b>{{o.name}}</b><small>{{o.tag}}</small></span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Proje</span>
+            <div class="chips">
+              <sc-for list="{{projOptions}}" as="o" hint-placeholder-count="4">
+                <button class="chip {{o.sel}}" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}">
+                  <span class="dot" style="background: {{o.color}}"></span>{{o.name}}
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Sorumlu kişi</span>
+            <div class="chips">
+              <sc-for list="{{personOptions}}" as="o" hint-placeholder-count="3">
+                <button class="chip {{o.sel}}" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}">
+                  <span class="av">{{o.initials}}</span>{{o.name}}
+                </button>
+              </sc-for>
+              <button class="chip add" onClick="{{toggleInlineAdd}}">+ Yeni kişi</button>
+            </div>
+            <sc-if value="{{inlineAdd}}" hint-placeholder-val="{{ false }}">
+              <div class="inline-add">
+                <input class="input" type="text" aria-label="Ad soyad" placeholder="Ad soyad" value="{{np.name}}" onChange="{{npName}}">
+                <input class="input" type="email" aria-label="E-posta" placeholder="E-posta" value="{{np.email}}" onChange="{{npEmail}}">
+                <button class="btn" onClick="{{addPersonInline}}">Ekle</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{npHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{np.error}}</p></sc-if>
+          </div>
+
+          <div class="two">
+            <div class="field">
+              <label class="field-label" for="f-start">Başlangıç</label>
+              <input class="input mono" id="f-start" type="date" value="{{form.start}}" onChange="{{fStart}}">
+            </div>
+            <div class="field">
+              <label class="field-label" for="f-end">Bitiş</label>
+              <input class="input mono" id="f-end" type="date" value="{{form.end}}" onChange="{{fEnd}}">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="f-desc">Açıklama <i>(isteğe bağlı)</i></label>
+            <textarea class="input" id="f-desc" placeholder="Notlar, bağlantılar, ayrıntılar…" value="{{form.desc}}" onChange="{{fDesc}}"></textarea>
+          </div>
+
+          <sc-if value="{{formHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{formError}}</p></sc-if>
+        </div>
+        <div class="dialog-foot">
+          <sc-if value="{{isEdit}}" hint-placeholder-val="{{ false }}">
+            <button class="btn danger" onClick="{{deleteTask}}">Görevi sil</button>
+          </sc-if>
+          <span class="grow"></span>
+          <button class="btn ghost" onClick="{{closeModal}}">Vazgeç</button>
+          <button class="btn primary" onClick="{{saveModal}}">{{saveLabel}}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(...args) {
+    super(...args);
+    this.timers = {};
+    this.state = this.initialState();
+  }
+
+  /* ---------- static data ---------- */
+  qdefs() {
+    return [
+      { id: 'do', name: 'Hemen yap', tag: 'Acil · Önemli' },
+      { id: 'plan', name: 'Planla', tag: 'Önemli · Acil değil' },
+      { id: 'delegate', name: 'Devret', tag: 'Acil · Önemli değil' },
+      { id: 'drop', name: 'Bırak', tag: 'Acil değil · Önemli değil' }
+    ];
+  }
+  projects() {
+    return [
+      { id: 'web', name: 'Web Sitesi', color: '#2563EB' },
+      { id: 'mob', name: 'Mobil Uygulama', color: '#0F9488' },
+      { id: 'mkt', name: 'Pazarlama', color: '#D2460C' },
+      { id: 'ops', name: 'Operasyon', color: '#8B5CF6' }
+    ];
+  }
+  seed() {
+    const t = this.iso(new Date());
+    const d = (n) => { const x = new Date(); x.setDate(x.getDate() + n); return this.iso(x); };
+    return {
+      people: [
+        { id: 'p1', name: 'Ayşe Demir', email: 'ayse@ornek.com' },
+        { id: 'p2', name: 'Mert Kaya', email: 'mert@ornek.com' },
+        { id: 'p3', name: 'Elif Şahin', email: 'elif@ornek.com' }
+      ],
+      tasks: [
+        { id: 't1', q: 'do', title: 'Ödeme sayfasındaki hatayı düzelt', desc: 'Kartla ödemede 3D Secure dönüşünde boş sayfa açılıyor. Hata kayıtları #odeme kanalında paylaşıldı.', projectId: 'web', assigneeId: 'p2', start: d(-2), end: d(1), doneAt: null },
+        { id: 't2', q: 'do', title: 'Kasım bülteni metnini onayla', desc: '', projectId: 'mkt', assigneeId: 'p1', start: d(-3), end: d(-1), doneAt: null },
+        { id: 't3', q: 'plan', title: 'Q1 yol haritası taslağı', desc: 'Ekiplerden gelen talepleri topla, önceliklendir ve ilk taslağı yönetimle paylaş.', projectId: 'ops', assigneeId: 'p3', start: d(5), end: d(16), doneAt: null },
+        { id: 't4', q: 'plan', title: 'Karşılama ekranlarını yeniden tasarla', desc: 'Mevcut 5 adımlı akışı 3 adıma indir. Kullanıcı testlerinden gelen notlar Figma dosyasında.', projectId: 'mob', assigneeId: 'p1', start: d(7), end: d(23), doneAt: null },
+        { id: 't5', q: 'delegate', title: 'Toplantı odası rezervasyonları', desc: '', projectId: 'ops', assigneeId: 'p2', start: t, end: d(2), doneAt: null },
+        { id: 't6', q: 'delegate', title: 'Sosyal medya görsellerini boyutlandır', desc: 'Instagram ve LinkedIn için üçer boyut.', projectId: 'mkt', assigneeId: 'p3', start: d(1), end: d(3), doneAt: null },
+        { id: 't7', q: 'drop', title: 'Eski blog yazılarını arşivle', desc: '', projectId: 'web', assigneeId: 'p3', start: d(10), end: d(25), doneAt: null },
+        { id: 't8', q: 'do', title: 'Alan adı yenilemesi', desc: '', projectId: 'web', assigneeId: 'p2', start: d(-6), end: d(-4), doneAt: Date.now() - 86400000 }
+      ]
+    };
+  }
+  initialState() {
+    let saved = null;
+    try { saved = JSON.parse(window.localStorage.getItem('task-table-proto-v1') || 'null'); } catch (e) { saved = null; }
+    let dark = false;
+    try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) {}
+    const base = saved && saved.tasks ? saved : this.seed();
+    return {
+      view: 'matrix', dark: typeof base.dark === 'boolean' ? base.dark : dark,
+      filter: null, tasks: base.tasks, people: base.people,
+      pending: {}, dragId: null, overQ: null,
+      modal: null, confirmClear: false,
+      pf: { name: '', email: '', error: '' }
+    };
+  }
+
+  /* ---------- helpers ---------- */
+  iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  fmt(iso) {
+    if (!iso) return '';
+    const m = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+    const p = iso.split('-');
+    return parseInt(p[2], 10) + ' ' + m[parseInt(p[1], 10) - 1];
+  }
+  initials(n) { return (n || '?').trim().split(/\s+/).slice(0, 2).map((w) => w.charAt(0)).join('').toLocaleUpperCase('tr-TR'); }
+  uid() { return Math.random().toString(36).slice(2, 10); }
+  validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+  componentDidUpdate() { this.persist(); }
+  componentWillUnmount() { Object.keys(this.timers).forEach((k) => clearTimeout(this.timers[k])); }
+  persist() {
+    const s = this.state;
+    const now = Date.now();
+    // a card still fading counts as done after a reload
+    const tasks = s.tasks.map((t) => (s.pending[t.id] && !t.doneAt ? Object.assign({}, t, { doneAt: now }) : t));
+    try { window.localStorage.setItem('task-table-proto-v1', JSON.stringify({ tasks: tasks, people: s.people, dark: s.dark })); } catch (e) {}
+  }
+
+  /* ---------- task actions ---------- */
+  patchTask(id, patch) { this.setState({ tasks: this.state.tasks.map((t) => (t.id === id ? Object.assign({}, t, patch) : t)) }); }
+
+  toggleDone(id) {
+    const pending = Object.assign({}, this.state.pending);
+    if (pending[id]) {
+      clearTimeout(this.timers[id]); delete this.timers[id];
+      delete pending[id];
+      this.setState({ pending: pending });
+      return;
+    }
+    pending[id] = true;
+    this.setState({ pending: pending });
+    this.timers[id] = setTimeout(() => {
+      const p = Object.assign({}, this.state.pending); delete p[id]; delete this.timers[id];
+      this.setState({ pending: p, tasks: this.state.tasks.map((t) => (t.id === id ? Object.assign({}, t, { doneAt: Date.now() }) : t)) });
+    }, 4000);
+  }
+
+  openNew(q) {
+    this.setState({ modal: { mode: 'new', id: null, error: '', inlineAdd: false,
+      np: { name: '', email: '', error: '' },
+      form: { title: '', desc: '', q: q || '', projectId: this.state.filter || '', assigneeId: '', start: this.iso(new Date()), end: '' } } });
+  }
+  openEdit(t) {
+    this.setState({ modal: { mode: 'edit', id: t.id, error: '', inlineAdd: false,
+      np: { name: '', email: '', error: '' },
+      form: { title: t.title, desc: t.desc || '', q: t.q, projectId: t.projectId, assigneeId: t.assigneeId || '', start: t.start || '', end: t.end || '' } } });
+  }
+  setForm(patch) { const m = this.state.modal; this.setState({ modal: Object.assign({}, m, { error: '', form: Object.assign({}, m.form, patch) }) }); }
+  setNp(patch) { const m = this.state.modal; this.setState({ modal: Object.assign({}, m, { np: Object.assign({}, m.np, { error: '' }, patch) }) }); }
+
+  saveModal() {
+    const m = this.state.modal; const f = m.form;
+    let err = '';
+    if (!f.title.trim()) err = 'Görev adı boş olamaz.';
+    else if (!f.q) err = 'Görevin hangi kutuya gideceğini seçin.';
+    else if (!f.projectId) err = 'Bir proje seçin.';
+    else if (f.start && f.end && f.end < f.start) err = 'Bitiş tarihi başlangıçtan önce olamaz.';
+    if (err) { this.setState({ modal: Object.assign({}, m, { error: err }) }); return; }
+    const data = { title: f.title.trim(), desc: f.desc.trim(), q: f.q, projectId: f.projectId, assigneeId: f.assigneeId, start: f.start, end: f.end };
+    if (m.mode === 'new') {
+      this.setState({ modal: null, tasks: this.state.tasks.concat([Object.assign({ id: this.uid(), doneAt: null }, data)]) });
+    } else {
+      this.setState({ modal: null, tasks: this.state.tasks.map((t) => (t.id === m.id ? Object.assign({}, t, data) : t)) });
+    }
+  }
+  deleteTask() {
+    const id = this.state.modal.id;
+    this.setState({ modal: null, tasks: this.state.tasks.filter((t) => t.id !== id) });
+  }
+
+  /* ---------- people ---------- */
+  makePerson(name, email) {
+    name = (name || '').trim(); email = (email || '').trim();
+    if (!name) return { error: 'Ad girin.' };
+    if (!this.validEmail(email)) return { error: 'Geçerli bir e-posta girin.' };
+    if (this.state.people.some((p) => p.email.toLowerCase() === email.toLowerCase())) return { error: 'Bu e-posta zaten listede.' };
+    return { person: { id: this.uid(), name: name, email: email } };
+  }
+  addPersonPage() {
+    const r = this.makePerson(this.state.pf.name, this.state.pf.email);
+    if (r.error) { this.setState({ pf: Object.assign({}, this.state.pf, { error: r.error }) }); return; }
+    this.setState({ people: this.state.people.concat([r.person]), pf: { name: '', email: '', error: '' } });
+  }
+  addPersonInline() {
+    const m = this.state.modal;
+    const r = this.makePerson(m.np.name, m.np.email);
+    if (r.error) { this.setState({ modal: Object.assign({}, m, { np: Object.assign({}, m.np, { error: r.error }) }) }); return; }
+    this.setState({
+      people: this.state.people.concat([r.person]),
+      modal: Object.assign({}, m, { inlineAdd: false, np: { name: '', email: '', error: '' }, form: Object.assign({}, m.form, { assigneeId: r.person.id }) })
+    });
+  }
+  removePerson(id) {
+    this.setState({ people: this.state.people.filter((p) => p.id !== id), tasks: this.state.tasks.map((t) => (t.assigneeId === id ? Object.assign({}, t, { assigneeId: '' }) : t)) });
+  }
+
+  /* ---------- render ---------- */
+  renderVals() {
+    const s = this.state;
+    const QD = this.qdefs();
+    const PR = this.projects();
+    const prById = {}; PR.forEach((p) => { prById[p.id] = p; });
+    const peById = {}; s.people.forEach((p) => { peById[p.id] = p; });
+    const qName = {}; QD.forEach((q) => { qName[q.id] = q.name; });
+    const today = this.iso(new Date());
+    const wk = new Date(); wk.setDate(wk.getDate() + 7); const weekEnd = this.iso(wk);
+
+    const open = s.tasks.filter((t) => !t.doneAt);
+    const done = s.tasks.filter((t) => t.doneAt).sort((a, b) => b.doneAt - a.doneAt);
+    const visible = open.filter((t) => !s.filter || t.projectId === s.filter);
+    const isLate = (t) => !!t.end && t.end < today && !s.pending[t.id];
+
+    const card = (t) => {
+      const pr = prById[t.projectId] || { name: '—', color: '#999' };
+      const pe = peById[t.assigneeId];
+      const late = isLate(t);
+      let when = '';
+      if (t.start && t.end) when = this.fmt(t.start) + ' – ' + this.fmt(t.end);
+      else if (t.end) when = 'Bitiş ' + this.fmt(t.end);
+      else if (t.start) when = 'Başl. ' + this.fmt(t.start);
+      if (late) when = 'Gecikti · ' + this.fmt(t.end);
+      const pending = !!s.pending[t.id];
+      return {
+        id: t.id, title: t.title, desc: t.desc, hasDesc: !!t.desc,
+        project: pr.name, color: pr.color,
+        assignee: pe ? pe.name : 'Atanmadı', initials: pe ? this.initials(pe.name) : '–',
+        when: when, whenCls: late ? 'late' : '',
+        pending: pending, draggable: !pending,
+        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging' : ''),
+        checkLabel: pending ? 'Tamamlamayı geri al: ' + t.title : 'Tamamlandı olarak işaretle: ' + t.title,
+        toggle: () => this.toggleDone(t.id),
+        open: () => this.openEdit(t),
+        dragStart: (e) => {
+          try { e.dataTransfer.setData('text/plain', t.id); e.dataTransfer.effectAllowed = 'move'; } catch (err) {}
+          this.setState({ dragId: t.id });
+        }
+      };
+    };
+
+    const quads = QD.map((q) => {
+      const list = visible.filter((t) => t.q === q.id);
+      return {
+        id: q.id, name: q.name, tag: q.tag, count: list.length, empty: list.length === 0,
+        cls: 'q-' + q.id + (s.overQ === q.id ? ' is-over' : ''),
+        addLabel: q.name + ' kutusuna görev ekle',
+        tasks: list.map(card),
+        add: () => this.openNew(q.id),
+        dragOver: (e) => { e.preventDefault(); if (this.state.overQ !== q.id) this.setState({ overQ: q.id }); },
+        dragLeave: (e) => { if (!e.currentTarget.contains(e.relatedTarget) && this.state.overQ === q.id) this.setState({ overQ: null }); },
+        drop: (e) => {
+          e.preventDefault();
+          let id = this.state.dragId;
+          if (!id) { try { id = e.dataTransfer.getData('text/plain'); } catch (err) {} }
+          if (id) {
+            const moved = this.state.tasks.find((t) => t.id === id);
+            const rest = this.state.tasks.filter((t) => t.id !== id);
+            if (moved) this.setState({ tasks: rest.concat([Object.assign({}, moved, { q: q.id })]), dragId: null, overQ: null });
+          } else this.setState({ overQ: null });
+        }
+      };
+    });
+
+    const m = s.modal;
+    const f = m ? m.form : { title: '', desc: '', q: '', projectId: '', assigneeId: '', start: '', end: '' };
+    const np = m ? m.np : { name: '', email: '', error: '' };
+
+    const titles = {
+      matrix: ['Matris', s.filter ? (prById[s.filter].name + ' projesindeki açık görevler') : 'Kartları sürükleyerek kutular arasında taşıyın'],
+      done: ['Tamamlananlar', 'Bitmiş görevleri geri alın veya silin'],
+      people: ['Kişiler', 'Görev atanabilecek kişiler']
+    }[s.view];
+
+    return {
+      themeClass: s.dark ? 'theme-dark' : '',
+      isDark: s.dark, isLight: !s.dark,
+      themeLabel: s.dark ? 'Açık tema' : 'Koyu tema',
+      toggleTheme: () => this.setState({ dark: !this.state.dark }),
+
+      navMatrix: s.view === 'matrix' ? 'active' : '',
+      navDone: s.view === 'done' ? 'active' : '',
+      navPeople: s.view === 'people' ? 'active' : '',
+      goMatrix: () => this.setState({ view: 'matrix' }),
+      goDone: () => this.setState({ view: 'done', confirmClear: false }),
+      goPeople: () => this.setState({ view: 'people' }),
+      isMatrix: s.view === 'matrix', isDone: s.view === 'done', isPeople: s.view === 'people',
+      viewTitle: titles[0], viewSub: titles[1],
+
+      openCount: open.length, doneCount: done.length, peopleCount: s.people.length,
+      lateCount: open.filter(isLate).length,
+      lateCls: open.some(isLate) ? 'warn' : '',
+      weekCount: open.filter((t) => t.end && t.end >= today && t.end <= weekEnd).length,
+
+      allProjCls: s.filter ? '' : 'active',
+      clearFilter: () => this.setState({ filter: null, view: 'matrix' }),
+      sideProjects: PR.map((p) => ({
+        name: p.name, color: p.color,
+        count: open.filter((t) => t.projectId === p.id).length,
+        cls: s.filter === p.id ? 'active' : '',
+        pick: () => this.setState({ filter: this.state.filter === p.id ? null : p.id, view: 'matrix' })
+      })),
+
+      newTask: () => this.openNew(''),
+      quads: quads,
+      dragEnd: () => this.setState({ dragId: null, overQ: null }),
+
+      /* done */
+      doneList: done.map((t) => {
+        const pr = prById[t.projectId] || { name: '—', color: '#999' };
+        const pe = peById[t.assigneeId];
+        return {
+          title: t.title, project: pr.name, color: pr.color,
+          assignee: pe ? pe.name : 'Atanmadı', quad: qName[t.q],
+          doneText: this.fmt(this.iso(new Date(t.doneAt))),
+          restore: () => this.patchTask(t.id, { doneAt: null }),
+          remove: () => this.setState({ tasks: this.state.tasks.filter((x) => x.id !== t.id) }),
+          removeLabel: 'Kalıcı olarak sil: ' + t.title
+        };
+      }),
+      doneEmpty: done.length === 0,
+      showClearBtn: done.length > 0 && !s.confirmClear,
+      confirmClear: s.confirmClear && done.length > 0,
+      askClear: () => this.setState({ confirmClear: true }),
+      cancelClear: () => this.setState({ confirmClear: false }),
+      clearDone: () => this.setState({ confirmClear: false, tasks: this.state.tasks.filter((t) => !t.doneAt) }),
+
+      /* people */
+      pf: s.pf, pfHasError: !!s.pf.error,
+      pfName: (e) => this.setState({ pf: Object.assign({}, this.state.pf, { name: e.target.value, error: '' }) }),
+      pfEmail: (e) => this.setState({ pf: Object.assign({}, this.state.pf, { email: e.target.value, error: '' }) }),
+      addPersonPage: () => this.addPersonPage(),
+      peopleList: s.people.map((p) => {
+        const n = open.filter((t) => t.assigneeId === p.id).length;
+        return { name: p.name, email: p.email, initials: this.initials(p.name), load: n + ' açık görev',
+          remove: () => this.removePerson(p.id), removeLabel: p.name + ' kişisini kaldır' };
+      }),
+      peopleEmpty: s.people.length === 0,
+
+      /* modal */
+      modalOpen: !!m, isEdit: !!m && m.mode === 'edit',
+      modalTitle: m && m.mode === 'edit' ? 'Görevi düzenle' : 'Yeni görev',
+      saveLabel: m && m.mode === 'edit' ? 'Değişiklikleri kaydet' : 'Görevi ekle',
+      form: f, formError: m ? m.error : '', formHasError: !!(m && m.error),
+      closeModal: () => this.setState({ modal: null }),
+      saveModal: () => this.saveModal(),
+      deleteTask: () => this.deleteTask(),
+      fTitle: (e) => this.setForm({ title: e.target.value }),
+      fDesc: (e) => this.setForm({ desc: e.target.value }),
+      fStart: (e) => this.setForm({ start: e.target.value }),
+      fEnd: (e) => this.setForm({ end: e.target.value }),
+      qOptions: QD.map((q) => ({
+        name: q.name, tag: q.tag, cls: 'q-' + q.id,
+        sel: f.q === q.id ? 'sel' : '', pressed: f.q === q.id ? 'true' : 'false',
+        pick: () => this.setForm({ q: q.id })
+      })),
+      projOptions: PR.map((p) => ({
+        name: p.name, color: p.color,
+        sel: f.projectId === p.id ? 'sel' : '', pressed: f.projectId === p.id ? 'true' : 'false',
+        pick: () => this.setForm({ projectId: p.id })
+      })),
+      personOptions: s.people.map((p) => ({
+        name: p.name, initials: this.initials(p.name),
+        sel: f.assigneeId === p.id ? 'sel' : '', pressed: f.assigneeId === p.id ? 'true' : 'false',
+        pick: () => this.setForm({ assigneeId: this.state.modal.form.assigneeId === p.id ? '' : p.id })
+      })),
+      inlineAdd: !!(m && m.inlineAdd),
+      toggleInlineAdd: () => this.setState({ modal: Object.assign({}, this.state.modal, { inlineAdd: !this.state.modal.inlineAdd }) }),
+      np: np, npHasError: !!np.error,
+      npName: (e) => this.setNp({ name: e.target.value }),
+      npEmail: (e) => this.setNp({ email: e.target.value }),
+      addPersonInline: () => this.addPersonInline()
+    };
+  }
+}
+</script>
+</body>
+</html>
