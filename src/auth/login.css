@@ -1,56 +1,56 @@
 /* Extracted from design/project/Login.dc.html — keep in sync with the design.
-   Every rule is scoped under .lg: the app's stylesheet shares class names (.card, .btn, .input, .brand …)
+   Every rule is scoped under .login-page: the app's stylesheet shares class names (.card, .btn, .input, .brand …)
    and both end up in the same bundle. Global *, a and body rules live in styles/tokens.css. */
-.lg{--bg:#0E0E10;--panel:#161619;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--ring:#78A6FF;
+.login-page{--bg:#0E0E10;--panel:#161619;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--ring:#78A6FF;
 min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:min(18vh,160px) 16px 24px;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased;color-scheme:dark}
-.lg button,.lg input{font:inherit;color:inherit}
-.lg button{cursor:pointer}
-.lg button:focus-visible,.lg input:focus-visible,.lg a:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
-.lg .box{width:100%;max-width:380px;display:flex;flex-direction:column;gap:20px}
-.lg .brand{display:flex;align-items:center;gap:8px;padding:0;font-weight:600;font-size:14px;letter-spacing:normal}
-.lg .brand-mark{width:16px;height:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
-.lg .brand-mark span{border-radius:3px;background:var(--ink)}
-.lg .brand-mark span:nth-child(2),.lg .brand-mark span:nth-child(3){opacity:.35}
-.lg .brand-mark span:nth-child(4){opacity:.15}
-.lg .card{position:static;margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:stretch;gap:16px;cursor:auto;transition:none}
-.lg .card:hover{border-color:var(--line);box-shadow:none}
-.lg h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
-.lg .sub{margin:0;color:var(--muted)}
-.lg .field{display:flex;flex-direction:column;gap:8px}
-.lg .label{font-size:12px;font-weight:500;color:var(--muted)}
-.lg .input{width:100%;height:36px;min-height:0;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:14px}
-.lg .input:hover{border-color:var(--line-strong)}
-.lg .input[aria-invalid="true"]{border-color:var(--danger)}
-.lg .input::placeholder{color:var(--muted);opacity:.75}
-.lg .field-msg{margin:0;display:flex;align-items:flex-start;gap:4px;font-size:12px;color:var(--muted)}
-.lg .field-msg svg{flex:0 0 auto;margin-top:2px}
-.lg .field-msg.err{color:var(--danger)}
-.lg .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:transparent;font-weight:500;font-size:13px;text-decoration:none;color:var(--ink);white-space:nowrap}
-.lg .btn:hover{border-color:var(--line-strong);color:var(--ink)}
-.lg .btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
-.lg .btn.primary:hover{opacity:.9;color:var(--on-primary)}
-.lg .btn[aria-disabled="true"]{cursor:default;color:var(--muted);border-color:var(--line)}
+.login-page button,.login-page input{font:inherit;color:inherit}
+.login-page button{cursor:pointer}
+.login-page button:focus-visible,.login-page input:focus-visible,.login-page a:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.login-page .box{width:100%;max-width:380px;display:flex;flex-direction:column;gap:20px}
+.login-page .brand{display:flex;align-items:center;gap:8px;padding:0;font-weight:600;font-size:14px;letter-spacing:normal}
+.login-page .brand-mark{width:16px;height:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
+.login-page .brand-mark span{border-radius:3px;background:var(--ink)}
+.login-page .brand-mark span:nth-child(2),.login-page .brand-mark span:nth-child(3){opacity:.35}
+.login-page .brand-mark span:nth-child(4){opacity:.15}
+.login-page .card{position:static;margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;display:flex;flex-direction:column;align-items:stretch;gap:16px;cursor:auto;transition:none}
+.login-page .card:hover{border-color:var(--line);box-shadow:none}
+.login-page h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.login-page .sub{margin:0;color:var(--muted)}
+.login-page .field{display:flex;flex-direction:column;gap:8px}
+.login-page .label{font-size:12px;font-weight:500;color:var(--muted)}
+.login-page .input{width:100%;height:36px;min-height:0;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:14px}
+.login-page .input:hover{border-color:var(--line-strong)}
+.login-page .input[aria-invalid="true"]{border-color:var(--danger)}
+.login-page .input::placeholder{color:var(--muted);opacity:.75}
+.login-page .field-msg{margin:0;display:flex;align-items:flex-start;gap:4px;font-size:12px;color:var(--muted)}
+.login-page .field-msg svg{flex:0 0 auto;margin-top:2px}
+.login-page .field-msg.err{color:var(--danger)}
+.login-page .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:transparent;font-weight:500;font-size:13px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.login-page .btn:hover{border-color:var(--line-strong);color:var(--ink)}
+.login-page .btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.login-page .btn.primary:hover{opacity:.9;color:var(--on-primary)}
+.login-page .btn[aria-disabled="true"]{cursor:default;color:var(--muted);border-color:var(--line)}
 /* Busy primary buttons keep their fill but read as inactive. */
-.lg .btn.primary[aria-disabled="true"]{color:var(--on-primary);border-color:var(--primary);opacity:.6}
-.lg .hint{margin:0;font-size:12px;color:var(--muted)}
-.lg .mail{font-family:'Geist Mono',ui-monospace,monospace;color:var(--ink)}
-.lg .foot{margin:0;font-size:12px;color:var(--muted);text-align:center}
-.lg .actions{display:flex;gap:8px}
-.lg .actions .btn{flex:1 1 0}
-.lg .link-row{display:flex;justify-content:space-between;gap:8px;margin:0 -8px}
-.lg .link-btn{align-self:center;display:inline-flex;align-items:center;justify-content:center;min-height:28px;border:0;border-radius:8px;background:none;padding:4px 8px;font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
-.lg .link-btn:hover{color:var(--ink)}
-.lg .link-btn[aria-disabled="true"]{cursor:default;opacity:.6}
-.lg .progress{position:relative;height:4px;border-radius:4px;background:var(--soft);overflow:hidden}
-.lg .progress span{position:absolute;top:0;bottom:0;left:0;width:32%;border-radius:4px;background:var(--muted);animation:lg-slide 1.4s ease-in-out infinite}
+.login-page .btn.primary[aria-disabled="true"]{color:var(--on-primary);border-color:var(--primary);opacity:.6}
+.login-page .hint{margin:0;font-size:12px;color:var(--muted)}
+.login-page .mail{font-family:'Geist Mono',ui-monospace,monospace;color:var(--ink)}
+.login-page .foot{margin:0;font-size:12px;color:var(--muted);text-align:center}
+.login-page .actions{display:flex;gap:8px}
+.login-page .actions .btn{flex:1 1 0}
+.login-page .link-row{display:flex;justify-content:space-between;gap:8px;margin:0 -8px}
+.login-page .link-btn{align-self:center;display:inline-flex;align-items:center;justify-content:center;min-height:28px;border:0;border-radius:8px;background:none;padding:4px 8px;font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.login-page .link-btn:hover{color:var(--ink)}
+.login-page .link-btn[aria-disabled="true"]{cursor:default;opacity:.6}
+.login-page .progress{position:relative;height:4px;border-radius:4px;background:var(--soft);overflow:hidden}
+.login-page .progress span{position:absolute;top:0;bottom:0;left:0;width:32%;border-radius:4px;background:var(--muted);animation:lg-slide 1.4s ease-in-out infinite}
 @keyframes lg-slide{0%{transform:translateX(-100%)}100%{transform:translateX(320%)}}
-@media (prefers-reduced-motion:reduce){.lg .progress span{animation:none;width:100%;opacity:.4}}
+@media (prefers-reduced-motion:reduce){.login-page .progress span{animation:none;width:100%;opacity:.4}}
 @media (max-width:520px){
-  .lg{padding-top:48px}
-  .lg .card{padding:20px}
-  .lg .input{height:44px;font-size:16px}
-  .lg .btn{min-height:44px}
-  .lg .actions{flex-direction:column}
-  .lg .actions .btn{flex:0 0 auto;width:100%}
-  .lg .link-btn{min-height:44px}
+  .login-page{padding-top:48px}
+  .login-page .card{padding:20px}
+  .login-page .input{height:44px;font-size:16px}
+  .login-page .btn{min-height:44px}
+  .login-page .actions{flex-direction:column}
+  .login-page .actions .btn{flex:0 0 auto;width:100%}
+  .login-page .link-btn{min-height:44px}
 }

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 /** Page frame: brand mark above the card, optional footnote below (markup from Login.dc.html). */
 export function LoginShell({ children, foot }: { children: ReactNode; foot?: boolean }) {
   return (
-    <div className="lg">
+    <div className="login-page">
       <main className="box">
         <div className="brand">
           <span className="brand-mark" aria-hidden="true">
