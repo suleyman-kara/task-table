@@ -190,6 +190,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 .dialog-body{padding:16px 18px;display:flex;flex-direction:column;gap:16px}
 .dialog-foot{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
 .dialog-foot .grow{flex:1}
+.dialog-foot .confirm{flex:1}
 .vtitle{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;width:calc(100% + 16px);margin:-6px -8px 0;padding:6px 8px;border:0;border-radius:8px;background:none;text-align:left;font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;color:var(--ink)}
 .vtitle .edit-ic{margin-top:4px}
 .vlist{display:flex;flex-direction:column;border-top:1px solid var(--line);margin:0 -8px}
@@ -224,7 +225,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 /* read-only (viewer) */
 .card.ro{padding-left:10px;cursor:default}
 .dialog.ro .edit-ic{display:none}
-.dialog.ro .vrow,.dialog.ro .vtitle{cursor:default}
+.dialog.ro .vrow,.dialog.ro .vtitle{cursor:default;color:var(--ink)}
 .dialog.ro .vrow:hover,.dialog.ro .vtitle:hover{background:none}
 /* mobile-only pieces, hidden on desktop */
 .mtop,.tabbar,.mfilter{display:none}
@@ -469,6 +470,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                 <div class="row-sub"><span class="dot" style="background: {{d.color}}"></span>{{d.project}} · {{d.assignee}} · {{d.quad}}</div>
               </div>
               <span class="row-sub mono">{{d.doneText}}</span>
+              <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
               <button class="btn" onClick="{{d.restore}}">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg>
                 Geri al
@@ -476,6 +478,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
               <button class="icon-btn" onClick="{{d.remove}}" aria-label="{{d.removeLabel}}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
               </button>
+              </sc-if>
             </div>
           </sc-for>
           <sc-if value="{{doneEmpty}}" hint-placeholder-val="{{ false }}">
@@ -660,19 +663,19 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
         </div>
         <sc-if value="{{isView}}" hint-placeholder-val="{{ false }}">
           <div class="dialog-body">
-            <button class="vtitle" onClick="{{vw.eTitle}}" aria-label="Görev adını düzenle"><span>{{vw.title}}</span><svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>
+            <button class="vtitle" onClick="{{vw.eTitle}}" disabled="{{vw.ro}}" aria-label="Görev adını düzenle"><span>{{vw.title}}</span><svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>
             <div class="vlist">
-              <button class="vrow" onClick="{{vw.eQ}}">
+              <button class="vrow" onClick="{{vw.eQ}}" disabled="{{vw.ro}}">
                 <span class="vlabel">Kutu</span>
                 <span class="vval {{vw.qCls}}"><span class="q-mark" aria-hidden="true"></span>{{vw.qName}}<small>{{vw.qTag}}</small></span>
                 <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
               </button>
-              <button class="vrow" onClick="{{vw.eProj}}">
+              <button class="vrow" onClick="{{vw.eProj}}" disabled="{{vw.ro}}">
                 <span class="vlabel">Proje</span>
                 <span class="vval"><span class="dot" style="background: {{vw.color}}"></span>{{vw.project}}</span>
                 <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
               </button>
-              <button class="vrow" onClick="{{vw.ePeople}}">
+              <button class="vrow" onClick="{{vw.ePeople}}" disabled="{{vw.ro}}">
                 <span class="vlabel">Sorumlular</span>
                 <span class="vval">
                   <sc-for list="{{vw.people}}" as="p" hint-placeholder-count="1"><span class="pchip"><span class="av">{{p.initials}}</span>{{p.name}}</span></sc-for>
@@ -680,12 +683,12 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                 </span>
                 <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
               </button>
-              <button class="vrow" onClick="{{vw.eDates}}">
+              <button class="vrow" onClick="{{vw.eDates}}" disabled="{{vw.ro}}">
                 <span class="vlabel">Tarih</span>
                 <span class="vval mono"><span>{{vw.dates}}</span><sc-if value="{{vw.late}}" hint-placeholder-val="{{ false }}"><span class="late">Gecikti</span></sc-if></span>
                 <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
               </button>
-              <button class="vrow" onClick="{{vw.eDesc}}">
+              <button class="vrow" onClick="{{vw.eDesc}}" disabled="{{vw.ro}}">
                 <span class="vlabel">Açıklama</span>
                 <sc-if value="{{vw.hasDesc}}" hint-placeholder-val="{{ true }}"><span class="vval desc">{{vw.desc}}</span></sc-if>
                 <sc-if value="{{vw.noDesc}}" hint-placeholder-val="{{ false }}"><span class="vval"><span class="muted">Açıklama eklenmemiş</span></span></sc-if>
@@ -769,12 +772,22 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
           <sc-if value="{{formHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{formError}}</p></sc-if>
         </div>
         <div class="dialog-foot">
+          <sc-if value="{{askDelete}}" hint-placeholder-val="{{ false }}">
+            <div class="confirm" role="alert">
+              <span>Görev kalıcı olarak silinecek.</span>
+              <span class="grow"></span>
+              <button class="btn ghost" onClick="{{cancelDelete}}">Vazgeç</button>
+              <button class="btn danger-solid" onClick="{{deleteTask}}">Evet, sil</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{footNormal}}" hint-placeholder-val="{{ true }}">
           <sc-if value="{{isEdit}}" hint-placeholder-val="{{ false }}">
-            <button class="btn danger" onClick="{{deleteTask}}">Görevi sil</button>
+            <button class="btn danger" onClick="{{confirmDelete}}">Görevi sil</button>
           </sc-if>
           <span class="grow"></span>
           <button class="btn ghost" onClick="{{closeModal}}">Vazgeç</button>
           <button class="btn primary" onClick="{{saveModal}}">{{saveLabel}}</button>
+          </sc-if>
         </div>
         </sc-if>
       </div>
@@ -1075,11 +1088,12 @@ class Component extends DCLogic {
     const today = this.iso(new Date());
     const wk = new Date(); wk.setDate(wk.getDate() + 7); const weekEnd = this.iso(wk);
 
-    const open = s.tasks.filter((t) => !t.doneAt);
-    const done = s.tasks.filter((t) => t.doneAt).sort((a, b) => b.doneAt - a.doneAt);
+    // a viewer only sees tasks of the projects they were given
     const meP = s.meId === 'me' ? null : s.people.find((p) => p.id === s.meId);
     const allowed = (pid) => !meP || (meP.projectIds || []).indexOf(pid) > -1;
-    const visible = open.filter((t) => allowed(t.projectId) && (!s.filter || t.projectId === s.filter));
+    const open = s.tasks.filter((t) => !t.doneAt && allowed(t.projectId));
+    const done = s.tasks.filter((t) => t.doneAt && allowed(t.projectId)).sort((a, b) => b.doneAt - a.doneAt);
+    const visible = open.filter((t) => !s.filter || t.projectId === s.filter);
     const isLate = (t) => !!t.end && t.end < today && !s.pending[t.id];
 
     const noProj = { name: 'Projesiz', color: 'var(--line-strong)' };
@@ -1232,7 +1246,7 @@ class Component extends DCLogic {
         };
       }),
       doneEmpty: done.length === 0,
-      showClearBtn: done.length > 0 && !s.confirmClear,
+      showClearBtn: done.length > 0 && !s.confirmClear && !s.readOnly,
       confirmClear: s.confirmClear && done.length > 0,
       askClear: () => this.setState({ confirmClear: true }),
       cancelClear: () => this.setState({ confirmClear: false }),
@@ -1315,6 +1329,7 @@ class Component extends DCLogic {
           people: ppl.map((p) => ({ name: p.name, initials: this.initials(p.name) })), noPeople: ppl.length === 0,
           dates: dates, late: isLate(t),
           desc: t.desc, hasDesc: !!t.desc, noDesc: !t.desc,
+          ro: !!s.readOnly,
           eTitle: go('f-title'), eQ: go('f-q'), eProj: go('f-proj'), ePeople: go('f-people'), eDates: go('f-start'), eDesc: go('f-desc')
         };
       })(),
@@ -1324,6 +1339,9 @@ class Component extends DCLogic {
       closeModal: () => this.closeModal(),
       saveModal: () => this.saveModal(),
       deleteTask: () => this.deleteTask(),
+      askDelete: !!(m && m.askDelete), footNormal: !(m && m.askDelete),
+      confirmDelete: () => this.setState({ modal: Object.assign({}, this.state.modal, { askDelete: true }) }),
+      cancelDelete: () => this.setState({ modal: Object.assign({}, this.state.modal, { askDelete: false }) }),
       fTitle: (e) => this.setForm({ title: e.target.value }),
       fDesc: (e) => this.setForm({ desc: e.target.value }),
       fStart: (e) => this.setForm({ start: e.target.value }),
