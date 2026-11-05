@@ -1,0 +1,6 @@
+/* Small additions for the list pages; everything else comes from app.css. */
+.pg-note{margin:0}
+@media (max-width:900px){
+/* Bitenler: the per-row delete sits outside .row-acts, keep the 44px touch target */
+.page .row > .icon-btn{width:44px;height:44px}
+}
