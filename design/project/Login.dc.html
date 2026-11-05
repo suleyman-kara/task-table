@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Task Table — Giriş</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+a{color:#78A6FF}a:hover{color:#A5C4FF}
+.lg{--bg:#0E0E10;--panel:#161619;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF8A7A;--ring:#78A6FF;
+min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.box{width:100%;max-width:380px;display:flex;flex-direction:column;gap:20px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:600;font-size:14px}
+.brand-mark{width:18px;height:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
+.brand-mark span{border-radius:3px;background:var(--ink)}
+.brand-mark span:nth-child(2),.brand-mark span:nth-child(3){opacity:.35}
+.brand-mark span:nth-child(4){opacity:.15}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:14px}
+h1{margin:0;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.sub{margin:0;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:6px}
+.label{font-size:12px;font-weight:500;color:var(--muted)}
+.input{width:100%;min-height:40px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:14px;color-scheme:dark}
+.input:hover{border-color:var(--line-strong)}
+.input::placeholder{color:var(--muted);opacity:.75}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:transparent;font-weight:500;font-size:13px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--line-strong);color:var(--ink)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.btn.primary:hover{opacity:.9;color:var(--on-primary)}
+.note{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;background:var(--soft);font-size:12px;color:var(--muted)}
+.note svg{flex:0 0 auto;margin-top:1px}
+.note.err{color:var(--danger)}
+.ok-ic{width:36px;height:36px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center}
+.mail{font-family:'Geist Mono',ui-monospace,monospace;color:var(--ink)}
+.foot{font-size:12px;color:var(--muted);text-align:center}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row .btn{flex:1 1 140px}
+</style>
+</helmet>
+<div class="lg">
+  <div class="box">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+      Task Table
+    </div>
+
+    <sc-if value="{{isForm}}" hint-placeholder-val="{{ true }}">
+      <div class="card">
+        <div>
+          <h1>Giriş yap</h1>
+          <p class="sub">E-posta adresine tek kullanımlık bir giriş bağlantısı göndereceğiz.</p>
+        </div>
+        <div class="field">
+          <label class="label" for="l-mail">E-posta</label>
+          <input class="input" id="l-mail" type="email" autocomplete="email" placeholder="ad@sirket.com" value="{{email}}" onChange="{{setEmail}}">
+        </div>
+        <sc-if value="{{denied}}" hint-placeholder-val="{{ false }}">
+          <div class="note err" role="alert">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg>
+            <span>{{errorText}}</span>
+          </div>
+        </sc-if>
+        <button class="btn primary" onClick="{{send}}">Giriş bağlantısı gönder</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isSent}}" hint-placeholder-val="{{ false }}">
+      <div class="card">
+        <span class="ok-ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3.5 6.5 8.5 6.5 8.5-6.5"></path></svg></span>
+        <div>
+          <h1>E-postanı kontrol et</h1>
+          <p class="sub"><span class="mail">{{email}}</span> adresine bir giriş bağlantısı gönderdik. Bağlantı bu cihazda açıldığında oturum başlar.</p>
+        </div>
+        <div class="row">
+          <button class="btn" onClick="{{back}}">Farklı e-posta</button>
+          <a class="btn primary" href="Main.dc.html">Bağlantıyı aç (prototip)</a>
+        </div>
+      </div>
+    </sc-if>
+
+    <p class="foot">Yalnızca yöneticinin Kişiler listesine eklediği e-postalar giriş yapabilir.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(...args) {
+    super(...args);
+    this.state = { step: 'form', email: '', error: '' };
+  }
+  allowed() {
+    // prototype stand-in for the invite list kept in Firebase
+    let list = ['suleyman@ornek.com', 'ayse@ornek.com', 'mert@ornek.com', 'elif@ornek.com'];
+    try {
+      const saved = JSON.parse(window.localStorage.getItem('task-table-proto-v1') || 'null');
+      if (saved && saved.people) list = list.concat(saved.people.map((p) => p.email));
+    } catch (e) {}
+    return list.map((x) => x.toLowerCase());
+  }
+  renderVals() {
+    const s = this.state;
+    return {
+      isForm: s.step === 'form', isSent: s.step === 'sent',
+      email: s.email, denied: !!s.error, errorText: s.error,
+      setEmail: (e) => this.setState({ email: e.target.value, error: '' }),
+      back: () => this.setState({ step: 'form', error: '' }),
+      send: () => {
+        const v = (this.state.email || '').trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { this.setState({ error: 'Geçerli bir e-posta adresi girin.' }); return; }
+        if (this.allowed().indexOf(v.toLowerCase()) === -1) { this.setState({ error: 'Bu e-posta davetli değil. Erişim için yöneticiye başvurun.' }); return; }
+        this.setState({ step: 'sent', email: v, error: '' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

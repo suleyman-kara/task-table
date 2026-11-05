@@ -42,7 +42,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .nav-btn .grow{flex:1}
 .nav-count{font-size:12px;color:var(--muted)}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:0 0 8px}
-.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:12px}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:6px}
 
 /* main */
 .main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;height:100vh}
@@ -86,7 +86,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:10px;min-height:80px}
 
 /* card */
-.card{position:relative;display:flex;gap:4px;padding:7px 10px 7px 4px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;cursor:grab;transition:opacity .25s,border-color .15s,box-shadow .15s}
+.card{position:relative;display:flex;align-items:center;gap:2px;padding:4px 10px 4px 2px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;cursor:grab;transition:opacity .25s,border-color .15s,box-shadow .15s}
 .card.drop-before::before,.card.drop-after::before{content:"";position:absolute;left:2px;right:2px;height:2px;border-radius:2px;background:var(--ring);z-index:4}
 .card.drop-before::before{top:-5px}
 .card.drop-after::before{bottom:-5px}
@@ -94,18 +94,36 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .card.is-dragging{opacity:.4}
 .card.is-pending{opacity:.55}
 .card.is-pending .card-title{text-decoration:line-through}
-.check{position:relative;z-index:2;flex:0 0 28px;width:28px;height:28px;margin-top:-5px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;border-radius:8px}
+.check{position:relative;z-index:2;flex:0 0 28px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;border-radius:8px}
 .check span{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:transparent;transition:all .15s}
 .check:hover span{border-color:var(--ink)}
 .is-pending .check span{background:var(--ink);border-color:var(--ink);color:var(--panel)}
-.card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.card-proj{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
-.card-title{position:static;display:block;width:100%;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
+.card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.line1{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap}
+.proj{flex:0 1 auto;max-width:38%;overflow:hidden;text-overflow:ellipsis;font-size:11px;color:var(--muted)}
+.desc-ic{flex:0 0 auto;display:inline-flex;color:var(--muted)}
+.card-title{position:static;display:block;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
 .card-title::after{content:"";position:absolute;inset:0;border-radius:8px;z-index:1}
 .card-title:focus-visible{outline:none}
 .card-title:focus-visible::after{outline:2px solid var(--ring);outline-offset:2px}
 .card-desc{margin:0;font-size:12px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:3px;font-size:11px;color:var(--muted)}
+.card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)}
+.me{display:flex;align-items:center;gap:8px;padding:8px 4px 8px 6px;margin-bottom:6px;border-radius:8px}
+.me .grow{flex:1;min-width:0}
+.me-name{font-weight:500;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me-mail{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+a.icon-btn{text-decoration:none}
+.matrix-wrap,.axis-x,.axis-y,.matrix{transition:grid-template-columns .28s ease .12s,grid-template-rows .28s ease .12s}
+@media (min-width:901px) and (hover:hover){
+.matrix-wrap.can-grow:has(.quad.q-do:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+.matrix-wrap.can-grow:has(.quad.q-do:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1.7fr) minmax(0,1fr)}
+.matrix-wrap.can-grow:has(.quad.q-plan:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
+.matrix-wrap.can-grow:has(.quad.q-plan:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1.7fr) minmax(0,1fr)}
+.matrix-wrap.can-grow:has(.quad.q-delegate:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+.matrix-wrap.can-grow:has(.quad.q-delegate:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1fr) minmax(0,1.7fr)}
+.matrix-wrap.can-grow:has(.quad.q-drop:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
+.matrix-wrap.can-grow:has(.quad.q-drop:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1fr) minmax(0,1.7fr)}
+}
 .who{display:flex;align-items:center;gap:5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .av{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:9px;font-weight:600;color:var(--ink)}
 .av.lg{width:30px;height:30px;flex-basis:30px;font-size:11px}
@@ -115,7 +133,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .sw.sel{border-color:var(--ink)}
 .when{white-space:nowrap}
 .when.late{color:var(--danger);font-weight:500}
-.undo-bar{position:absolute;z-index:3;left:8px;right:8px;bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 6px 6px 12px;border-radius:8px;background:var(--primary);color:var(--on-primary);font-size:12px;font-weight:500;overflow:hidden;opacity:1}
+.undo-bar{position:absolute;z-index:3;inset:3px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 4px 0 12px;border-radius:8px;background:var(--primary);color:var(--on-primary);font-size:12px;font-weight:500;overflow:hidden;opacity:1}
 .card.is-pending .undo-bar{opacity:1}
 .undo-bar button{border:0;background:transparent;color:var(--on-primary);font-weight:600;font-size:12px;padding:6px 10px;border-radius:6px;text-decoration:underline;text-underline-offset:2px}
 .undo-bar::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--on-primary);opacity:.5;transform-origin:left;animation:drain 4s linear forwards}
@@ -254,15 +272,16 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     </div>
 
     <div class="side-foot">
-      <button class="nav-btn" onClick="{{toggleTheme}}">
-        <sc-if value="{{isDark}}" hint-placeholder-val="{{ false }}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path></svg>
-        </sc-if>
-        <sc-if value="{{isLight}}" hint-placeholder-val="{{ true }}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path></svg>
-        </sc-if>
-        <span class="grow">{{themeLabel}}</span>
-      </button>
+      <div class="me">
+        <span class="av lg">SK</span>
+        <div class="grow">
+          <div class="me-name">Süleyman Kara</div>
+          <div class="me-mail">suleyman@ornek.com</div>
+        </div>
+        <a class="icon-btn" href="Login.dc.html" aria-label="Çıkış yap" title="Çıkış yap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"></path><path d="M10 16l-4-4 4-4M6 12h10"></path></svg>
+        </a>
+      </div>
     </div>
   </aside>
 
@@ -278,7 +297,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 
     <!-- MATRIX -->
     <sc-if value="{{isMatrix}}" hint-placeholder-val="{{ true }}">
-      <div class="matrix-wrap">
+      <div class="matrix-wrap {{growCls}}">
         <div class="axis-x">
           <div class="axis-label">Acil</div>
           <div class="axis-label">Acil değil</div>
@@ -308,11 +327,14 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                       <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
                     </button>
                     <div class="card-body">
-                      <div class="card-proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</div>
-                      <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
-                      <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ true }}">
-                        <p class="card-desc">{{t.desc}}</p>
-                      </sc-if>
+                      <div class="line1">
+                        <span class="dot" style="background: {{t.color}}"></span>
+                        <span class="proj">{{t.project}}</span>
+                        <button class="card-title" onClick="{{t.open}}" title="{{t.tip}}">{{t.title}}</button>
+                        <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
+                          <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
+                        </sc-if>
+                      </div>
                       <div class="card-meta">
                         <span class="who"><span class="av">{{t.initials}}</span>{{t.assignee}}</span>
                         <span class="when mono {{t.whenCls}}">{{t.when}}</span>
@@ -633,11 +655,9 @@ class Component extends DCLogic {
   initialState() {
     let saved = null;
     try { saved = JSON.parse(window.localStorage.getItem('task-table-proto-v1') || 'null'); } catch (e) { saved = null; }
-    let dark = false;
-    try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) {}
     const base = saved && saved.tasks ? saved : this.seed();
     return {
-      view: 'matrix', dark: typeof base.dark === 'boolean' ? base.dark : dark,
+      view: 'matrix',
       sort: base.sort === 'date' ? 'date' : 'custom',
       filter: null, tasks: base.tasks, people: base.people,
       projects: base.projects || this.defaultProjects(),
@@ -667,7 +687,7 @@ class Component extends DCLogic {
     const now = Date.now();
     // a card still fading counts as done after a reload
     const tasks = s.tasks.map((t) => (s.pending[t.id] && !t.doneAt ? Object.assign({}, t, { doneAt: now }) : t));
-    try { window.localStorage.setItem('task-table-proto-v1', JSON.stringify({ tasks: tasks, people: s.people, projects: s.projects, sort: s.sort, dark: s.dark })); } catch (e) {}
+    try { window.localStorage.setItem('task-table-proto-v1', JSON.stringify({ tasks: tasks, people: s.people, projects: s.projects, sort: s.sort })); } catch (e) {}
   }
 
   /* ---------- task actions ---------- */
@@ -820,6 +840,7 @@ class Component extends DCLogic {
       const pending = !!s.pending[t.id];
       return {
         id: t.id, title: t.title, desc: t.desc, hasDesc: !!t.desc,
+        tip: t.desc ? t.title + '\n\n' + t.desc : t.title,
         project: pr.name, color: pr.color,
         assignee: pe ? pe.name : 'Atanmadı', initials: pe ? this.initials(pe.name) : '–',
         when: when, whenCls: late ? 'late' : '',
@@ -888,10 +909,7 @@ class Component extends DCLogic {
     }[s.view];
 
     return {
-      themeClass: s.dark ? 'theme-dark' : '',
-      isDark: s.dark, isLight: !s.dark,
-      themeLabel: s.dark ? 'Açık tema' : 'Koyu tema',
-      toggleTheme: () => this.setState({ dark: !this.state.dark }),
+      themeClass: 'theme-dark',
 
       navMatrix: s.view === 'matrix' ? 'active' : '',
       navDone: s.view === 'done' ? 'active' : '',
@@ -923,6 +941,7 @@ class Component extends DCLogic {
 
       newTask: () => this.openNew(''),
       quads: quads,
+      growCls: s.dragId || s.modal ? '' : 'can-grow',
       dragEnd: () => this.setState({ dragId: null, overQ: null, dropTarget: null }),
 
       /* done */
