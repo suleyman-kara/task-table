@@ -1,0 +1,56 @@
+/* Extracted from design/project/Login.dc.html — keep in sync with the design. */
+*{box-sizing:border-box}
+a{color:#78A6FF}a:hover{color:#A5C4FF}
+.lg{--bg:#0E0E10;--panel:#161619;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--ring:#78A6FF;
+min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:min(18vh,160px) 16px 24px;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased;color-scheme:dark}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.box{width:100%;max-width:380px;display:flex;flex-direction:column;gap:20px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.brand-mark{width:16px;height:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
+.brand-mark span{border-radius:3px;background:var(--ink)}
+.brand-mark span:nth-child(2),.brand-mark span:nth-child(3){opacity:.35}
+.brand-mark span:nth-child(4){opacity:.15}
+.card{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:16px}
+h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.sub{margin:0;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:8px}
+.label{font-size:12px;font-weight:500;color:var(--muted)}
+.input{width:100%;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:14px}
+.input:hover{border-color:var(--line-strong)}
+.input[aria-invalid="true"]{border-color:var(--danger)}
+.input::placeholder{color:var(--muted);opacity:.75}
+.field-msg{margin:0;display:flex;align-items:flex-start;gap:4px;font-size:12px;color:var(--muted)}
+.field-msg svg{flex:0 0 auto;margin-top:2px}
+.field-msg.err{color:var(--danger)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:transparent;font-weight:500;font-size:13px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--line-strong);color:var(--ink)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.btn.primary:hover{opacity:.9;color:var(--on-primary)}
+.btn[aria-disabled="true"]{cursor:default;color:var(--muted);border-color:var(--line)}
+.hint{margin:0;font-size:12px;color:var(--muted)}
+.mail{font-family:'Geist Mono',ui-monospace,monospace;color:var(--ink)}
+.foot{margin:0;font-size:12px;color:var(--muted);text-align:center}
+.actions{display:flex;gap:8px}
+.actions .btn{flex:1 1 0}
+.link-row{display:flex;justify-content:space-between;gap:8px;margin:0 -8px}
+.link-btn{align-self:center;display:inline-flex;align-items:center;justify-content:center;min-height:28px;border:0;border-radius:8px;background:none;padding:4px 8px;font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.link-btn:hover{color:var(--ink)}
+.proto{margin-top:12px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 16px;border:1px dashed var(--line);border-radius:8px}
+.proto-label{font-size:12px;color:var(--muted);opacity:.7}
+.proto-link{display:inline-flex;align-items:center;min-height:28px;margin-left:-8px;padding:4px 8px;border:0;border-radius:8px;background:none;font-size:12px;color:var(--muted);text-decoration:none;text-align:left}
+.proto-link:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.progress{position:relative;height:4px;border-radius:4px;background:var(--soft);overflow:hidden}
+.progress span{position:absolute;top:0;bottom:0;left:0;width:32%;border-radius:4px;background:var(--muted);animation:lg-slide 1.4s ease-in-out infinite}
+@keyframes lg-slide{0%{transform:translateX(-100%)}100%{transform:translateX(320%)}}
+@media (prefers-reduced-motion:reduce){.progress span{animation:none;width:100%;opacity:.4}}
+@media (max-width:520px){
+  .lg{padding-top:48px}
+  .card{padding:20px}
+  .input{height:44px;font-size:16px}
+  .btn{min-height:44px}
+  .actions{flex-direction:column}
+  .actions .btn{flex:0 0 auto;width:100%}
+  .link-btn,.proto-link{min-height:44px}
+}

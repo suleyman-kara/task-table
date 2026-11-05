@@ -1,0 +1,101 @@
+rules_version = '2';
+
+// Task Table — access rules
+//
+// Roles
+//   admin   : the single address below, signs in with email + password (email must be verified)
+//   editor  : members/{email}.role == 'editor' — reads and edits tasks of their projects
+//   viewer  : members/{email}.role == 'viewer' — reads tasks of their projects only
+// Anyone else is signed out or "not invited" and can read nothing except whether
+// a specific email is invited (invites/{email}, get only — no listing).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Keep in sync with VITE_ADMIN_EMAIL.
+    function adminEmail() { return 'karasuleyman125@gmail.com'; }
+
+    function signedIn() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email_verified == true;
+    }
+    function myEmail() { return request.auth.token.email.lower(); }
+    function isAdmin() { return signedIn() && myEmail() == adminEmail(); }
+
+    function memberPath() { return /databases/$(database)/documents/members/$(myEmail()); }
+    function isMember() { return signedIn() && exists(memberPath()); }
+    function me() { return get(memberPath()).data; }
+
+    function canRead(projectId) {
+      return isAdmin() || (isMember() && projectId in me().projectIds);
+    }
+    function canWrite(projectId) {
+      return isAdmin() || (isMember() && me().role == 'editor' && projectId in me().projectIds);
+    }
+
+    function isDate(v) { return v is string && (v == '' || v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')); }
+    function isMsOrNull(v) { return v == null || v is int; }
+
+    function validTask(d) {
+      return d.keys().hasOnly(['title', 'desc', 'q', 'projectId', 'assigneeIds', 'start', 'end',
+                               'pinnedAt', 'doneAt', 'createdAt', 'updatedAt', 'createdBy'])
+        && d.keys().hasAll(['title', 'q', 'projectId', 'assigneeIds', 'start', 'end'])
+        && d.title is string && d.title.size() > 0 && d.title.size() <= 200
+        && (!('desc' in d) || (d.desc is string && d.desc.size() <= 5000))
+        && d.q in ['do', 'plan', 'delegate', 'drop']
+        && d.projectId is string
+        && d.assigneeIds is list && d.assigneeIds.size() <= 30
+        && isDate(d.start) && isDate(d.end)
+        && (d.start == '' || d.end == '' || d.start <= d.end)
+        && (!('pinnedAt' in d) || isMsOrNull(d.pinnedAt))
+        && (!('doneAt' in d) || isMsOrNull(d.doneAt));
+    }
+
+    function validProject(d) {
+      return d.keys().hasOnly(['name', 'color', 'createdAt'])
+        && d.name is string && d.name.size() > 0 && d.name.size() <= 60
+        && d.color is string && d.color.matches('^#[0-9A-Fa-f]{6}$');
+    }
+
+    function validMember(email, d) {
+      return d.keys().hasOnly(['name', 'email', 'role', 'projectIds', 'createdAt'])
+        && d.email == email && email == email.lower()
+        && email != adminEmail()
+        && d.name is string && d.name.size() > 0 && d.name.size() <= 80
+        && d.role in ['editor', 'viewer']
+        && d.projectIds is list && d.projectIds.size() <= 30;
+    }
+
+    // Invite list: anyone may ask "is this exact address invited?" — nothing else.
+    match /invites/{email} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if isAdmin() && email == email.lower() && request.resource.data.keys().hasOnly(['createdAt']);
+      allow delete: if isAdmin();
+    }
+
+    match /members/{email} {
+      allow read: if isAdmin() || isMember();
+      allow create, update: if isAdmin() && validMember(email, request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Project names and colours are visible to every member; the app only shows their own.
+    match /projects/{projectId} {
+      allow read: if isAdmin() || isMember();
+      allow create, update: if isAdmin() && validProject(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Members must query with where('projectId', 'in', <their projectIds>).
+    match /tasks/{taskId} {
+      allow read: if canRead(resource.data.projectId);
+      allow create: if canWrite(request.resource.data.projectId) && validTask(request.resource.data);
+      allow update: if canWrite(resource.data.projectId)
+                    && canWrite(request.resource.data.projectId)
+                    && validTask(request.resource.data);
+      allow delete: if canWrite(resource.data.projectId);
+    }
+  }
+}
