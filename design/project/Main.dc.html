@@ -190,6 +190,22 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 .dialog-body{padding:16px 18px;display:flex;flex-direction:column;gap:16px}
 .dialog-foot{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
 .dialog-foot .grow{flex:1}
+.vtitle{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;width:calc(100% + 16px);margin:-6px -8px 0;padding:6px 8px;border:0;border-radius:8px;background:none;text-align:left;font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;color:var(--ink)}
+.vtitle .edit-ic{margin-top:4px}
+.vlist{display:flex;flex-direction:column;border-top:1px solid var(--line);margin:0 -8px}
+.vrow{display:grid;grid-template-columns:96px minmax(0,1fr) 14px;gap:12px;align-items:start;width:100%;padding:10px 8px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;color:var(--ink)}
+.vrow:last-child{border-bottom:0}
+.vtitle:hover,.vrow:hover{background:var(--soft)}
+.vlabel{font-size:12px;color:var(--muted);padding-top:2px}
+.vval{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;font-size:13px}
+.vval small{font-size:11px;color:var(--muted)}
+.vval.desc{display:block;white-space:pre-wrap;line-height:1.55;max-height:240px;overflow-y:auto}
+.vval .muted{color:var(--muted)}
+.vval .late{color:var(--danger);font-weight:500}
+.pchip{display:inline-flex;align-items:center;gap:6px;padding:2px 9px 2px 2px;border:1px solid var(--line);border-radius:999px;font-size:12px}
+.edit-ic{color:var(--muted);opacity:0;transition:opacity .15s;flex:0 0 auto;margin-top:2px}
+.vtitle:hover .edit-ic,.vrow:hover .edit-ic,.vtitle:focus-visible .edit-ic,.vrow:focus-visible .edit-ic{opacity:1}
+@media (hover:none){.edit-ic{opacity:1}}
 .title-input{font-size:16px;font-weight:500;min-height:42px}
 .qpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
 .qopt{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);text-align:left}
@@ -573,17 +589,60 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
       <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
         <div class="dialog-head">
           <h2 id="dlg-title">{{modalTitle}}</h2>
-          <button class="icon-btn" onClick="{{closeModal}}" aria-label="Kapat">
+          <button class="icon-btn" onClick="{{closeAll}}" aria-label="Kapat">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
           </button>
         </div>
+        <sc-if value="{{isView}}" hint-placeholder-val="{{ false }}">
+          <div class="dialog-body">
+            <button class="vtitle" onClick="{{vw.eTitle}}" aria-label="Görev adını düzenle"><span>{{vw.title}}</span><svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>
+            <div class="vlist">
+              <button class="vrow" onClick="{{vw.eQ}}">
+                <span class="vlabel">Kutu</span>
+                <span class="vval {{vw.qCls}}"><span class="q-mark" aria-hidden="true"></span>{{vw.qName}}<small>{{vw.qTag}}</small></span>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+              <button class="vrow" onClick="{{vw.eProj}}">
+                <span class="vlabel">Proje</span>
+                <span class="vval"><span class="dot" style="background: {{vw.color}}"></span>{{vw.project}}</span>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+              <button class="vrow" onClick="{{vw.ePeople}}">
+                <span class="vlabel">Sorumlular</span>
+                <span class="vval">
+                  <sc-for list="{{vw.people}}" as="p" hint-placeholder-count="1"><span class="pchip"><span class="av">{{p.initials}}</span>{{p.name}}</span></sc-for>
+                  <sc-if value="{{vw.noPeople}}" hint-placeholder-val="{{ false }}"><span class="muted">Atanmadı</span></sc-if>
+                </span>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+              <button class="vrow" onClick="{{vw.eDates}}">
+                <span class="vlabel">Tarih</span>
+                <span class="vval mono"><span>{{vw.dates}}</span><sc-if value="{{vw.late}}" hint-placeholder-val="{{ false }}"><span class="late">Gecikti</span></sc-if></span>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+              <button class="vrow" onClick="{{vw.eDesc}}">
+                <span class="vlabel">Açıklama</span>
+                <sc-if value="{{vw.hasDesc}}" hint-placeholder-val="{{ true }}"><span class="vval desc">{{vw.desc}}</span></sc-if>
+                <sc-if value="{{vw.noDesc}}" hint-placeholder-val="{{ false }}"><span class="vval"><span class="muted">Açıklama eklenmemiş</span></span></sc-if>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+            </div>
+          </div>
+          <div class="dialog-foot">
+            <span class="grow"></span>
+            <button class="btn ghost" onClick="{{closeAll}}">Kapat</button>
+            <button class="btn primary" onClick="{{vw.eTitle}}">Düzenle</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isFormMode}}" hint-placeholder-val="{{ true }}">
         <div class="dialog-body">
           <div class="field">
             <label class="field-label" for="f-title">Görev</label>
             <input class="input title-input" id="f-title" type="text" placeholder="Ne yapılması gerekiyor?" value="{{form.title}}" onChange="{{fTitle}}">
           </div>
 
-          <div class="field">
+          <div class="field" id="f-q">
             <span class="field-label">Kutu</span>
             <div class="qpick">
               <sc-for list="{{qOptions}}" as="o" hint-placeholder-count="4">
@@ -595,7 +654,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" id="f-proj">
             <span class="field-label">Proje</span>
             <div class="chips">
               <sc-for list="{{projOptions}}" as="o" hint-placeholder-count="4">
@@ -606,7 +665,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" id="f-people">
             <span class="field-label">Sorumlu kişiler <i>(birden fazla seçilebilir)</i></span>
             <div class="chips">
               <sc-for list="{{personOptions}}" as="o" hint-placeholder-count="3">
@@ -652,6 +711,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
           <button class="btn ghost" onClick="{{closeModal}}">Vazgeç</button>
           <button class="btn primary" onClick="{{saveModal}}">{{saveLabel}}</button>
         </div>
+        </sc-if>
       </div>
     </div>
   </sc-if>
@@ -743,7 +803,16 @@ class Component extends DCLogic {
   uid() { return Math.random().toString(36).slice(2, 10); }
   validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
-  componentDidUpdate() { this.persist(); }
+  componentDidUpdate() {
+    this.persist();
+    if (this.focusId) {
+      const id = this.focusId; this.focusId = null;
+      try {
+        const el = document.getElementById(id);
+        if (el) { el.scrollIntoView({ block: 'center' }); if (el.focus && /^(INPUT|TEXTAREA)$/.test(el.tagName)) el.focus(); }
+      } catch (e) {}
+    }
+  }
   componentWillUnmount() {
     Object.keys(this.timers).forEach((k) => clearTimeout(this.timers[k]));
     clearTimeout(this.hoverT);
@@ -787,8 +856,19 @@ class Component extends DCLogic {
       np: { name: '', email: '', error: '' },
       form: { title: '', desc: '', q: q || '', projectId: this.state.filter || '', assigneeIds: [], start: this.iso(new Date()), end: '' } } });
   }
-  openEdit(t) {
-    this.setState({ modal: { mode: 'edit', id: t.id, error: '', inlineAdd: false,
+  openView(t) { this.openEdit(t, 'view'); }
+  editFromView(focusId) {
+    const m = this.state.modal;
+    this.focusId = focusId;
+    this.setState({ modal: Object.assign({}, m, { mode: 'edit', from: 'view' }) });
+  }
+  closeModal() {
+    const m = this.state.modal;
+    const t = m && m.from === 'view' ? this.state.tasks.find((x) => x.id === m.id) : null;
+    if (t) this.openView(t); else this.setState({ modal: null });
+  }
+  openEdit(t, mode) {
+    this.setState({ modal: { mode: mode || 'edit', id: t.id, error: '', inlineAdd: false,
       np: { name: '', email: '', error: '' },
       form: { title: t.title, desc: t.desc || '', q: t.q, projectId: t.projectId, assigneeIds: (t.assigneeIds || []).slice(), start: t.start || '', end: t.end || '' } } });
   }
@@ -807,7 +887,11 @@ class Component extends DCLogic {
     if (m.mode === 'new') {
       this.setState({ modal: null, tasks: this.state.tasks.concat([Object.assign({ id: this.uid(), doneAt: null }, data)]) });
     } else {
-      this.setState({ modal: null, tasks: this.state.tasks.map((t) => (t.id === m.id ? Object.assign({}, t, data) : t)) });
+      const tasks = this.state.tasks.map((t) => (t.id === m.id ? Object.assign({}, t, data) : t));
+      this.setState({ tasks: tasks, modal: null }, () => {
+        // edited from the detail view: go back to it showing the new values
+        if (m.from === 'view') { const t = tasks.find((x) => x.id === m.id); if (t) this.openView(t); }
+      });
     }
   }
   deleteTask() {
@@ -938,7 +1022,7 @@ class Component extends DCLogic {
         pin: () => this.togglePin(t.id),
         checkLabel: pending ? 'Tamamlamayı geri al: ' + t.title : 'Tamamlandı olarak işaretle: ' + t.title,
         toggle: () => this.toggleDone(t.id),
-        open: () => this.openEdit(t),
+        open: () => this.openView(t),
         dragStart: (e) => {
           try { e.dataTransfer.setData('text/plain', t.id); e.dataTransfer.effectAllowed = 'move'; } catch (err) {}
           this.setState({ dragId: t.id });
@@ -1105,10 +1189,32 @@ class Component extends DCLogic {
 
       /* modal */
       modalOpen: !!m, isEdit: !!m && m.mode === 'edit',
-      modalTitle: m && m.mode === 'edit' ? 'Görevi düzenle' : 'Yeni görev',
+      isView: !!m && m.mode === 'view', isFormMode: !!m && m.mode !== 'view',
+      modalTitle: !m ? '' : m.mode === 'view' ? 'Görev ayrıntısı' : m.mode === 'edit' ? 'Görevi düzenle' : 'Yeni görev',
+      vw: (() => {
+        const t = m && m.mode === 'view' ? s.tasks.find((x) => x.id === m.id) : null;
+        if (!t) return { people: [] };
+        const pr = prById[t.projectId] || noProj;
+        const qd = QD.find((q) => q.id === t.q) || QD[0];
+        const ppl = who(t);
+        let dates = 'Tarih yok';
+        if (t.start && t.end) dates = this.fmt(t.start) + ' – ' + this.fmt(t.end);
+        else if (t.end) dates = 'Bitiş ' + this.fmt(t.end);
+        else if (t.start) dates = 'Başlangıç ' + this.fmt(t.start);
+        const go = (id) => () => this.editFromView(id);
+        return {
+          title: t.title, qName: qd.name, qTag: qd.tag, qCls: 'q-' + qd.id,
+          project: pr.name, color: pr.color,
+          people: ppl.map((p) => ({ name: p.name, initials: this.initials(p.name) })), noPeople: ppl.length === 0,
+          dates: dates, late: isLate(t),
+          desc: t.desc, hasDesc: !!t.desc, noDesc: !t.desc,
+          eTitle: go('f-title'), eQ: go('f-q'), eProj: go('f-proj'), ePeople: go('f-people'), eDates: go('f-start'), eDesc: go('f-desc')
+        };
+      })(),
+      closeAll: () => this.setState({ modal: null }),
       saveLabel: m && m.mode === 'edit' ? 'Değişiklikleri kaydet' : 'Görevi ekle',
       form: f, formError: m ? m.error : '', formHasError: !!(m && m.error),
-      closeModal: () => this.setState({ modal: null }),
+      closeModal: () => this.closeModal(),
       saveModal: () => this.saveModal(),
       deleteTask: () => this.deleteTask(),
       fTitle: (e) => this.setForm({ title: e.target.value }),
