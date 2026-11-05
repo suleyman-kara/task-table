@@ -76,14 +76,18 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* matrix */
 .matrix-wrap{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:20px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:6px 8px;padding:12px 16px 16px 12px}
-.axis-x{grid-column:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.axis-y{grid-row:2;display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:10px}
+.axis-x{grid-column:2;display:flex;gap:10px}
+.axis-y{grid-row:2;display:flex;flex-direction:column;gap:10px}
+.axis-x .axis-label{flex:1 1 0;min-width:0}
+.axis-y .axis-label{flex:1 1 0;min-height:0}
 .axis-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap}
 .axis-label::before,.axis-label::after{content:"";flex:1;height:1px;background:var(--line)}
 .axis-y .axis-label{writing-mode:vertical-rl;transform:rotate(180deg)}
 .axis-y .axis-label::before,.axis-y .axis-label::after{width:1px;height:auto;flex:1}
-.matrix{grid-column:2;grid-row:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px;min-height:0}
-.quad{display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;transition:border-color .15s,background .15s}
+.matrix{grid-column:2;grid-row:2;display:flex;flex-direction:column;gap:10px;min-height:0}
+.mrow{display:flex;gap:10px;flex:1 1 0;min-height:0}
+.quad{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;transition:border-color .15s,background .15s,flex-grow .34s cubic-bezier(.25,.8,.25,1)}
+.mrow,.axis-label{transition:flex-grow .34s cubic-bezier(.25,.8,.25,1)}
 .quad.is-over{border-color:var(--ring);border-style:dashed;background:var(--panel-2)}
 .quad-head{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;border-bottom:1px solid var(--line)}
 .q-mark{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
@@ -129,19 +133,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .me-name{font-weight:500;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .me-mail{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 a.icon-btn{text-decoration:none}
-.matrix-wrap,.axis-x,.axis-y,.matrix{transition:grid-template-columns .28s ease .12s,grid-template-rows .28s ease .12s}
-@media (min-width:901px) and (hover:hover){
-.matrix-wrap.can-grow:has(.quad.q-do:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
-.matrix-wrap.can-grow:has(.quad.q-do:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1.7fr) minmax(0,1fr)}
-.matrix-wrap.can-grow:has(.quad.q-plan:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
-.matrix-wrap.can-grow:has(.quad.q-plan:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1.7fr) minmax(0,1fr)}
-.matrix-wrap.can-grow:has(.quad.q-delegate:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
-.matrix-wrap.can-grow:has(.quad.q-delegate:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1fr) minmax(0,1.7fr)}
-.matrix-wrap.can-grow:has(.quad.q-drop:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
-.matrix-wrap.can-grow:has(.quad.q-drop:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1fr) minmax(0,1.7fr)}
-.matrix-wrap.can-grow .quad:hover .card-desc{display:block;animation:fadein .2s ease .25s both}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
+@media (min-width:901px){
+.quad.is-expanded .card-desc{display:block;animation:fadein .2s ease .2s both}
 }
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.tipbox{position:fixed;z-index:40;max-width:380px;padding:9px 11px;border-radius:8px;background:#26262B;border:1px solid var(--line-strong);box-shadow:0 12px 32px -12px rgba(0,0,0,.8);font-size:12px;line-height:1.45;color:var(--ink);pointer-events:none;opacity:0;transition:opacity .18s ease}
+.tipbox.up{transform:translateY(-100%)}
+.tipbox.show{opacity:1}
+.tipbox b{display:block;font-weight:600;margin-bottom:2px}
+.tipbox span{display:block;color:var(--muted);white-space:pre-line}
 .who{display:flex;align-items:center;gap:5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .av{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:9px;font-weight:600;color:var(--ink)}
 .av.lg{width:30px;height:30px;flex-basis:30px;font-size:11px}
@@ -222,7 +222,9 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 .top{padding:16px}
 .matrix-wrap{display:block;padding:12px 16px 16px}
 .axis-x,.axis-y{display:none}
-.matrix{grid-template-columns:minmax(0,1fr);grid-template-rows:none}
+.matrix{display:flex;flex-direction:column}
+.mrow{flex-direction:column;flex:none!important}
+.quad{flex:none!important}
 .quad{min-height:220px}
 .cards{overflow:visible}
 .page{padding:0 16px 16px}
@@ -307,18 +309,20 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 
     <!-- MATRIX -->
     <sc-if value="{{isMatrix}}" hint-placeholder-val="{{ true }}">
-      <div class="matrix-wrap {{growCls}}">
+      <div class="matrix-wrap">
         <div class="axis-x">
-          <div class="axis-label">Acil</div>
-          <div class="axis-label">Acil değil</div>
+          <div class="axis-label" style="flex-grow: {{gColL}}">Acil</div>
+          <div class="axis-label" style="flex-grow: {{gColR}}">Acil değil</div>
         </div>
         <div class="axis-y">
-          <div class="axis-label">Önemli</div>
-          <div class="axis-label">Önemli değil</div>
+          <div class="axis-label" style="flex-grow: {{gRowT}}">Önemli</div>
+          <div class="axis-label" style="flex-grow: {{gRowB}}">Önemli değil</div>
         </div>
-        <div class="matrix">
-          <sc-for list="{{quads}}" as="q" hint-placeholder-count="4">
-            <section class="quad {{q.cls}}" aria-label="{{q.name}}" onDragOver="{{q.dragOver}}" onDragLeave="{{q.dragLeave}}" onDrop="{{q.drop}}">
+        <div class="matrix" onMouseLeave="{{matrixLeave}}">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="2">
+          <div class="mrow" style="flex-grow: {{r.grow}}">
+          <sc-for list="{{r.quads}}" as="q" hint-placeholder-count="2">
+            <section class="quad {{q.cls}}" style="flex-grow: {{q.grow}}" aria-label="{{q.name}}" onMouseEnter="{{q.enter}}" onDragOver="{{q.dragOver}}" onDragLeave="{{q.dragLeave}}" onDrop="{{q.drop}}">
               <header class="quad-head">
                 <span class="q-mark" aria-hidden="true"></span>
                 <div class="grow">
@@ -332,7 +336,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
               </header>
               <div class="cards">
                 <sc-for list="{{q.tasks}}" as="t" hint-placeholder-count="2">
-                  <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragEnd="{{dragEnd}}">
+                  <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragEnd="{{dragEnd}}" onMouseEnter="{{t.tipEnter}}" onMouseLeave="{{tipLeave}}">
                     <button class="check" onClick="{{t.toggle}}" aria-label="{{t.checkLabel}}">
                       <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
                     </button>
@@ -341,12 +345,15 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                         <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                           <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
                         </sc-if>
-                        <button class="card-title" onClick="{{t.open}}" title="{{t.tip}}">{{t.title}}</button>
+                        <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
                         <button class="pin {{t.pinCls}}" onClick="{{t.pin}}" aria-label="{{t.pinLabel}}" aria-pressed="{{t.pinPressed}}" title="{{t.pinLabel}}">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg>
                         </button>
                         <span class="when mono {{t.whenCls}}">{{t.when}}</span>
                       </div>
+                      <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
+                        <p class="card-desc">{{t.desc}}</p>
+                      </sc-if>
                       <div class="card-meta">
                         <sc-if value="{{showProj}}" hint-placeholder-val="{{ true }}">
                           <span class="proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</span>
@@ -358,9 +365,6 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                           <span class="who-names">{{t.assignee}}</span>
                         </span>
                       </div>
-                      <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
-                        <p class="card-desc">{{t.desc}}</p>
-                      </sc-if>
                     </div>
                     <sc-if value="{{t.pending}}" hint-placeholder-val="{{ false }}">
                       <div class="undo-bar" role="status">
@@ -375,6 +379,8 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                 </sc-if>
               </div>
             </section>
+          </sc-for>
+          </div>
           </sc-for>
         </div>
       </div>
@@ -566,6 +572,13 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     </sc-if>
   </main>
 
+  <sc-if value="{{tipOn}}" hint-placeholder-val="{{ false }}">
+    <div class="tipbox {{tipCls}}" role="tooltip" style="top: {{tip.top}}px; left: {{tip.left}}px; width: {{tip.width}}px">
+      <b>{{tip.title}}</b>
+      <sc-if value="{{tip.hasDesc}}" hint-placeholder-val="{{ true }}"><span>{{tip.desc}}</span></sc-if>
+    </div>
+  </sc-if>
+
   <!-- TASK MODAL -->
   <sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
     <div class="overlay">
@@ -721,7 +734,7 @@ class Component extends DCLogic {
       view: 'matrix',
       filter: null, tasks: tasks, people: people,
       projects: projects,
-      pending: {}, dragId: null, overQ: null, dropTarget: null,
+      pending: {}, dragId: null, overQ: null, dropTarget: null, hoverQ: null, tip: null,
       modal: null, confirmClear: false, confirmPerson: null, confirmProject: null,
       pf: this.emptyPf(),
       prf: { name: '', color: '#2563EB', error: '' }
@@ -743,7 +756,42 @@ class Component extends DCLogic {
   validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
   componentDidUpdate() { this.persist(); }
-  componentWillUnmount() { Object.keys(this.timers).forEach((k) => clearTimeout(this.timers[k])); }
+  componentWillUnmount() {
+    Object.keys(this.timers).forEach((k) => clearTimeout(this.timers[k]));
+    clearTimeout(this.hoverT); clearTimeout(this.tipShowT); clearTimeout(this.tipHideT);
+  }
+
+  /* ---------- hover: quadrant growth ---------- */
+  hoverTo(qid, delay) {
+    clearTimeout(this.hoverT);
+    this.hoverT = setTimeout(() => { if (this.state.hoverQ !== qid) this.setState({ hoverQ: qid }); }, delay);
+  }
+
+  /* ---------- hover: task tooltip ---------- */
+  hideTip(now) {
+    clearTimeout(this.tipShowT); clearTimeout(this.tipHideT);
+    if (now) { if (this.state.tip) this.setState({ tip: null }); return; }
+    this.tipHideT = setTimeout(() => {
+      if (this.state.tip) this.setState({ tip: Object.assign({}, this.state.tip, { show: false }) });
+    }, 1500);
+  }
+  showTip(t, el) {
+    clearTimeout(this.tipShowT); clearTimeout(this.tipHideT);
+    if (this.state.dragId || this.state.modal) return;
+    const place = () => {
+      let r; try { r = el.getBoundingClientRect(); } catch (e) { return; }
+      const vw = window.innerWidth || 1280, vh = window.innerHeight || 800;
+      const width = Math.min(Math.max(r.width, 260), 380);
+      const below = r.bottom + 150 < vh;
+      this.setState({ tip: {
+        id: t.id, title: t.title, desc: t.desc || '', hasDesc: !!t.desc, show: true, up: !below,
+        width: Math.round(width), left: Math.round(Math.max(8, Math.min(r.left, vw - width - 8))),
+        top: Math.round(below ? r.bottom + 6 : r.top - 6)
+      } });
+    };
+    // already showing one: move to the new card right away; otherwise wait a moment
+    if (this.state.tip && this.state.tip.show) place(); else this.tipShowT = setTimeout(place, 500);
+  }
   persist() {
     const s = this.state;
     const now = Date.now();
@@ -928,19 +976,29 @@ class Component extends DCLogic {
         pin: () => this.togglePin(t.id),
         checkLabel: pending ? 'Tamamlamayı geri al: ' + t.title : 'Tamamlandı olarak işaretle: ' + t.title,
         toggle: () => this.toggleDone(t.id),
-        open: () => this.openEdit(t),
+        open: () => { this.hideTip(true); this.openEdit(t); },
+        tipEnter: (e) => this.showTip(t, e.currentTarget),
         dragStart: (e) => {
+          this.hideTip(true);
           try { e.dataTransfer.setData('text/plain', t.id); e.dataTransfer.effectAllowed = 'move'; } catch (err) {}
           this.setState({ dragId: t.id });
         }
       };
     };
 
+    const G = 1.7;
+    const growOn = !s.dragId && !s.modal ? s.hoverQ : null;
+    const colOf = { do: 0, delegate: 0, plan: 1, drop: 1 };
+    const rowOf = { do: 0, plan: 0, delegate: 1, drop: 1 };
+    const gCol = [1, 1], gRow = [1, 1];
+    if (growOn) { gCol[colOf[growOn]] = G; gRow[rowOf[growOn]] = G; }
     const quads = QD.map((q) => {
       const list = visible.filter((t) => t.q === q.id).sort(order);
       return {
         id: q.id, name: q.name, tag: q.tag, count: list.length, empty: list.length === 0,
-        cls: 'q-' + q.id + (s.overQ === q.id ? ' is-over' : ''),
+        cls: 'q-' + q.id + (s.overQ === q.id ? ' is-over' : '') + (growOn === q.id ? ' is-expanded' : ''),
+        grow: gCol[colOf[q.id]],
+        enter: () => this.hoverTo(q.id, this.state.hoverQ ? 60 : 120),
         addLabel: q.name + ' kutusuna görev ekle',
         tasks: list.map(card),
         add: () => this.openNew(q.id),
@@ -1002,8 +1060,15 @@ class Component extends DCLogic {
       })),
 
       newTask: () => this.openNew(''),
-      quads: quads,
-      growCls: s.dragId || s.modal ? '' : 'can-grow',
+      rows: [
+        { grow: gRow[0], quads: [quads[0], quads[1]] },
+        { grow: gRow[1], quads: [quads[2], quads[3]] }
+      ],
+      gColL: gCol[0], gColR: gCol[1], gRowT: gRow[0], gRowB: gRow[1],
+      matrixLeave: () => this.hoverTo(null, 180),
+      tipOn: !!s.tip, tip: s.tip || { top: 0, left: 0, width: 0, title: '', desc: '', hasDesc: false },
+      tipCls: s.tip ? ((s.tip.show ? 'show' : '') + (s.tip.up ? ' up' : '')) : '',
+      tipLeave: () => this.hideTip(false),
       showProj: !s.filter,
       dragEnd: () => this.setState({ dragId: null, overQ: null, dropTarget: null }),
 
