@@ -24,10 +24,15 @@ Bu dosyalar, `Main.dc.html` ve `Login.dc.html` bileşenlerini `screen` ayarıyla
 | 16 | Giriş — başka cihazda açıldı | Herkes | Login `other-device` | Girişi tamamlamak için e-postayı yeniden iste |
 | 17 | Yönetici girişi — şifre hatalı | Yönetici | Login `admin-error` | Alan altında hata; "Şifremi unuttum" |
 | 18 | Giriş yapılıyor | Herkes | Login `loading` | Sade ilerleme çubuğu |
+| 19 | Veri yükleniyor | Herkes | Main `loading` | Kutularda iskelet satırlar, sayılar gizli |
+| 20 | Bağlantı yok / kaydedilemedi | Herkes | Main `offline` | Üstte bağlantı uyarısı, altta "Tekrar dene" bildirimi |
+| 21 | Proje düzenle | Yönetici | Main `projects-edit` | Ad ve renk değiştirme |
 
 Pencere içi durumlar (ayrı ekran sayılmadı, bileşen sayfasında gösterildi): geri alma çubuğu,
 bırakma alanı vurgusu, gecikmiş görev, sabitlenmiş kart, silme onayları, form hataları.
 
-Henüz tasarlanmamış, gerçek uygulamada gerekecek olanlar:
-- Yükleniyor durumu (Firebase'den veri gelirken)
-- Bağlantı yok / kaydetme hatası bildirimi
+## Geliştirici notları
+- Giriş ekranındaki "Yalnızca prototip" bölümü gerçek uygulamada olmayacak.
+- Tarihler gg.aa.yyyy biçiminde gösterilmeli (tarayıcının varsayılan tarih alanı yerine Türkçe biçim).
+- Telefonda kartı parmakla sürükleme tarayıcının sürükle-bırak özelliğiyle çalışmaz; dokunmatik sürükleme ayrıca eklenmeli. O zamana kadar kutu, ayrıntı ekranından değiştirilir.
+- Görüntüleyici izni sunucu tarafında da uygulanmalı (yalnızca arayüzde gizlemek yetmez).
