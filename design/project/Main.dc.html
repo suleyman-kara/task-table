@@ -86,8 +86,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .axis-y .axis-label::before,.axis-y .axis-label::after{width:1px;height:auto;flex:1}
 .matrix{grid-column:2;grid-row:2;display:flex;flex-direction:column;gap:10px;min-height:0}
 .mrow{display:flex;gap:10px;flex:1 1 0;min-height:0}
-.quad{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;transition:border-color .15s,background .15s,flex-grow .6s cubic-bezier(.45,0,.25,1)}
-.mrow,.axis-label{transition:flex-grow .6s cubic-bezier(.45,0,.25,1)}
+.quad{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;transition:border-color .15s,background .15s,flex-grow .45s cubic-bezier(.45,0,.25,1)}
+.mrow,.axis-label{transition:flex-grow .45s cubic-bezier(.45,0,.25,1)}
 .quad.is-over{border-color:var(--ring);border-style:dashed;background:var(--panel-2)}
 .quad-head{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;border-bottom:1px solid var(--line)}
 .q-mark{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
@@ -134,7 +134,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .me-mail{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 a.icon-btn{text-decoration:none}
 @media (min-width:901px){
-.quad.is-expanded .card-desc{display:block;animation:fadein .35s ease .3s both}
+.quad.is-expanded .card-desc{display:block;animation:fadein .3s ease .22s both}
 }
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 .who{display:flex;align-items:center;gap:5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
