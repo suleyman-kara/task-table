@@ -25,9 +25,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .side{width:208px;flex:0 0 208px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 10px;gap:16px}
 .brand{display:flex;align-items:center;gap:9px;padding:2px 8px;font-weight:600;font-size:14px;letter-spacing:-.01em}
 .brand-mark{width:18px;height:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
-.new-btn{display:flex;align-items:center;gap:9px;width:100%;min-height:34px;padding:0 10px;border:1px solid rgba(120,166,255,.38);border-radius:8px;background:rgba(120,166,255,.14);color:#C9DBFF;font-weight:600;font-size:13px}
-.new-btn svg{color:#78A6FF}
-.new-btn:hover{background:rgba(120,166,255,.22);border-color:rgba(120,166,255,.6)}
+.new-btn{display:flex;align-items:center;gap:9px;width:100%;min-height:34px;padding:0 10px 0 6px;border:1px solid var(--line-strong);border-radius:8px;background:var(--soft);color:var(--ink);font-weight:500;font-size:13px}
+.new-btn .plus{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:5px;background:var(--ink);color:var(--panel)}
+.new-btn:hover{border-color:var(--muted)}
 .badge{font-size:11px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
 .badge.strong{color:var(--ink);border-color:var(--line-strong)}
 .hint{font-size:11px;color:var(--muted)}
@@ -242,7 +242,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     </div>
 
     <button class="new-btn" onClick="{{newTask}}">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      <span class="plus" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
       Yeni görev
     </button>
 
@@ -338,17 +338,19 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                     </button>
                     <div class="card-body">
                       <div class="line1">
-                        <button class="card-title" onClick="{{t.open}}" title="{{t.tip}}">{{t.title}}</button>
                         <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                           <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
                         </sc-if>
+                        <button class="card-title" onClick="{{t.open}}" title="{{t.tip}}">{{t.title}}</button>
                         <button class="pin {{t.pinCls}}" onClick="{{t.pin}}" aria-label="{{t.pinLabel}}" aria-pressed="{{t.pinPressed}}" title="{{t.pinLabel}}">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg>
                         </button>
                         <span class="when mono {{t.whenCls}}">{{t.when}}</span>
                       </div>
                       <div class="card-meta">
-                        <span class="proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</span>
+                        <sc-if value="{{showProj}}" hint-placeholder-val="{{ true }}">
+                          <span class="proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</span>
+                        </sc-if>
                         <span class="who">
                           <span class="avs">
                             <sc-for list="{{t.avs}}" as="a" hint-placeholder-count="1"><span class="av">{{a}}</span></sc-for>
@@ -1002,6 +1004,7 @@ class Component extends DCLogic {
       newTask: () => this.openNew(''),
       quads: quads,
       growCls: s.dragId || s.modal ? '' : 'can-grow',
+      showProj: !s.filter,
       dragEnd: () => this.setState({ dragId: null, overQ: null, dropTarget: null }),
 
       /* done */
