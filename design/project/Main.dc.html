@@ -493,6 +493,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                 <div class="row-sub">suleyman@ornek.com · tüm projeler · şifreyle giriş</div>
               </div>
               <span class="badge strong">Yönetici</span>
+              <span class="row-sub mono">{{meLoad}}</span>
             </div>
             <sc-for list="{{peopleList}}" as="m" hint-placeholder-count="3">
               <div class="row">
@@ -971,7 +972,9 @@ class Component extends DCLogic {
     const QD = this.qdefs();
     const PR = s.projects;
     const prById = {}; PR.forEach((p) => { prById[p.id] = p; });
-    const peById = {}; s.people.forEach((p) => { peById[p.id] = p; });
+    // the signed-in admin can always be assigned, on every project
+    const ME = { id: 'me', name: 'Süleyman Kara', email: 'suleyman@ornek.com' };
+    const peById = { me: ME }; s.people.forEach((p) => { peById[p.id] = p; });
     const qName = {}; QD.forEach((q) => { qName[q.id] = q.name; });
     const today = this.iso(new Date());
     const wk = new Date(); wk.setDate(wk.getDate() + 7); const weekEnd = this.iso(wk);
@@ -1165,6 +1168,7 @@ class Component extends DCLogic {
           remove: () => this.removePerson(p.id), removeLabel: p.name + ' kişisini kaldır' };
       }),
       peopleEmpty: s.people.length === 0,
+      meLoad: open.filter((t) => (t.assigneeIds || []).indexOf('me') > -1).length + ' açık görev',
 
       /* projects */
       prf: s.prf, prfHasError: !!s.prf.error,
@@ -1232,10 +1236,10 @@ class Component extends DCLogic {
         pick: () => this.setForm({ projectId: p.id })
       })),
       // only people with access to the chosen project are offered (plus anyone already assigned)
-      personOptions: s.people.filter((p) => !f.projectId || (p.projectIds || []).indexOf(f.projectId) > -1 || f.assigneeIds.indexOf(p.id) > -1).map((p) => {
+      personOptions: [ME].concat(s.people.filter((p) => !f.projectId || (p.projectIds || []).indexOf(f.projectId) > -1 || f.assigneeIds.indexOf(p.id) > -1)).map((p) => {
         const on = f.assigneeIds.indexOf(p.id) > -1;
         return {
-          name: p.name, initials: this.initials(p.name),
+          name: p.id === 'me' ? p.name + ' (ben)' : p.name, initials: this.initials(p.name),
           sel: on ? 'sel' : '', pressed: on ? 'true' : 'false',
           pick: () => { const cur = this.state.modal.form.assigneeIds; this.setForm({ assigneeIds: on ? cur.filter((x) => x !== p.id) : cur.concat([p.id]) }); }
         };
