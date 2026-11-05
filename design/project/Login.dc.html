@@ -15,7 +15,7 @@ body{margin:0}
 *{box-sizing:border-box}
 a{color:#78A6FF}a:hover{color:#A5C4FF}
 .lg{--bg:#0E0E10;--panel:#161619;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--ring:#78A6FF;
-min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased;color-scheme:dark}
+min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:min(18vh,160px) 16px 24px;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased;color-scheme:dark}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
 button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
@@ -34,34 +34,38 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
 .input:hover{border-color:var(--line-strong)}
 .input[aria-invalid="true"]{border-color:var(--danger)}
 .input::placeholder{color:var(--muted);opacity:.75}
-.field-err{margin:0;font-size:12px;color:var(--danger)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:transparent;font-weight:500;font-size:13px;text-decoration:none;color:var(--ink)}
+.field-msg{margin:0;display:flex;align-items:flex-start;gap:4px;font-size:12px;color:var(--muted)}
+.field-msg svg{flex:0 0 auto;margin-top:2px}
+.field-msg.err{color:var(--danger)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:transparent;font-weight:500;font-size:13px;text-decoration:none;color:var(--ink);white-space:nowrap}
 .btn:hover{border-color:var(--line-strong);color:var(--ink)}
 .btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 .btn.primary:hover{opacity:.9;color:var(--on-primary)}
 .btn[aria-disabled="true"]{cursor:default;color:var(--muted);border-color:var(--line)}
-.note{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:8px;background:var(--soft);font-size:12px;color:var(--muted)}
-.note svg{flex:0 0 auto;margin-top:1px}
-.note.err{color:var(--danger)}
 .hint{margin:0;font-size:12px;color:var(--muted)}
-.ok-ic{width:36px;height:36px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center}
 .mail{font-family:'Geist Mono',ui-monospace,monospace;color:var(--ink)}
 .foot{margin:0;font-size:12px;color:var(--muted);text-align:center}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row .btn{flex:1 1 140px}
+.actions{display:flex;gap:8px}
+.actions .btn{flex:1 1 0}
+.link-row{display:flex;justify-content:space-between;gap:8px;margin:0 -8px}
 .link-btn{align-self:center;display:inline-flex;align-items:center;justify-content:center;min-height:28px;border:0;border-radius:8px;background:none;padding:4px 8px;font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .link-btn:hover{color:var(--ink)}
-.proto{display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:12px;border-top:1px dashed var(--line)}
-.proto-label{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.proto{margin-top:12px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 16px;border:1px dashed var(--line);border-radius:8px}
+.proto-label{font-size:12px;color:var(--muted);opacity:.7}
+.proto-link{display:inline-flex;align-items:center;min-height:28px;margin-left:-8px;padding:4px 8px;border:0;border-radius:8px;background:none;font-size:12px;color:var(--muted);text-decoration:none;text-align:left}
+.proto-link:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .progress{position:relative;height:4px;border-radius:4px;background:var(--soft);overflow:hidden}
 .progress span{position:absolute;top:0;bottom:0;left:0;width:32%;border-radius:4px;background:var(--muted);animation:lg-slide 1.4s ease-in-out infinite}
 @keyframes lg-slide{0%{transform:translateX(-100%)}100%{transform:translateX(320%)}}
 @media (prefers-reduced-motion:reduce){.progress span{animation:none;width:100%;opacity:.4}}
 @media (max-width:520px){
+  .lg{padding-top:48px}
   .card{padding:20px}
   .input{height:44px;font-size:16px}
   .btn{min-height:44px}
-  .link-btn{min-height:44px}
+  .actions{flex-direction:column}
+  .actions .btn{flex:0 0 auto;width:100%}
+  .link-btn,.proto-link{min-height:44px}
 }
 </style>
 </helmet>
@@ -76,18 +80,15 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
       <form class="card" novalidate="" onSubmit="{{send}}">
         <div>
           <h1>Giriş yap</h1>
-          <p class="sub">E-posta adresinize tek kullanımlık bir giriş bağlantısı göndereceğiz.</p>
+          <p class="sub">E-postanıza tek kullanımlık bir giriş bağlantısı göndereceğiz.</p>
         </div>
         <div class="field">
           <label class="label" for="l-mail">E-posta</label>
           <input class="input" id="l-mail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="ad@sirket.com" aria-invalid="{{ariaErr}}" aria-describedby="l-err" value="{{email}}" onChange="{{setEmail}}">
+          <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
+            <p class="field-msg err" id="l-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg><span>{{errorText}}</span></p>
+          </sc-if>
         </div>
-        <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
-          <div class="note err" id="l-err" role="alert">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg>
-            <span>{{errorText}}</span>
-          </div>
-        </sc-if>
         <button class="btn primary" type="submit">Giriş bağlantısı gönder</button>
         <button class="link-btn" type="button" onClick="{{toAdmin}}">Yönetici misiniz? Şifreyle giriş yapın</button>
       </form>
@@ -97,27 +98,27 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
       <form class="card" novalidate="" onSubmit="{{adminSubmit}}">
         <div>
           <h1>Yönetici girişi</h1>
-          <p class="sub">Yönetici hesabınızın e-posta adresi ve şifresiyle giriş yapın.</p>
+          <p class="sub">E-posta adresiniz ve şifrenizle giriş yapın.</p>
         </div>
         <div class="field">
           <label class="label" for="a-mail">E-posta</label>
-          <input class="input" id="a-mail" name="username" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="ad@sirket.com" aria-invalid="{{ariaErr}}" aria-describedby="a-err" value="{{email}}" onChange="{{setEmail}}">
+          <input class="input" id="a-mail" name="username" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="ad@sirket.com" aria-invalid="{{ariaMail}}" aria-describedby="a-err" value="{{email}}" onChange="{{setEmail}}">
+          <sc-if value="{{mailErr}}" hint-placeholder-val="{{ false }}">
+            <p class="field-msg err" id="a-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg><span>{{errorText}}</span></p>
+          </sc-if>
         </div>
         <div class="field">
           <label class="label" for="a-pass">Şifre</label>
-          <input class="input" id="a-pass" name="password" type="password" autocomplete="current-password" placeholder="••••••••" aria-invalid="{{ariaErr}}" aria-describedby="a-err" value="{{password}}" onChange="{{setPassword}}">
-          <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
-            <p class="field-err" id="a-err" role="alert">{{errorText}}</p>
+          <input class="input" id="a-pass" name="password" type="password" autocomplete="current-password" placeholder="••••••••" aria-invalid="{{ariaPass}}" aria-describedby="a-pass-err" value="{{password}}" onChange="{{setPassword}}">
+          <sc-if value="{{passErr}}" hint-placeholder-val="{{ false }}">
+            <p class="field-msg err" id="a-pass-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg><span>{{errorText}}</span></p>
+          </sc-if>
+          <sc-if value="{{resetSent}}" hint-placeholder-val="{{ false }}">
+            <p class="field-msg" role="status"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg><span>Şifre sıfırlama bağlantısı gönderildi.</span></p>
           </sc-if>
         </div>
-        <sc-if value="{{resetSent}}" hint-placeholder-val="{{ false }}">
-          <div class="note" role="status">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
-            <span>Şifre sıfırlama bağlantısı e-postanıza gönderildi.</span>
-          </div>
-        </sc-if>
         <button class="btn primary" type="submit">Giriş yap</button>
-        <div class="row">
+        <div class="link-row">
           <button class="link-btn" type="button" onClick="{{forgot}}">Şifremi unuttum</button>
           <button class="link-btn" type="button" onClick="{{back}}">Bağlantıyla giriş yap</button>
         </div>
@@ -126,45 +127,34 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
 
     <sc-if value="{{isSent}}" hint-placeholder-val="{{ false }}">
       <div class="card">
-        <span class="ok-ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3.5 6.5 8.5 6.5 8.5-6.5"></path></svg></span>
         <div>
           <h1>E-postanızı kontrol edin</h1>
-          <p class="sub"><span class="mail">{{email}}</span> adresinize bir giriş bağlantısı gönderdik. Bağlantıyı bu cihazda açtığınızda oturumunuz başlar.</p>
+          <p class="sub"><span class="mail">{{email}}</span> adresine bir giriş bağlantısı gönderdik. Bağlantıyı bu cihazda açın.</p>
         </div>
-        <p class="hint">Gelmediyse spam klasörünü kontrol edin.</p>
-        <div class="row">
+        <p class="hint">Gelmediyse spam klasörüne bakın.</p>
+        <div class="actions">
           <button class="btn" type="button" aria-disabled="{{resendDisabled}}" onClick="{{resend}}">{{resendLabel}}</button>
           <button class="btn" type="button" onClick="{{back}}">Farklı e-posta</button>
         </div>
         <sc-if value="{{resentNow}}" hint-placeholder-val="{{ false }}">
-          <p class="hint" role="status">Yeni bir bağlantı gönderdik.</p>
+          <p class="hint" role="status">Yeni bağlantı gönderildi.</p>
         </sc-if>
-        <div class="proto">
-          <span class="proto-label">Prototip</span>
-          <a class="link-btn" href="Main.dc.html">Prototip: bağlantıyı açmış gibi devam et</a>
-          <button class="link-btn" type="button" onClick="{{toExpired}}">Süresi dolmuş bağlantıyı aç</button>
-          <button class="link-btn" type="button" onClick="{{toOtherDevice}}">Bağlantıyı başka cihazda aç</button>
-        </div>
       </div>
     </sc-if>
 
     <sc-if value="{{isExpired}}" hint-placeholder-val="{{ false }}">
       <form class="card" novalidate="" onSubmit="{{send}}">
-        <span class="ok-ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg></span>
         <div>
-          <h1>Bağlantının süresi doldu</h1>
-          <p class="sub">Giriş bağlantıları tek kullanımlıktır ve bir süre sonra geçersiz olur. Bu bağlantı daha önce kullanılmış ya da süresi dolmuş. Yeni bir bağlantı isteyin.</p>
+          <h1>Bağlantı geçersiz</h1>
+          <p class="sub">Bu bağlantı kullanılmış ya da süresi geçmiş. Yeni bir bağlantı isteyin.</p>
         </div>
         <div class="field">
           <label class="label" for="x-mail">E-posta</label>
           <input class="input" id="x-mail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="ad@sirket.com" aria-invalid="{{ariaErr}}" aria-describedby="x-err" value="{{email}}" onChange="{{setEmail}}">
+          <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
+            <p class="field-msg err" id="x-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg><span>{{errorText}}</span></p>
+          </sc-if>
         </div>
-        <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
-          <div class="note err" id="x-err" role="alert">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg>
-            <span>{{errorText}}</span>
-          </div>
-        </sc-if>
         <button class="btn primary" type="submit">Yeni bağlantı gönder</button>
         <button class="link-btn" type="button" onClick="{{back}}">Giriş ekranına dön</button>
       </form>
@@ -174,20 +164,17 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
       <form class="card" novalidate="" onSubmit="{{confirmDevice}}">
         <div>
           <h1>E-postanızı doğrulayın</h1>
-          <p class="sub">Bağlantıyı, istediğiniz cihazdan farklı bir cihazda açtınız. Girişi tamamlamak için bağlantının gönderildiği e-posta adresini yeniden girin.</p>
+          <p class="sub">Bağlantıyı başka bir cihazda açtınız. Devam etmek için e-postanızı yeniden girin.</p>
         </div>
         <div class="field">
           <label class="label" for="d-mail">E-posta</label>
           <input class="input" id="d-mail" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="ad@sirket.com" aria-invalid="{{ariaErr}}" aria-describedby="d-err" value="{{email}}" onChange="{{setEmail}}">
+          <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
+            <p class="field-msg err" id="d-err" role="alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg><span>{{errorText}}</span></p>
+          </sc-if>
         </div>
-        <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
-          <div class="note err" id="d-err" role="alert">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16h.01"></path></svg>
-            <span>{{errorText}}</span>
-          </div>
-        </sc-if>
         <button class="btn primary" type="submit">Girişi tamamla</button>
-        <button class="link-btn" type="button" onClick="{{back}}">Yeni bağlantı isteyin</button>
+        <button class="link-btn" type="button" onClick="{{back}}">Yeni bağlantı iste</button>
       </form>
     </sc-if>
 
@@ -195,7 +182,7 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
       <div class="card" role="status" aria-live="polite" aria-busy="true">
         <div>
           <h1>Giriş yapılıyor…</h1>
-          <p class="sub">Oturumunuz hazırlanıyor, bu birkaç saniye sürebilir.</p>
+          <p class="sub">Oturumunuz hazırlanıyor.</p>
         </div>
         <div class="progress" aria-hidden="true"><span></span></div>
       </div>
@@ -203,7 +190,6 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
 
     <sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
       <div class="card">
-        <span class="ok-ic" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
         <div>
           <h1>Giriş yapıldı</h1>
           <p class="sub"><span class="mail">{{email}}</span> olarak oturum açtınız.</p>
@@ -213,7 +199,16 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
     </sc-if>
 
     <sc-if value="{{showFoot}}" hint-placeholder-val="{{ true }}">
-      <p class="foot">Yalnızca yöneticinin Kişiler listesine eklediği e-postalar giriş yapabilir.</p>
+      <p class="foot">Yalnızca yöneticinin eklediği e-postalar giriş yapabilir.</p>
+    </sc-if>
+
+    <sc-if value="{{isSent}}" hint-placeholder-val="{{ false }}">
+      <nav class="proto" aria-label="Prototip kısayolları">
+        <span class="proto-label">Yalnızca prototip</span>
+        <a class="proto-link" href="Main.dc.html">Bağlantıyı açmış gibi devam et</a>
+        <button class="proto-link" type="button" onClick="{{toExpired}}">Geçersiz bağlantıyı aç</button>
+        <button class="proto-link" type="button" onClick="{{toOtherDevice}}">Bağlantıyı başka cihazda aç</button>
+      </nav>
     </sc-if>
   </div>
 </div>
@@ -222,7 +217,7 @@ h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.02em}
 class Component extends DCLogic {
   static get MSG() {
     return {
-      notInvited: 'Bu e-posta davetli değil. Erişim için yöneticiye başvurun.',
+      notInvited: 'Bu e-posta davetli değil. Erişim için yöneticinize başvurun.',
       badEmail: 'Geçerli bir e-posta adresi girin.',
       badLogin: 'E-posta ya da şifre hatalı.'
     };
@@ -233,12 +228,12 @@ class Component extends DCLogic {
     this.loadT = null;
     const M = Component.MSG;
     const scr = this.props && this.props.screen;
-    const base = { step: 'form', email: '', password: '', error: '', resetSent: false, resentNow: false, linkEmail: 'ayse@ornek.com', cooldownUntil: 0, now: Date.now() };
+    const base = { step: 'form', email: '', password: '', error: '', errOn: 'email', resetSent: false, resentNow: false, linkEmail: 'ayse@ornek.com', cooldownUntil: 0, now: Date.now() };
     const presets = {
       denied: { email: 'zeynep@ornek.com', error: M.notInvited },
       sent: { step: 'sent', email: 'ayse@ornek.com', cooldownUntil: Date.now() + 24000 },
       admin: { step: 'admin', email: 'suleyman@ornek.com' },
-      'admin-error': { step: 'admin', email: 'suleyman@ornek.com', password: 'yanlis', error: M.badLogin },
+      'admin-error': { step: 'admin', email: 'suleyman@ornek.com', password: 'yanlis', error: M.badLogin, errOn: 'both' },
       'admin-reset': { step: 'admin', email: 'suleyman@ornek.com', resetSent: true },
       expired: { step: 'expired', email: 'ayse@ornek.com' },
       'other-device': { step: 'other-device', email: '' },
@@ -293,16 +288,20 @@ class Component extends DCLogic {
       isLoading: s.step === 'loading', isDone: s.step === 'done',
       email: s.email, password: s.password,
       hasError, errorText: s.error, ariaErr: hasError ? 'true' : 'false',
+      mailErr: hasError && s.errOn === 'email',
+      passErr: hasError && s.errOn !== 'email',
+      ariaMail: hasError && s.errOn !== 'pass' ? 'true' : 'false',
+      ariaPass: hasError && s.errOn !== 'email' ? 'true' : 'false',
       showFoot: !hasError && s.step !== 'loading' && s.step !== 'done',
       resetSent: s.resetSent, resentNow: s.resentNow,
       resendDisabled: left > 0 ? 'true' : 'false',
-      resendLabel: left > 0 ? 'Tekrar gönder (' + left + ' sn)' : 'Tekrar gönder',
-      setEmail: (e) => this.setState({ email: e.target.value, error: '' }),
-      setPassword: (e) => this.setState({ password: e.target.value, error: '' }),
-      toAdmin: () => this.setState({ step: 'admin', error: '', resetSent: false }),
-      back: () => this.setState({ step: 'form', error: '', password: '', resetSent: false }),
-      toExpired: () => this.setState({ step: 'expired', error: '' }),
-      toOtherDevice: () => this.setState({ step: 'other-device', email: '', error: '' }),
+      resendLabel: left > 0 ? 'Tekrar gönder · ' + left + ' sn' : 'Tekrar gönder',
+      setEmail: (e) => this.setState({ email: e.target.value, error: '', errOn: 'email' }),
+      setPassword: (e) => this.setState({ password: e.target.value, error: '', errOn: 'email' }),
+      toAdmin: () => this.setState({ step: 'admin', error: '', errOn: 'email', resetSent: false }),
+      back: () => this.setState({ step: 'form', error: '', errOn: 'email', password: '', resetSent: false }),
+      toExpired: () => this.setState({ step: 'expired', error: '', errOn: 'email' }),
+      toOtherDevice: () => this.setState({ step: 'other-device', email: '', error: '', errOn: 'email' }),
       send: (e) => {
         stop(e);
         const v = (this.state.email || '').trim();
@@ -319,7 +318,7 @@ class Component extends DCLogic {
         stop(e);
         const v = (this.state.email || '').trim();
         if (!isEmail(v)) { this.setState({ error: M.badEmail }); return; }
-        if (v.toLowerCase() !== String(this.state.linkEmail).toLowerCase()) { this.setState({ error: 'Bu e-posta, bağlantının gönderildiği adresle eşleşmiyor.' }); return; }
+        if (v.toLowerCase() !== String(this.state.linkEmail).toLowerCase()) { this.setState({ error: 'Bu adres, bağlantının gönderildiği adresle eşleşmiyor.' }); return; }
         this.signIn(v);
       },
       adminSubmit: (e) => {
@@ -327,14 +326,15 @@ class Component extends DCLogic {
         const v = (this.state.email || '').trim();
         const pw = this.state.password || '';
         this.setState({ resetSent: false });
-        if (!v || !pw) { this.setState({ error: 'E-posta adresinizi ve şifrenizi girin.' }); return; }
+        if (!v) { this.setState({ error: 'E-posta adresinizi girin.', errOn: 'email' }); return; }
+        if (!pw) { this.setState({ error: 'Şifrenizi girin.', errOn: 'pass' }); return; }
         // prototype rule: passwords shorter than 8 characters act as "wrong password"
-        if (!isEmail(v) || pw.length < 8) { this.setState({ error: M.badLogin, password: '' }); return; }
+        if (!isEmail(v) || pw.length < 8) { this.setState({ error: M.badLogin, errOn: 'both', password: '' }); return; }
         this.signIn(v);
       },
       forgot: () => {
         const v = (this.state.email || '').trim();
-        if (!isEmail(v)) { this.setState({ error: 'Şifre sıfırlama için önce e-posta adresinizi girin.', resetSent: false }); return; }
+        if (!isEmail(v)) { this.setState({ error: 'Önce e-posta adresinizi girin.', errOn: 'email', resetSent: false }); return; }
         this.setState({ error: '', resetSent: true });
       }
     };
