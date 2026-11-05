@@ -45,6 +45,8 @@ h1{margin:0;font-size:18px;font-weight:600;letter-spacing:-.02em}
 .foot{font-size:12px;color:var(--muted);text-align:center}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .row .btn{flex:1 1 140px}
+.link-btn{align-self:center;border:0;background:none;padding:6px;font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.link-btn:hover{color:var(--ink)}
 </style>
 </helmet>
 <div class="lg">
@@ -71,6 +73,26 @@ h1{margin:0;font-size:18px;font-weight:600;letter-spacing:-.02em}
           </div>
         </sc-if>
         <button class="btn primary" onClick="{{send}}">Giriş bağlantısı gönder</button>
+        <button class="link-btn" onClick="{{toAdmin}}">Yönetici misiniz? Şifreyle girin</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isAdmin}}" hint-placeholder-val="{{ false }}">
+      <div class="card">
+        <div>
+          <h1>Yönetici girişi</h1>
+          <p class="sub">Yönetici hesabı e-posta ve şifreyle giriş yapar.</p>
+        </div>
+        <div class="field">
+          <label class="label" for="a-mail">E-posta</label>
+          <input class="input" id="a-mail" type="email" autocomplete="username" placeholder="ad@sirket.com" value="{{email}}" onChange="{{setEmail}}">
+        </div>
+        <div class="field">
+          <label class="label" for="a-pass">Şifre</label>
+          <input class="input" id="a-pass" type="password" autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <a class="btn primary" href="Main.dc.html">Giriş yap</a>
+        <button class="link-btn" onClick="{{back}}">Bağlantıyla giriş yap</button>
       </div>
     </sc-if>
 
@@ -110,7 +132,8 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state;
     return {
-      isForm: s.step === 'form', isSent: s.step === 'sent',
+      isForm: s.step === 'form', isSent: s.step === 'sent', isAdmin: s.step === 'admin',
+      toAdmin: () => this.setState({ step: 'admin', error: '' }),
       email: s.email, denied: !!s.error, errorText: s.error,
       setEmail: (e) => this.setState({ email: e.target.value, error: '' }),
       back: () => this.setState({ step: 'form', error: '' }),

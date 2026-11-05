@@ -25,8 +25,18 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .side{width:208px;flex:0 0 208px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 10px;gap:16px}
 .brand{display:flex;align-items:center;gap:9px;padding:2px 8px;font-weight:600;font-size:14px;letter-spacing:-.01em}
 .brand-mark{width:18px;height:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
-.new-btn{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:0 10px;border:0;border-radius:8px;background:var(--primary);color:var(--on-primary);font-weight:500;font-size:13px}
-.new-btn:hover{opacity:.9}
+.new-btn{display:flex;align-items:center;gap:9px;width:100%;min-height:32px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font-weight:500;font-size:13px}
+.new-btn svg{color:var(--muted)}
+.new-btn:hover{background:var(--soft);border-color:var(--line-strong)}
+.badge{font-size:11px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.badge.strong{color:var(--ink);border-color:var(--line-strong)}
+.hint{font-size:11px;color:var(--muted)}
+.row-btns{display:flex;gap:8px;justify-content:flex-end}
+.row-btns .btn{flex:1}
+.avs{display:inline-flex;flex:0 0 auto}
+.avs .av{border-color:var(--panel-2)}
+.avs .av + .av{margin-left:-6px}
+.who-names{overflow:hidden;text-overflow:ellipsis}
 .seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;padding:2px;margin:0 2px;background:var(--soft);border-radius:8px}
 .seg button{border:0;background:transparent;border-radius:6px;min-height:28px;padding:0 6px;font-size:12px;font-weight:500;color:var(--muted)}
 .seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
@@ -104,13 +114,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .is-pending .check span{background:var(--ink);border-color:var(--ink);color:var(--panel)}
 .card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
 .line1{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap}
-.proj{flex:0 1 auto;max-width:38%;overflow:hidden;text-overflow:ellipsis;font-size:11px;color:var(--muted)}
+.proj{flex:0 1 auto;max-width:50%;display:flex;align-items:center;gap:5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px;color:var(--muted)}
+.line1 .when{flex:0 0 auto;margin-left:2px;font-size:11px;color:var(--muted)}
+.line1 .when.late{color:var(--danger)}
 .desc-ic{flex:0 0 auto;display:inline-flex;color:var(--muted)}
 .card-title{position:static;display:block;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
 .card-title::after{content:"";position:absolute;inset:0;border-radius:8px;z-index:1}
 .card-title:focus-visible{outline:none}
 .card-title:focus-visible::after{outline:2px solid var(--ring);outline-offset:2px}
-.card-desc{margin:0;font-size:12px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-desc{display:none;margin:1px 0 0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)}
 .me{display:flex;align-items:center;gap:8px;padding:8px 4px 8px 6px;margin-bottom:6px;border-radius:8px}
 .me .grow{flex:1;min-width:0}
@@ -127,6 +139,8 @@ a.icon-btn{text-decoration:none}
 .matrix-wrap.can-grow:has(.quad.q-delegate:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1fr) minmax(0,1.7fr)}
 .matrix-wrap.can-grow:has(.quad.q-drop:hover) :is(.axis-x,.matrix){grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
 .matrix-wrap.can-grow:has(.quad.q-drop:hover) :is(.axis-y,.matrix){grid-template-rows:minmax(0,1fr) minmax(0,1.7fr)}
+.matrix-wrap.can-grow .quad:hover .card-desc{display:block;animation:fadein .2s ease .25s both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
 }
 .who{display:flex;align-items:center;gap:5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .av{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:9px;font-weight:600;color:var(--ink)}
@@ -324,8 +338,6 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                     </button>
                     <div class="card-body">
                       <div class="line1">
-                        <span class="dot" style="background: {{t.color}}"></span>
-                        <span class="proj">{{t.project}}</span>
                         <button class="card-title" onClick="{{t.open}}" title="{{t.tip}}">{{t.title}}</button>
                         <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                           <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
@@ -333,11 +345,20 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                         <button class="pin {{t.pinCls}}" onClick="{{t.pin}}" aria-label="{{t.pinLabel}}" aria-pressed="{{t.pinPressed}}" title="{{t.pinLabel}}">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg>
                         </button>
-                      </div>
-                      <div class="card-meta">
-                        <span class="who"><span class="av">{{t.initials}}</span>{{t.assignee}}</span>
                         <span class="when mono {{t.whenCls}}">{{t.when}}</span>
                       </div>
+                      <div class="card-meta">
+                        <span class="proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</span>
+                        <span class="who">
+                          <span class="avs">
+                            <sc-for list="{{t.avs}}" as="a" hint-placeholder-count="1"><span class="av">{{a}}</span></sc-for>
+                          </span>
+                          <span class="who-names">{{t.assignee}}</span>
+                        </span>
+                      </div>
+                      <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
+                        <p class="card-desc">{{t.desc}}</p>
+                      </sc-if>
                     </div>
                     <sc-if value="{{t.pending}}" hint-placeholder-val="{{ false }}">
                       <div class="undo-bar" role="status">
@@ -406,7 +427,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
       <div class="page">
         <div class="people-grid">
           <div class="panel">
-            <div class="panel-head"><h2>Kişi ekle</h2></div>
+            <div class="panel-head"><h2>{{pfTitle}}</h2></div>
             <div class="form-body">
               <div class="field">
                 <label class="field-label" for="p-name">Ad soyad</label>
@@ -416,21 +437,57 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                 <label class="field-label" for="p-mail">E-posta</label>
                 <input class="input" id="p-mail" type="email" placeholder="ad@sirket.com" value="{{pf.email}}" onChange="{{pfEmail}}">
               </div>
+              <div class="field">
+                <span class="field-label">İzin</span>
+                <div class="seg" role="group" aria-label="İzin">
+                  <button class="{{roleEditCls}}" onClick="{{roleEdit}}" aria-pressed="{{roleEditPressed}}">Düzenleyici</button>
+                  <button class="{{roleViewCls}}" onClick="{{roleView}}" aria-pressed="{{roleViewPressed}}">Görüntüleyici</button>
+                </div>
+                <span class="hint">{{roleHint}}</span>
+              </div>
+              <div class="field">
+                <span class="field-label">Projeler</span>
+                <div class="chips">
+                  <sc-for list="{{pfProjects}}" as="o" hint-placeholder-count="4">
+                    <button class="chip {{o.sel}}" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}">
+                      <span class="dot" style="background: {{o.color}}"></span>{{o.name}}
+                    </button>
+                  </sc-for>
+                </div>
+                <span class="hint">Kişi yalnızca seçili projelerin görevlerini görür.</span>
+              </div>
               <sc-if value="{{pfHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{pf.error}}</p></sc-if>
-              <button class="btn primary" onClick="{{addPersonPage}}">Kişiyi ekle</button>
+              <div class="row-btns">
+                <sc-if value="{{pfEditing}}" hint-placeholder-val="{{ false }}">
+                  <button class="btn ghost" onClick="{{pfCancel}}">Vazgeç</button>
+                </sc-if>
+                <button class="btn primary" onClick="{{savePerson}}">{{pfSaveLabel}}</button>
+              </div>
             </div>
           </div>
           <div class="panel">
-            <div class="panel-head"><h2>Ekip</h2><span class="row-sub">Görev atarken bu listeden seçilir</span></div>
+            <div class="panel-head"><h2>Ekip</h2><span class="row-sub">Yalnızca bu listedeki e-postalar giriş yapabilir</span></div>
+            <div class="row">
+              <span class="av lg">SK</span>
+              <div class="grow">
+                <div class="row-title">Süleyman Kara</div>
+                <div class="row-sub">suleyman@ornek.com · tüm projeler · şifreyle giriş</div>
+              </div>
+              <span class="badge strong">Yönetici</span>
+            </div>
             <sc-for list="{{peopleList}}" as="m" hint-placeholder-count="3">
               <div class="row">
                 <span class="av lg">{{m.initials}}</span>
                 <div class="grow">
                   <div class="row-title">{{m.name}}</div>
-                  <div class="row-sub">{{m.email}}</div>
+                  <div class="row-sub">{{m.email}} · {{m.projects}}</div>
                 </div>
                 <sc-if value="{{m.idle}}" hint-placeholder-val="{{ true }}">
+                  <span class="badge">{{m.role}}</span>
                   <span class="row-sub mono">{{m.load}}</span>
+                  <button class="icon-btn" onClick="{{m.edit}}" aria-label="{{m.editLabel}}">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+                  </button>
                   <button class="icon-btn" onClick="{{m.ask}}" aria-label="{{m.removeLabel}}">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
                   </button>
@@ -547,7 +604,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
           </div>
 
           <div class="field">
-            <span class="field-label">Sorumlu kişi</span>
+            <span class="field-label">Sorumlu kişiler <i>(birden fazla seçilebilir)</i></span>
             <div class="chips">
               <sc-for list="{{personOptions}}" as="o" hint-placeholder-count="3">
                 <button class="chip {{o.sel}}" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}">
@@ -635,19 +692,19 @@ class Component extends DCLogic {
     const d = (n) => { const x = new Date(); x.setDate(x.getDate() + n); return this.iso(x); };
     return {
       people: [
-        { id: 'p1', name: 'Ayşe Demir', email: 'ayse@ornek.com' },
-        { id: 'p2', name: 'Mert Kaya', email: 'mert@ornek.com' },
-        { id: 'p3', name: 'Elif Şahin', email: 'elif@ornek.com' }
+        { id: 'p1', name: 'Ayşe Demir', email: 'ayse@ornek.com', role: 'editor', projectIds: ['web', 'mob', 'mkt'] },
+        { id: 'p2', name: 'Mert Kaya', email: 'mert@ornek.com', role: 'editor', projectIds: ['web', 'ops'] },
+        { id: 'p3', name: 'Elif Şahin', email: 'elif@ornek.com', role: 'viewer', projectIds: ['web', 'mkt', 'ops'] }
       ],
       tasks: [
-        { id: 't1', q: 'do', title: 'Ödeme sayfasındaki hatayı düzelt', desc: 'Kartla ödemede 3D Secure dönüşünde boş sayfa açılıyor. Hata kayıtları #odeme kanalında paylaşıldı.', projectId: 'web', assigneeId: 'p2', start: d(-2), end: d(1), doneAt: null },
-        { id: 't2', q: 'do', title: 'Kasım bülteni metnini onayla', desc: '', projectId: 'mkt', assigneeId: 'p1', start: d(-3), end: d(-1), doneAt: null },
-        { id: 't3', q: 'plan', title: 'Q1 yol haritası taslağı', desc: 'Ekiplerden gelen talepleri topla, önceliklendir ve ilk taslağı yönetimle paylaş.', projectId: 'ops', assigneeId: 'p3', start: d(5), end: d(16), doneAt: null },
-        { id: 't4', q: 'plan', title: 'Karşılama ekranlarını yeniden tasarla', desc: 'Mevcut 5 adımlı akışı 3 adıma indir. Kullanıcı testlerinden gelen notlar Figma dosyasında.', projectId: 'mob', assigneeId: 'p1', start: d(7), end: d(23), doneAt: null },
-        { id: 't5', q: 'delegate', title: 'Toplantı odası rezervasyonları', desc: '', projectId: 'ops', assigneeId: 'p2', start: t, end: d(2), doneAt: null },
-        { id: 't6', q: 'delegate', title: 'Sosyal medya görsellerini boyutlandır', desc: 'Instagram ve LinkedIn için üçer boyut.', projectId: 'mkt', assigneeId: 'p3', start: d(1), end: d(3), doneAt: null },
-        { id: 't7', q: 'drop', title: 'Eski blog yazılarını arşivle', desc: '', projectId: 'web', assigneeId: 'p3', start: d(10), end: d(25), doneAt: null },
-        { id: 't8', q: 'do', title: 'Alan adı yenilemesi', desc: '', projectId: 'web', assigneeId: 'p2', start: d(-6), end: d(-4), doneAt: Date.now() - 86400000 }
+        { id: 't1', q: 'do', title: 'Ödeme sayfasındaki hatayı düzelt', desc: 'Kartla ödemede 3D Secure dönüşünde boş sayfa açılıyor. Hata kayıtları #odeme kanalında paylaşıldı.', projectId: 'web', assigneeIds: ['p2', 'p1'], start: d(-2), end: d(1), doneAt: null },
+        { id: 't2', q: 'do', title: 'Kasım bülteni metnini onayla', desc: '', projectId: 'mkt', assigneeIds: ['p1'], start: d(-3), end: d(-1), doneAt: null },
+        { id: 't3', q: 'plan', title: 'Q1 yol haritası taslağı', desc: 'Ekiplerden gelen talepleri topla, önceliklendir ve ilk taslağı yönetimle paylaş.', projectId: 'ops', assigneeIds: ['p3'], start: d(5), end: d(16), doneAt: null },
+        { id: 't4', q: 'plan', title: 'Karşılama ekranlarını yeniden tasarla', desc: 'Mevcut 5 adımlı akışı 3 adıma indir. Kullanıcı testlerinden gelen notlar Figma dosyasında.', projectId: 'mob', assigneeIds: ['p1'], start: d(7), end: d(23), doneAt: null },
+        { id: 't5', q: 'delegate', title: 'Toplantı odası rezervasyonları', desc: '', projectId: 'ops', assigneeIds: ['p2'], start: t, end: d(2), doneAt: null },
+        { id: 't6', q: 'delegate', title: 'Sosyal medya görsellerini boyutlandır', desc: 'Instagram ve LinkedIn için üçer boyut.', projectId: 'mkt', assigneeIds: ['p3'], start: d(1), end: d(3), doneAt: null },
+        { id: 't7', q: 'drop', title: 'Eski blog yazılarını arşivle', desc: '', projectId: 'web', assigneeIds: ['p3'], start: d(10), end: d(25), doneAt: null },
+        { id: 't8', q: 'do', title: 'Alan adı yenilemesi', desc: '', projectId: 'web', assigneeIds: ['p2'], start: d(-6), end: d(-4), doneAt: Date.now() - 86400000 }
       ]
     };
   }
@@ -655,16 +712,21 @@ class Component extends DCLogic {
     let saved = null;
     try { saved = JSON.parse(window.localStorage.getItem('task-table-proto-v1') || 'null'); } catch (e) { saved = null; }
     const base = saved && saved.tasks ? saved : this.seed();
+    const projects = base.projects || this.defaultProjects();
+    const tasks = base.tasks.map((t) => (t.assigneeIds ? t : Object.assign({}, t, { assigneeIds: t.assigneeId ? [t.assigneeId] : [] })));
+    const people = base.people.map((p) => Object.assign({ role: 'editor', projectIds: projects.map((x) => x.id) }, p));
     return {
       view: 'matrix',
-      filter: null, tasks: base.tasks, people: base.people,
-      projects: base.projects || this.defaultProjects(),
+      filter: null, tasks: tasks, people: people,
+      projects: projects,
       pending: {}, dragId: null, overQ: null, dropTarget: null,
       modal: null, confirmClear: false, confirmPerson: null, confirmProject: null,
-      pf: { name: '', email: '', error: '' },
+      pf: this.emptyPf(),
       prf: { name: '', color: '#2563EB', error: '' }
     };
   }
+
+  emptyPf() { return { editId: null, name: '', email: '', role: 'editor', projectIds: [], error: '' }; }
 
   /* ---------- helpers ---------- */
   iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -710,12 +772,12 @@ class Component extends DCLogic {
   openNew(q) {
     this.setState({ modal: { mode: 'new', id: null, error: '', inlineAdd: false,
       np: { name: '', email: '', error: '' },
-      form: { title: '', desc: '', q: q || '', projectId: this.state.filter || '', assigneeId: '', start: this.iso(new Date()), end: '' } } });
+      form: { title: '', desc: '', q: q || '', projectId: this.state.filter || '', assigneeIds: [], start: this.iso(new Date()), end: '' } } });
   }
   openEdit(t) {
     this.setState({ modal: { mode: 'edit', id: t.id, error: '', inlineAdd: false,
       np: { name: '', email: '', error: '' },
-      form: { title: t.title, desc: t.desc || '', q: t.q, projectId: t.projectId, assigneeId: t.assigneeId || '', start: t.start || '', end: t.end || '' } } });
+      form: { title: t.title, desc: t.desc || '', q: t.q, projectId: t.projectId, assigneeIds: (t.assigneeIds || []).slice(), start: t.start || '', end: t.end || '' } } });
   }
   setForm(patch) { const m = this.state.modal; this.setState({ modal: Object.assign({}, m, { error: '', form: Object.assign({}, m.form, patch) }) }); }
   setNp(patch) { const m = this.state.modal; this.setState({ modal: Object.assign({}, m, { np: Object.assign({}, m.np, { error: '' }, patch) }) }); }
@@ -728,7 +790,7 @@ class Component extends DCLogic {
     else if (!f.projectId) err = 'Bir proje seçin.';
     else if (f.start && f.end && f.end < f.start) err = 'Bitiş tarihi başlangıçtan önce olamaz.';
     if (err) { this.setState({ modal: Object.assign({}, m, { error: err }) }); return; }
-    const data = { title: f.title.trim(), desc: f.desc.trim(), q: f.q, projectId: f.projectId, assigneeId: f.assigneeId, start: f.start, end: f.end };
+    const data = { title: f.title.trim(), desc: f.desc.trim(), q: f.q, projectId: f.projectId, assigneeIds: f.assigneeIds, start: f.start, end: f.end };
     if (m.mode === 'new') {
       this.setState({ modal: null, tasks: this.state.tasks.concat([Object.assign({ id: this.uid(), doneAt: null }, data)]) });
     } else {
@@ -741,29 +803,38 @@ class Component extends DCLogic {
   }
 
   /* ---------- people ---------- */
-  makePerson(name, email) {
+  makePerson(name, email, extra, editId) {
     name = (name || '').trim(); email = (email || '').trim();
     if (!name) return { error: 'Ad girin.' };
     if (!this.validEmail(email)) return { error: 'Geçerli bir e-posta girin.' };
-    if (this.state.people.some((p) => p.email.toLowerCase() === email.toLowerCase())) return { error: 'Bu e-posta zaten listede.' };
-    return { person: { id: this.uid(), name: name, email: email } };
+    if (this.state.people.some((p) => p.id !== editId && p.email.toLowerCase() === email.toLowerCase())) return { error: 'Bu e-posta zaten listede.' };
+    return { person: Object.assign({ id: editId || this.uid(), name: name, email: email }, extra) };
   }
-  addPersonPage() {
-    const r = this.makePerson(this.state.pf.name, this.state.pf.email);
-    if (r.error) { this.setState({ pf: Object.assign({}, this.state.pf, { error: r.error }) }); return; }
-    this.setState({ people: this.state.people.concat([r.person]), pf: { name: '', email: '', error: '' } });
+  savePerson() {
+    const f = this.state.pf;
+    if (!f.projectIds.length) { this.setState({ pf: Object.assign({}, f, { error: 'En az bir proje seçin.' }) }); return; }
+    const r = this.makePerson(f.name, f.email, { role: f.role, projectIds: f.projectIds.slice() }, f.editId);
+    if (r.error) { this.setState({ pf: Object.assign({}, f, { error: r.error }) }); return; }
+    const people = f.editId ? this.state.people.map((p) => (p.id === f.editId ? r.person : p)) : this.state.people.concat([r.person]);
+    this.setState({ people: people, pf: this.emptyPf() });
   }
+  editPerson(p) {
+    this.setState({ confirmPerson: null, pf: { editId: p.id, name: p.name, email: p.email, role: p.role || 'editor', projectIds: (p.projectIds || []).slice(), error: '' } });
+  }
+  setPf(patch) { this.setState({ pf: Object.assign({}, this.state.pf, { error: '' }, patch) }); }
   addPersonInline() {
     const m = this.state.modal;
-    const r = this.makePerson(m.np.name, m.np.email);
+    // a person added from the task form gets editor access to that task's project
+    const r = this.makePerson(m.np.name, m.np.email, { role: 'editor', projectIds: m.form.projectId ? [m.form.projectId] : this.state.projects.map((x) => x.id) });
     if (r.error) { this.setState({ modal: Object.assign({}, m, { np: Object.assign({}, m.np, { error: r.error }) }) }); return; }
     this.setState({
       people: this.state.people.concat([r.person]),
-      modal: Object.assign({}, m, { inlineAdd: false, np: { name: '', email: '', error: '' }, form: Object.assign({}, m.form, { assigneeId: r.person.id }) })
+      modal: Object.assign({}, m, { inlineAdd: false, np: { name: '', email: '', error: '' }, form: Object.assign({}, m.form, { assigneeIds: m.form.assigneeIds.concat([r.person.id]) }) })
     });
   }
   removePerson(id) {
-    this.setState({ confirmPerson: null, people: this.state.people.filter((p) => p.id !== id), tasks: this.state.tasks.map((t) => (t.assigneeId === id ? Object.assign({}, t, { assigneeId: '' }) : t)) });
+    this.setState({ confirmPerson: null, people: this.state.people.filter((p) => p.id !== id), tasks: this.state.tasks.map((t) => ((t.assigneeIds || []).indexOf(id) > -1 ? Object.assign({}, t, { assigneeIds: t.assigneeIds.filter((x) => x !== id) }) : t)),
+      pf: this.state.pf.editId === id ? this.emptyPf() : this.state.pf });
   }
 
   /* ---------- projects ---------- */
@@ -780,6 +851,7 @@ class Component extends DCLogic {
       confirmProject: null,
       filter: this.state.filter === id ? null : this.state.filter,
       projects: this.state.projects.filter((p) => p.id !== id),
+      people: this.state.people.map((p) => Object.assign({}, p, { projectIds: (p.projectIds || []).filter((x) => x !== id) })),
       tasks: this.state.tasks.map((t) => (t.projectId === id ? Object.assign({}, t, { projectId: '' }) : t))
     });
   }
@@ -822,9 +894,16 @@ class Component extends DCLogic {
       const as = a.start || '9999', bs = b.start || '9999';
       return as < bs ? -1 : as > bs ? 1 : 0;
     };
+    const who = (t) => (t.assigneeIds || []).map((id) => peById[id]).filter(Boolean);
+    const whoText = (list) => {
+      if (!list.length) return 'Atanmadı';
+      if (list.length === 1) return list[0].name;
+      const first = list.map((p) => p.name.split(' ')[0]);
+      return list.length === 2 ? first.join(', ') : first[0] + ' +' + (list.length - 1);
+    };
     const card = (t) => {
       const pr = prById[t.projectId] || noProj;
-      const pe = peById[t.assigneeId];
+      const ppl = who(t);
       const late = isLate(t);
       let when = '';
       if (t.start && t.end) when = this.fmt(t.start) + ' – ' + this.fmt(t.end);
@@ -836,7 +915,8 @@ class Component extends DCLogic {
         id: t.id, title: t.title, desc: t.desc, hasDesc: !!t.desc,
         tip: t.desc ? t.title + '\n\n' + t.desc : t.title,
         project: pr.name, color: pr.color,
-        assignee: pe ? pe.name : 'Atanmadı', initials: pe ? this.initials(pe.name) : '–',
+        assignee: whoText(ppl),
+        avs: ppl.length ? ppl.slice(0, 3).map((p) => this.initials(p.name)) : ['–'],
         when: when, whenCls: late ? 'late' : '',
         pending: pending, draggable: !pending,
         cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging ' : '') + (t.pinnedAt ? 'is-pinned' : ''),
@@ -882,7 +962,7 @@ class Component extends DCLogic {
     });
 
     const m = s.modal;
-    const f = m ? m.form : { title: '', desc: '', q: '', projectId: '', assigneeId: '', start: '', end: '' };
+    const f = m ? m.form : { title: '', desc: '', q: '', projectId: '', assigneeIds: [], start: '', end: '' };
     const np = m ? m.np : { name: '', email: '', error: '' };
 
     const titles = {
@@ -927,10 +1007,9 @@ class Component extends DCLogic {
       /* done */
       doneList: done.map((t) => {
         const pr = prById[t.projectId] || noProj;
-        const pe = peById[t.assigneeId];
         return {
           title: t.title, project: pr.name, color: pr.color,
-          assignee: pe ? pe.name : 'Atanmadı', quad: qName[t.q],
+          assignee: whoText(who(t)), quad: qName[t.q],
           doneText: this.fmt(this.iso(new Date(t.doneAt))),
           restore: () => this.patchTask(t.id, { doneAt: null }),
           remove: () => this.setState({ tasks: this.state.tasks.filter((x) => x.id !== t.id) }),
@@ -945,14 +1024,31 @@ class Component extends DCLogic {
       clearDone: () => this.setState({ confirmClear: false, tasks: this.state.tasks.filter((t) => !t.doneAt) }),
 
       /* people */
-      pf: s.pf, pfHasError: !!s.pf.error,
-      pfName: (e) => this.setState({ pf: Object.assign({}, this.state.pf, { name: e.target.value, error: '' }) }),
-      pfEmail: (e) => this.setState({ pf: Object.assign({}, this.state.pf, { email: e.target.value, error: '' }) }),
-      addPersonPage: () => this.addPersonPage(),
+      pf: s.pf, pfHasError: !!s.pf.error, pfEditing: !!s.pf.editId,
+      pfTitle: s.pf.editId ? 'Kişiyi düzenle' : 'Kişi ekle',
+      pfSaveLabel: s.pf.editId ? 'Değişiklikleri kaydet' : 'Kişiyi ekle',
+      pfName: (e) => this.setPf({ name: e.target.value }),
+      pfEmail: (e) => this.setPf({ email: e.target.value }),
+      pfCancel: () => this.setState({ pf: this.emptyPf() }),
+      savePerson: () => this.savePerson(),
+      roleEditCls: s.pf.role === 'editor' ? 'on' : '', roleViewCls: s.pf.role === 'viewer' ? 'on' : '',
+      roleEditPressed: s.pf.role === 'editor' ? 'true' : 'false', roleViewPressed: s.pf.role === 'viewer' ? 'true' : 'false',
+      roleEdit: () => this.setPf({ role: 'editor' }),
+      roleView: () => this.setPf({ role: 'viewer' }),
+      roleHint: s.pf.role === 'editor' ? 'Seçili projelerde görev ekleyebilir, düzenleyebilir ve tamamlayabilir.' : 'Seçili projelerin görevlerini yalnızca görebilir.',
+      pfProjects: PR.map((p) => {
+        const on = s.pf.projectIds.indexOf(p.id) > -1;
+        return { name: p.name, color: p.color, sel: on ? 'sel' : '', pressed: on ? 'true' : 'false',
+          pick: () => { const cur = this.state.pf.projectIds; this.setPf({ projectIds: on ? cur.filter((x) => x !== p.id) : cur.concat([p.id]) }); } };
+      }),
       peopleList: s.people.map((p) => {
-        const n = open.filter((t) => t.assigneeId === p.id).length;
+        const n = open.filter((t) => (t.assigneeIds || []).indexOf(p.id) > -1).length;
         const asking = s.confirmPerson === p.id;
+        const pnames = (p.projectIds || []).map((id) => prById[id] && prById[id].name).filter(Boolean);
         return { name: p.name, email: p.email, initials: this.initials(p.name), load: n + ' açık görev',
+          role: p.role === 'viewer' ? 'Görüntüleyici' : 'Düzenleyici',
+          projects: pnames.length ? pnames.join(', ') : 'Proje yok',
+          edit: () => this.editPerson(p), editLabel: p.name + ' kişisini düzenle',
           idle: !asking, confirming: asking,
           warn: n > 0 ? p.name + ' silinecek. ' + n + ' görevi "Atanmadı" olarak kalacak.' : p.name + ' silinecek.',
           ask: () => this.setState({ confirmPerson: p.id }),
@@ -1004,11 +1100,15 @@ class Component extends DCLogic {
         sel: f.projectId === p.id ? 'sel' : '', pressed: f.projectId === p.id ? 'true' : 'false',
         pick: () => this.setForm({ projectId: p.id })
       })),
-      personOptions: s.people.map((p) => ({
-        name: p.name, initials: this.initials(p.name),
-        sel: f.assigneeId === p.id ? 'sel' : '', pressed: f.assigneeId === p.id ? 'true' : 'false',
-        pick: () => this.setForm({ assigneeId: this.state.modal.form.assigneeId === p.id ? '' : p.id })
-      })),
+      // only people with access to the chosen project are offered (plus anyone already assigned)
+      personOptions: s.people.filter((p) => !f.projectId || (p.projectIds || []).indexOf(f.projectId) > -1 || f.assigneeIds.indexOf(p.id) > -1).map((p) => {
+        const on = f.assigneeIds.indexOf(p.id) > -1;
+        return {
+          name: p.name, initials: this.initials(p.name),
+          sel: on ? 'sel' : '', pressed: on ? 'true' : 'false',
+          pick: () => { const cur = this.state.modal.form.assigneeIds; this.setForm({ assigneeIds: on ? cur.filter((x) => x !== p.id) : cur.concat([p.id]) }); }
+        };
+      }),
       inlineAdd: !!(m && m.inlineAdd),
       toggleInlineAdd: () => this.setState({ modal: Object.assign({}, this.state.modal, { inlineAdd: !this.state.modal.inlineAdd }) }),
       np: np, npHasError: !!np.error,
