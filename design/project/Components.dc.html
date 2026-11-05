@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Task Table — Arayüz öğeleri</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+a{color:#78A6FF}a:hover{color:#A5C4FF}
+.sheet{--bg:#0E0E10;--panel:#161619;--panel-2:#1C1C20;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF8A7A;--q-do:#FF7A45;--q-plan:#78A6FF;--q-delegate:#E8AE45;--q-drop:#A3A3AC;--ring:#78A6FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.7);
+width:1440px;padding:56px 64px 72px;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.4;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+.mono{font-family:'Geist Mono',ui-monospace,monospace;font-feature-settings:"tnum"}
+
+/* sheet layout */
+.sheet-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:28px;margin-bottom:36px;border-bottom:1px solid var(--line)}
+.sheet-head h1{margin:0;font-size:28px;font-weight:600;letter-spacing:-.02em}
+.sheet-head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 48px}
+.group{display:flex;flex-direction:column;gap:14px;min-width:0}
+.group.wide{grid-column:1 / -1}
+.g-title{display:flex;align-items:baseline;gap:10px;margin:0;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.g-title b{font-family:'Geist Mono',ui-monospace,monospace;font-weight:500;color:var(--line-strong)}
+.specimen{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.cap{font-size:11px;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:6px;min-width:0}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+
+/* tokens */
+.tokens{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.tok{display:flex;flex-direction:column;gap:6px}
+.tok i{display:block;height:44px;border-radius:8px;border:1px solid var(--line)}
+.tok span{font-size:11px;color:var(--muted)}
+.tok code{font-family:'Geist Mono',ui-monospace,monospace;font-size:11px;color:var(--ink)}
+.type{display:flex;flex-direction:column;gap:10px}
+.type div{display:flex;align-items:baseline;gap:16px}
+.type .cap{width:120px;flex:0 0 120px}
+
+/* shared app components (same values as the app) */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-weight:500;font-size:13px;white-space:nowrap}
+.btn.primary{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.danger{color:var(--danger)}
+.btn.danger-solid{background:var(--danger);border-color:var(--danger);color:#141416}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted)}
+.icon-btn.hov{background:var(--soft);color:var(--ink)}
+.link-btn{border:0;background:none;padding:6px;font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.new-btn{display:flex;align-items:center;gap:9px;width:188px;min-height:34px;padding:0 10px 0 6px;border:1px solid var(--line-strong);border-radius:8px;background:var(--soft);color:var(--ink);font-weight:500;font-size:13px}
+.new-btn .plus{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:5px;background:var(--ink);color:var(--panel)}
+.side-mock{width:208px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:9px;padding:2px 8px;font-weight:600;font-size:14px;letter-spacing:-.01em}
+.brand-mark{width:18px;height:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
+.brand-mark span{border-radius:3px;background:var(--ink)}
+.brand-mark span:nth-child(2),.brand-mark span:nth-child(3){opacity:.35}
+.brand-mark span:nth-child(4){opacity:.15}
+.nav{display:flex;flex-direction:column;gap:2px}
+.side-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:0 10px;margin-bottom:6px}
+.nav-btn{display:flex;align-items:center;gap:9px;width:100%;min-height:32px;padding:5px 9px;border:0;border-radius:8px;background:transparent;text-align:left;color:var(--muted);font-weight:500}
+.nav-btn.active{background:var(--soft);color:var(--ink)}
+.nav-btn .grow{flex:1}
+.nav-count{font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.me{display:flex;align-items:center;gap:8px;padding:8px 4px 4px 6px;border-top:1px solid var(--line)}
+.me .grow{flex:1;min-width:0}
+.me-name{font-weight:500;font-size:12px}
+.me-mail{font-size:11px;color:var(--muted)}
+
+.axis-label{width:100%;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:10px;white-space:nowrap}
+.axis-label::before,.axis-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.quad{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;min-width:0}
+.quad.is-over{border-color:var(--ring);border-style:dashed;background:var(--panel-2)}
+.quad-head{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;border-bottom:1px solid var(--line)}
+.quad-head:last-child{border-bottom:0}
+.q-mark{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
+.q-do .q-mark{background:var(--q-do)}.q-plan .q-mark{background:var(--q-plan)}.q-delegate .q-mark{background:var(--q-delegate)}.q-drop .q-mark{background:var(--q-drop)}
+.quad-head h2{margin:0;font-size:13px;font-weight:600;letter-spacing:-.01em;display:inline}
+.quad-head p{margin:0 0 0 6px;font-size:11px;color:var(--muted);display:inline}
+.quad-head .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q-count{font-size:11px;color:var(--muted);padding:1px 7px;border-radius:999px;background:var(--soft)}
+.cards{padding:8px;display:flex;flex-direction:column;gap:6px}
+.empty{display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:10px;min-height:80px}
+
+.card{position:relative;display:flex;align-items:center;gap:2px;padding:4px 10px 4px 2px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px}
+.card.hov{border-color:var(--line-strong);box-shadow:var(--shadow)}
+.card.is-pinned{border-color:var(--line-strong)}
+.card.is-dragging{opacity:.4}
+.check{flex:0 0 28px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;border-radius:8px}
+.check span{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:transparent}
+.is-pending .check span{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.line1{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap}
+.desc-ic{flex:0 0 auto;display:inline-flex;color:var(--muted)}
+.card-title{display:block;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:13px;line-height:1.35;color:var(--ink)}
+.is-pending .card-title{text-decoration:line-through}
+.pin{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin:-4px -6px -4px 0;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted)}
+.pin.on{color:var(--ink)}
+.pin.on svg{fill:currentColor}
+.line1 .when{flex:0 0 auto;margin-left:2px;font-size:11px;color:var(--muted);white-space:nowrap}
+.line1 .when.late{color:var(--danger);font-weight:500}
+.card-desc{margin:1px 0 0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted)}
+.proj{flex:0 1 auto;max-width:50%;display:flex;align-items:center;gap:5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px;color:var(--muted)}
+.who{display:flex;align-items:center;gap:5px;min-width:0;white-space:nowrap;overflow:hidden}
+.avs{display:inline-flex;flex:0 0 auto}
+.avs .av{border-color:var(--panel-2)}
+.avs .av + .av{margin-left:-6px}
+.av{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:9px;font-weight:600;color:var(--ink)}
+.av.lg{width:30px;height:30px;flex-basis:30px;font-size:11px}
+.is-pending .card-body,.is-pending .check{opacity:.45}
+.undo-bar{position:absolute;z-index:3;inset:3px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 4px 0 12px;border-radius:8px;background:var(--primary);color:var(--on-primary);font-size:12px;font-weight:500;overflow:hidden}
+.undo-bar button{border:0;background:transparent;color:var(--on-primary);font-weight:600;font-size:12px;padding:6px 10px;border-radius:6px;text-decoration:underline;text-underline-offset:2px}
+.undo-bar::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:55%;background:var(--on-primary);opacity:.5}
+
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field-label{font-size:12px;font-weight:500;color:var(--muted)}
+.field-label i{font-style:normal;font-weight:400;opacity:.8}
+.input{width:100%;min-height:38px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:14px;color-scheme:dark}
+.input.focus{outline:2px solid var(--ring);outline-offset:2px}
+textarea.input{min-height:84px;resize:vertical;line-height:1.45}
+.input::placeholder{color:var(--muted);opacity:.75}
+.title-input{font-size:16px;font-weight:500;min-height:42px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.err{margin:0;font-size:12px;color:var(--danger)}
+.hint{font-size:11px;color:var(--muted)}
+.qpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.qopt{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);text-align:left}
+.qopt.sel{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.qopt b{display:block;font-size:13px;font-weight:600}
+.qopt small{display:block;font-size:11px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 12px 0 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:13px;font-weight:500}
+.chip.sel{border-color:var(--ink);background:var(--soft);box-shadow:inset 0 0 0 1px var(--ink)}
+.chip.add{border-style:dashed;color:var(--muted);padding:0 12px}
+.chip .av{width:22px;height:22px;flex-basis:22px;margin-left:-4px}
+.inline-add{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;padding:10px;border:1px dashed var(--line-strong);border-radius:10px}
+.seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;padding:2px;background:var(--soft);border-radius:8px;width:260px}
+.seg button{border:0;background:transparent;border-radius:6px;min-height:28px;padding:0 6px;font-size:12px;font-weight:500;color:var(--muted)}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.swatches{display:flex;gap:4px;flex-wrap:wrap}
+.sw{width:30px;height:30px;padding:0;border-radius:50%;border:2px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center}
+.sw span{width:18px;height:18px;border-radius:50%}
+.sw.sel{border-color:var(--ink)}
+.badge{font-size:11px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.badge.strong{color:var(--ink);border-color:var(--line-strong)}
+.pchip{display:inline-flex;align-items:center;gap:6px;padding:2px 9px 2px 2px;border:1px solid var(--line);border-radius:999px;font-size:12px}
+.done-mark{width:18px;height:18px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--muted);flex:0 0 18px}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.panel-head h2{margin:0;font-size:14px;font-weight:600}
+.row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .grow{flex:1 1 auto;min-width:0}
+.row-title{font-weight:500}
+.row-title.struck{text-decoration:line-through;color:var(--muted)}
+.row-sub{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.confirm{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+
+.dialog{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 64px -24px rgba(0,0,0,.6);overflow:hidden}
+.dialog-head{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px 18px;border-bottom:1px solid var(--line)}
+.dialog-head h2{margin:0;font-size:16px;font-weight:600}
+.dialog-body{padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.dialog-foot{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.dialog-foot .grow{flex:1}
+.vtitle{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;width:100%;padding:6px 8px;margin:0 -8px;border:0;border-radius:8px;background:none;text-align:left;font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;color:var(--ink)}
+.vlist{display:flex;flex-direction:column;border-top:1px solid var(--line);margin:0 -8px}
+.vrow{display:grid;grid-template-columns:96px minmax(0,1fr) 14px;gap:12px;align-items:start;width:100%;padding:10px 8px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;color:var(--ink)}
+.vrow:last-child{border-bottom:0}
+.vrow.hov{background:var(--soft)}
+.vlabel{font-size:12px;color:var(--muted);padding-top:2px}
+.vval{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;font-size:13px}
+.vval small{font-size:11px;color:var(--muted)}
+.vval .late{color:var(--danger);font-weight:500}
+.vval.desc{display:block;white-space:pre-wrap;line-height:1.55}
+.edit-ic{color:var(--muted);opacity:0;flex:0 0 auto;margin-top:2px}
+.hov .edit-ic{opacity:1}
+
+.lcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.lcard h3{margin:0;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.lcard p{margin:0;color:var(--muted)}
+.note{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;background:var(--soft);font-size:12px;color:var(--muted)}
+.note.err{color:var(--danger)}
+</style>
+</helmet>
+
+<div class="sheet">
+  <header class="sheet-head">
+    <div>
+      <h1>Task Table — Arayüz öğeleri</h1>
+      <p>Uygulamadaki tüm bileşenler ve durumları. Değerler uygulamayla aynı; yalnızca koyu tema.</p>
+    </div>
+    <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Task Table</div>
+  </header>
+
+  <div class="cols">
+
+    <!-- 01 colours -->
+    <section class="group wide">
+      <h2 class="g-title"><b>01</b> Renkler</h2>
+      <div class="tokens">
+        <div class="tok"><i style="background: #0E0E10"></i><code>--bg</code><span>Zemin · #0E0E10</span></div>
+        <div class="tok"><i style="background: #161619"></i><code>--panel</code><span>Panel · #161619</span></div>
+        <div class="tok"><i style="background: #1C1C20"></i><code>--panel-2</code><span>Kart · #1C1C20</span></div>
+        <div class="tok"><i style="background: #232328"></i><code>--soft</code><span>Seçili / hover · #232328</span></div>
+        <div class="tok"><i style="background: #29292E"></i><code>--line</code><span>Çizgi · #29292E</span></div>
+        <div class="tok"><i style="background: #3B3B42"></i><code>--line-strong</code><span>Güçlü çizgi · #3B3B42</span></div>
+        <div class="tok"><i style="background: #ECECEE"></i><code>--ink</code><span>Metin · #ECECEE</span></div>
+        <div class="tok"><i style="background: #A3A3AC"></i><code>--muted</code><span>İkincil metin · #A3A3AC</span></div>
+        <div class="tok"><i style="background: #FF8A7A"></i><code>--danger</code><span>Gecikme / sil · #FF8A7A</span></div>
+        <div class="tok"><i style="background: #78A6FF"></i><code>--ring</code><span>Odak / bırakma · #78A6FF</span></div>
+        <div class="tok"><i style="background: #FF7A45"></i><code>--q-do</code><span>Hemen yap</span></div>
+        <div class="tok"><i style="background: #E8AE45"></i><code>--q-delegate</code><span>Devret</span></div>
+      </div>
+      <div class="specimen">
+        <span class="cap">Proje renkleri</span>
+        <span class="dot" style="background: #2563EB"></span><span class="dot" style="background: #0F9488"></span><span class="dot" style="background: #D2460C"></span><span class="dot" style="background: #8B5CF6"></span><span class="dot" style="background: #CA8A04"></span><span class="dot" style="background: #DB2777"></span><span class="dot" style="background: #16A34A"></span><span class="dot" style="background: #64748B"></span>
+      </div>
+    </section>
+
+    <!-- 02 type -->
+    <section class="group">
+      <h2 class="g-title"><b>02</b> Yazı</h2>
+      <div class="type">
+        <div><span class="cap">18 · 600</span><span style="font-size: 18px; font-weight: 600; letter-spacing: -0.02em">Sayfa ve ayrıntı başlığı</span></div>
+        <div><span class="cap">16 · 600</span><span style="font-size: 16px; font-weight: 600">Pencere başlığı</span></div>
+        <div><span class="cap">14 · 600</span><span style="font-size: 14px; font-weight: 600">Panel başlığı</span></div>
+        <div><span class="cap">13 · 500</span><span style="font-size: 13px; font-weight: 500">Görev adı, düğme, menü</span></div>
+        <div><span class="cap">12 · 400</span><span style="font-size: 12px; color: var(--muted)">Alan etiketi, ikincil satır</span></div>
+        <div><span class="cap">11 · 500 · büyük harf</span><span style="font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted)">Eksen ve menü etiketi</span></div>
+        <div><span class="cap">Geist Mono 11</span><span class="mono" style="font-size: 11px; color: var(--muted)">4 Kas – 12 Kas · 3</span></div>
+      </div>
+    </section>
+
+    <!-- 03 buttons -->
+    <section class="group">
+      <h2 class="g-title"><b>03</b> Düğmeler</h2>
+      <div class="specimen">
+        <button class="new-btn"><span class="plus" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span>Yeni görev</button>
+        <span class="cap">Yeni görev (sol menü)</span>
+      </div>
+      <div class="specimen">
+        <button class="btn primary">Görevi ekle</button>
+        <button class="btn">Geri al</button>
+        <button class="btn ghost">Vazgeç</button>
+        <button class="btn danger">Görevi sil</button>
+        <button class="btn danger-solid">Evet, sil</button>
+      </div>
+      <div class="specimen">
+        <button class="icon-btn" aria-label="Ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="icon-btn hov" aria-label="Kapat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+        <button class="icon-btn" aria-label="Düzenle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>
+        <button class="icon-btn" aria-label="Sil"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg></button>
+        <button class="icon-btn" aria-label="Çıkış"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"></path><path d="M10 16l-4-4 4-4M6 12h10"></path></svg></button>
+        <span class="cap">Simge düğmeleri (ikincisi üzerine gelinmiş)</span>
+      </div>
+      <div class="specimen"><button class="link-btn">Yönetici misiniz? Şifreyle girin</button><span class="cap">Metin bağlantısı</span></div>
+    </section>
+
+    <!-- 04 sidebar -->
+    <section class="group">
+      <h2 class="g-title"><b>04</b> Sol menü</h2>
+      <div class="specimen" style="align-items: flex-start; gap: 24px">
+        <div class="side-mock">
+          <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Task Table</div>
+          <div class="nav">
+            <button class="nav-btn active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"></rect></svg><span class="grow">Matris</span><span class="nav-count mono">7</span></button>
+            <button class="nav-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg><span class="grow">Tamamlananlar</span><span class="nav-count mono">1</span></button>
+          </div>
+          <div>
+            <div class="side-label">Projeler</div>
+            <div class="nav">
+              <button class="nav-btn"><span class="dot" style="background: #2563EB"></span><span class="grow">Web Sitesi</span><span class="nav-count mono">2</span></button>
+              <button class="nav-btn active"><span class="dot" style="background: #D2460C"></span><span class="grow">Pazarlama</span><span class="nav-count mono">2</span></button>
+            </div>
+          </div>
+          <div class="me">
+            <span class="av lg">SK</span>
+            <div class="grow"><div class="me-name">Süleyman Kara</div><div class="me-mail">suleyman@ornek.com</div></div>
+            <button class="icon-btn" aria-label="Çıkış yap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"></path><path d="M10 16l-4-4 4-4M6 12h10"></path></svg></button>
+          </div>
+        </div>
+        <div class="stack">
+          <span class="cap">Menü öğesi: normal, seçili (zemin ve metin belirginleşir)</span>
+          <span class="cap">Proje filtresi: renk noktası + açık görev sayısı</span>
+          <span class="cap">Alt kısım: giriş yapan kişi ve çıkış</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 matrix -->
+    <section class="group">
+      <h2 class="g-title"><b>05</b> Matris: eksen ve kutu başlıkları</h2>
+      <div class="axis-label">Acil</div>
+      <div class="quad">
+        <header class="quad-head q-do"><span class="q-mark"></span><div class="grow"><h2>Hemen yap</h2><p>Acil · Önemli</p></div><span class="q-count mono">3</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
+        <header class="quad-head q-plan"><span class="q-mark"></span><div class="grow"><h2>Planla</h2><p>Önemli · Acil değil</p></div><span class="q-count mono">2</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
+        <header class="quad-head q-delegate"><span class="q-mark"></span><div class="grow"><h2>Devret</h2><p>Acil · Önemli değil</p></div><span class="q-count mono">2</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
+        <header class="quad-head q-drop"><span class="q-mark"></span><div class="grow"><h2>Bırak</h2><p>Acil değil · Önemli değil</p></div><span class="q-count mono">0</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
+      </div>
+    </section>
+
+    <!-- 06 quad states -->
+    <section class="group">
+      <h2 class="g-title"><b>06</b> Kutu durumları</h2>
+      <div class="two">
+        <div class="stack">
+          <div class="quad is-over">
+            <header class="quad-head q-plan"><span class="q-mark"></span><div class="grow"><h2>Planla</h2></div><span class="q-count mono">2</span></header>
+            <div class="cards"><div class="card is-dragging"><button class="check"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Q1 yol haritası taslağı</span></div><div class="card-meta"><span class="proj"><span class="dot" style="background: #8B5CF6"></span>Operasyon</span></div></div></div></div>
+          </div>
+          <span class="cap">Kart sürüklenirken bırakılacak kutu (kesikli mavi çerçeve)</span>
+        </div>
+        <div class="stack">
+          <div class="quad">
+            <header class="quad-head q-drop"><span class="q-mark"></span><div class="grow"><h2>Bırak</h2></div><span class="q-count mono">0</span></header>
+            <div class="cards"><div class="empty">Burada görev yok. Bir kartı sürükleyip bırakın ya da + ile ekleyin.</div></div>
+          </div>
+          <span class="cap">Boş kutu</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 cards -->
+    <section class="group wide">
+      <h2 class="g-title"><b>07</b> Görev kartı durumları</h2>
+      <div class="two" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 24px">
+        <div class="stack">
+          <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Toplantı odası rezervasyonları</span><span class="when mono">5 Kas – 7 Kas</span></div><div class="card-meta"><span class="proj"><span class="dot" style="background: #8B5CF6"></span>Operasyon</span><span class="who"><span class="avs"><span class="av">MK</span></span>Mert Kaya</span></div></div></div>
+          <span class="cap">Normal</span>
+        </div>
+        <div class="stack">
+          <div class="card hov"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="desc-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span><span class="card-title">Sosyal medya görsellerini boyutlandır</span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">6 Kas – 8 Kas</span></div><div class="card-meta"><span class="proj"><span class="dot" style="background: #D2460C"></span>Pazarlama</span><span class="who"><span class="avs"><span class="av">EŞ</span></span>Elif Şahin</span></div></div></div>
+          <span class="cap">Üzerine gelinmiş: açıklama simgesi ve sabitleme raptiyesi görünür</span>
+        </div>
+        <div class="stack">
+          <div class="card is-pinned"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Karşılama ekranlarını yeniden tasarla</span><span class="pin on"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">12 Kas – 28 Kas</span></div><div class="card-meta"><span class="proj"><span class="dot" style="background: #0F9488"></span>Mobil Uygulama</span><span class="who"><span class="avs"><span class="av">AD</span></span>Ayşe Demir</span></div></div></div>
+          <span class="cap">Başa sabitlenmiş</span>
+        </div>
+        <div class="stack">
+          <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Kasım bülteni metnini onayla</span><span class="when mono late">Gecikti · 4 Kas</span></div><div class="card-meta"><span class="proj"><span class="dot" style="background: #D2460C"></span>Pazarlama</span><span class="who"><span class="avs"><span class="av">AD</span></span>Ayşe Demir</span></div></div></div>
+          <span class="cap">Süresi geçmiş</span>
+        </div>
+        <div class="stack">
+          <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="desc-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span><span class="card-title">Ödeme sayfasındaki hatayı düzelt</span><span class="when mono">3 Kas – 6 Kas</span></div><p class="card-desc">Kartla ödemede 3D Secure dönüşünde boş sayfa açılıyor.</p><div class="card-meta"><span class="proj"><span class="dot" style="background: #2563EB"></span>Web Sitesi</span><span class="who"><span class="avs"><span class="av">MK</span><span class="av">AD</span><span class="av">SK</span></span>Mert +2</span></div></div></div>
+          <span class="cap">Kutu büyümüş: açıklamanın ilk satırı · birden fazla sorumlu</span>
+        </div>
+        <div class="stack">
+          <div class="card is-pending"><button class="check" aria-label="Geri al"><span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span></button><div class="card-body"><div class="line1"><span class="card-title">Toplantı odası rezervasyonları</span><span class="when mono">5 Kas – 7 Kas</span></div><div class="card-meta"><span class="proj"><span class="dot" style="background: #8B5CF6"></span>Operasyon</span><span class="who">Mert Kaya</span></div></div><div class="undo-bar"><span>Tamamlandı olarak işaretlendi</span><button>Geri al</button></div></div>
+          <span class="cap">Tamamlandı: 4 saniyelik geri alma çubuğu (alttaki çizgi süreyi gösterir)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 form fields -->
+    <section class="group">
+      <h2 class="g-title"><b>08</b> Form alanları</h2>
+      <div class="field"><label class="field-label">Görev</label><input class="input title-input" type="text" placeholder="Ne yapılması gerekiyor?"></div>
+      <div class="field"><label class="field-label">Ad soyad</label><input class="input focus" type="text" value="Zeynep Arslan"><span class="hint">Odaklanmış alan</span></div>
+      <div class="two">
+        <div class="field"><label class="field-label">Başlangıç</label><input class="input mono" type="date" value="2026-11-05"></div>
+        <div class="field"><label class="field-label">Bitiş</label><input class="input mono" type="date" value="2026-11-12"></div>
+      </div>
+      <div class="field"><label class="field-label">Açıklama <i>(isteğe bağlı)</i></label><textarea class="input" placeholder="Notlar, bağlantılar, ayrıntılar…"></textarea></div>
+      <p class="err">Bitiş tarihi başlangıçtan önce olamaz.</p>
+    </section>
+
+    <!-- 09 pickers -->
+    <section class="group">
+      <h2 class="g-title"><b>09</b> Seçiciler</h2>
+      <div class="field"><span class="field-label">Kutu</span>
+        <div class="qpick">
+          <button class="qopt q-do sel"><span class="q-mark"></span><span><b>Hemen yap</b><small>Acil · Önemli</small></span></button>
+          <button class="qopt q-plan"><span class="q-mark"></span><span><b>Planla</b><small>Önemli · Acil değil</small></span></button>
+          <button class="qopt q-delegate"><span class="q-mark"></span><span><b>Devret</b><small>Acil · Önemli değil</small></span></button>
+          <button class="qopt q-drop"><span class="q-mark"></span><span><b>Bırak</b><small>Acil değil · Önemli değil</small></span></button>
+        </div>
+      </div>
+      <div class="field"><span class="field-label">Proje</span>
+        <div class="chips">
+          <button class="chip sel"><span class="dot" style="background: #2563EB"></span>Web Sitesi</button>
+          <button class="chip"><span class="dot" style="background: #0F9488"></span>Mobil Uygulama</button>
+          <button class="chip"><span class="dot" style="background: #D2460C"></span>Pazarlama</button>
+        </div>
+      </div>
+      <div class="field"><span class="field-label">Sorumlu kişiler <i>(birden fazla seçilebilir)</i></span>
+        <div class="chips">
+          <button class="chip sel"><span class="av">SK</span>Süleyman Kara (ben)</button>
+          <button class="chip sel"><span class="av">MK</span>Mert Kaya</button>
+          <button class="chip"><span class="av">AD</span>Ayşe Demir</button>
+          <button class="chip add">+ Yeni kişi</button>
+        </div>
+        <div class="inline-add"><input class="input" type="text" placeholder="Ad soyad"><input class="input" type="email" placeholder="E-posta"><button class="btn">Ekle</button></div>
+      </div>
+      <div class="specimen">
+        <div class="field"><span class="field-label">İzin</span><div class="seg"><button class="on">Düzenleyici</button><button>Görüntüleyici</button></div></div>
+        <div class="field"><span class="field-label">Renk</span><div class="swatches"><button class="sw sel"><span style="background: #2563EB"></span></button><button class="sw"><span style="background: #0F9488"></span></button><button class="sw"><span style="background: #D2460C"></span></button><button class="sw"><span style="background: #8B5CF6"></span></button><button class="sw"><span style="background: #CA8A04"></span></button></div></div>
+      </div>
+    </section>
+
+    <!-- 10 small elements -->
+    <section class="group">
+      <h2 class="g-title"><b>10</b> Etiketler ve avatarlar</h2>
+      <div class="specimen">
+        <span class="badge strong">Yönetici</span><span class="badge">Düzenleyici</span><span class="badge">Görüntüleyici</span>
+        <span class="q-count mono">3</span>
+        <span class="pchip"><span class="av">AD</span>Ayşe Demir</span>
+      </div>
+      <div class="specimen">
+        <span class="av">MK</span><span class="av lg">EŞ</span>
+        <span class="avs"><span class="av">MK</span><span class="av">AD</span><span class="av">SK</span></span>
+        <span class="done-mark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+        <span class="cap">Avatar · büyük avatar · üst üste · tamamlandı işareti</span>
+      </div>
+    </section>
+
+    <!-- 11 lists -->
+    <section class="group">
+      <h2 class="g-title"><b>11</b> Liste satırları</h2>
+      <div class="panel">
+        <div class="panel-head"><h2>Ekip</h2><span class="row-sub">Yalnızca bu listedeki e-postalar giriş yapabilir</span></div>
+        <div class="row"><span class="av lg">SK</span><div class="grow"><div class="row-title">Süleyman Kara</div><div class="row-sub">suleyman@ornek.com · tüm projeler · şifreyle giriş</div></div><span class="badge strong">Yönetici</span><span class="row-sub mono">1 açık görev</span></div>
+        <div class="row"><span class="av lg">AD</span><div class="grow"><div class="row-title">Ayşe Demir</div><div class="row-sub">ayse@ornek.com · Web Sitesi, Mobil Uygulama</div></div><span class="badge">Düzenleyici</span><span class="row-sub mono">2 açık görev</span></div>
+        <div class="row"><span class="av lg">EŞ</span><div class="grow"><div class="row-title">Elif Şahin</div><div class="row-sub">elif@ornek.com</div></div><div class="confirm"><span>Elif Şahin silinecek. 2 görevi "Atanmadı" olarak kalacak.</span><button class="btn ghost">Vazgeç</button><button class="btn danger-solid">Evet, sil</button></div></div>
+        <div class="row"><span class="done-mark"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span><div class="grow"><div class="row-title struck">Alan adı yenilemesi</div><div class="row-sub"><span class="dot" style="background: #2563EB"></span>Web Sitesi · Mert Kaya · Hemen yap</div></div><span class="row-sub mono">4 Kas</span><button class="btn">Geri al</button></div>
+      </div>
+      <span class="cap">Kişi · silme onayı · tamamlanan görev</span>
+    </section>
+
+    <!-- 12 detail dialog -->
+    <section class="group">
+      <h2 class="g-title"><b>12</b> Görev ayrıntısı penceresi</h2>
+      <div class="dialog">
+        <div class="dialog-head"><h2>Görev ayrıntısı</h2><button class="icon-btn" aria-label="Kapat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button></div>
+        <div class="dialog-body">
+          <button class="vtitle"><span>Ödeme sayfasındaki hatayı düzelt</span></button>
+          <div class="vlist">
+            <button class="vrow"><span class="vlabel">Kutu</span><span class="vval q-do"><span class="q-mark"></span>Hemen yap<small>Acil · Önemli</small></span><span></span></button>
+            <button class="vrow hov"><span class="vlabel">Proje</span><span class="vval"><span class="dot" style="background: #2563EB"></span>Web Sitesi</span><svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>
+            <button class="vrow"><span class="vlabel">Sorumlular</span><span class="vval"><span class="pchip"><span class="av">MK</span>Mert Kaya</span><span class="pchip"><span class="av">AD</span>Ayşe Demir</span></span><span></span></button>
+            <button class="vrow"><span class="vlabel">Tarih</span><span class="vval mono">3 Kas – 6 Kas</span><span></span></button>
+            <button class="vrow"><span class="vlabel">Açıklama</span><span class="vval desc">Kartla ödemede 3D Secure dönüşünde boş sayfa açılıyor. Hata kayıtları #odeme kanalında paylaşıldı.</span><span></span></button>
+          </div>
+        </div>
+        <div class="dialog-foot"><span class="grow"></span><button class="btn ghost">Kapat</button><button class="btn primary">Düzenle</button></div>
+      </div>
+      <span class="cap">Bir satırın üzerine gelince vurgu ve kalem simgesi çıkar; tıklayınca o alan düzenlemede açılır</span>
+    </section>
+
+    <!-- 13 login -->
+    <section class="group">
+      <h2 class="g-title"><b>13</b> Giriş</h2>
+      <div class="two">
+        <div class="lcard">
+          <div><h3>Giriş yap</h3><p>E-posta adresine tek kullanımlık bir giriş bağlantısı göndereceğiz.</p></div>
+          <div class="field"><label class="field-label">E-posta</label><input class="input" type="email" value="zeynep@ornek.com"></div>
+          <div class="note err"><span>Bu e-posta davetli değil. Erişim için yöneticiye başvurun.</span></div>
+          <button class="btn primary">Giriş bağlantısı gönder</button>
+          <button class="link-btn">Yönetici misiniz? Şifreyle girin</button>
+        </div>
+        <div class="lcard">
+          <div><h3>E-postanı kontrol et</h3><p><span class="mono" style="color: var(--ink)">ayse@ornek.com</span> adresine bir giriş bağlantısı gönderdik.</p></div>
+          <button class="btn">Farklı e-posta</button>
+        </div>
+      </div>
+      <span class="cap">Hata durumu · bağlantı gönderildi</span>
+    </section>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
