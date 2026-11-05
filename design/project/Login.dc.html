@@ -114,11 +114,15 @@ h1{margin:0;font-size:18px;font-weight:600;letter-spacing:-.02em}
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","default":"form","options":["form","denied","sent","admin"]},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   constructor(...args) {
     super(...args);
-    this.state = { step: 'form', email: '', error: '' };
+    const scr = this.props && this.props.screen;
+    if (scr === 'sent') this.state = { step: 'sent', email: 'ayse@ornek.com', error: '' };
+    else if (scr === 'denied') this.state = { step: 'form', email: 'zeynep@ornek.com', error: 'Bu e-posta davetli değil. Erişim için yöneticiye başvurun.' };
+    else if (scr === 'admin') this.state = { step: 'admin', email: 'suleyman@ornek.com', error: '' };
+    else this.state = { step: 'form', email: '', error: '' };
   }
   allowed() {
     // prototype stand-in for the invite list kept in Firebase

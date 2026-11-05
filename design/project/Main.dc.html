@@ -221,6 +221,11 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 .chip .av{width:22px;height:22px;flex-basis:22px;margin-left:-4px}
 .inline-add{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;padding:10px;border:1px dashed var(--line-strong);border-radius:10px}
 
+/* read-only (viewer) */
+.card.ro{padding-left:10px;cursor:default}
+.dialog.ro .edit-ic{display:none}
+.dialog.ro .vrow,.dialog.ro .vtitle{cursor:default}
+.dialog.ro .vrow:hover,.dialog.ro .vtitle:hover{background:none}
 /* mobile-only pieces, hidden on desktop */
 .mtop,.tabbar,.mfilter{display:none}
 @media (max-width:900px){
@@ -236,6 +241,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 .tab.active{color:var(--ink)}
 .tab.active .ti{background:var(--soft)}
 .tab-new{color:var(--ink)}
+.tabbar.ro{grid-template-columns:repeat(2,minmax(0,1fr))}
 .tab-new .ti{width:34px;border-radius:8px;background:var(--ink);color:var(--panel)}
 .mfilter{display:flex;gap:6px;overflow-x:auto;padding:12px 16px 0;scrollbar-width:none}
 .mfilter::-webkit-scrollbar{display:none}
@@ -268,10 +274,12 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
       Task Table
     </div>
 
+    <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
     <button class="new-btn" onClick="{{newTask}}">
       <span class="plus" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
       Yeni görev
     </button>
+    </sc-if>
 
     <nav class="nav" aria-label="Görünümler">
       <button class="nav-btn {{navMatrix}}" onClick="{{goMatrix}}">
@@ -282,6 +290,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg>
         <span class="grow">Tamamlananlar</span><span class="nav-count mono">{{doneCount}}</span>
       </button>
+      <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
       <button class="nav-btn {{navPeople}}" onClick="{{goPeople}}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.8 2.7 2.5 3 5.2"></path></svg>
         <span class="grow">Kişiler</span><span class="nav-count mono">{{peopleCount}}</span>
@@ -290,6 +299,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.4l2 2.2h8.6A1.5 1.5 0 0 1 21 9.7v8.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5Z"></path></svg>
         <span class="grow">Projeler</span><span class="nav-count mono">{{projectCount}}</span>
       </button>
+      </sc-if>
     </nav>
 
     <div class="side-projects">
@@ -310,10 +320,10 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 
     <div class="side-foot">
       <div class="me">
-        <span class="av lg">SK</span>
+        <span class="av lg">{{me.initials}}</span>
         <div class="grow">
-          <div class="me-name">Süleyman Kara</div>
-          <div class="me-mail">suleyman@ornek.com</div>
+          <div class="me-name">{{me.name}}</div>
+          <div class="me-mail">{{me.sub}}</div>
         </div>
         <a class="icon-btn" href="Login.dc.html" aria-label="Çıkış yap" title="Çıkış yap">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"></path><path d="M10 16l-4-4 4-4M6 12h10"></path></svg>
@@ -326,7 +336,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     <div class="mtop">
       <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Task Table</div>
       <span class="grow"></span>
-      <span class="av lg" title="Süleyman Kara · suleyman@ornek.com">SK</span>
+      <span class="av lg" title="{{me.name}} · {{me.sub}}">{{me.initials}}</span>
       <a class="icon-btn" href="Login.dc.html" aria-label="Çıkış yap">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"></path><path d="M10 16l-4-4 4-4M6 12h10"></path></svg>
       </a>
@@ -369,25 +379,31 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                   <p>{{q.tag}}</p>
                 </div>
                 <span class="q-count mono">{{q.count}}</span>
+                <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
                 <button class="icon-btn" onClick="{{q.add}}" aria-label="{{q.addLabel}}">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
                 </button>
+                </sc-if>
               </header>
               <div class="cards">
                 <sc-for list="{{q.tasks}}" as="t" hint-placeholder-count="2">
                   <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragEnd="{{dragEnd}}">
+                    <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
                     <button class="check" onClick="{{t.toggle}}" aria-label="{{t.checkLabel}}">
                       <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
                     </button>
+                    </sc-if>
                     <div class="card-body">
                       <div class="line1">
                         <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                           <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
                         </sc-if>
                         <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
+                        <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
                         <button class="pin {{t.pinCls}}" onClick="{{t.pin}}" aria-label="{{t.pinLabel}}" aria-pressed="{{t.pinPressed}}" title="{{t.pinLabel}}">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg>
                         </button>
+                        </sc-if>
                         <span class="when mono {{t.whenCls}}">{{t.when}}</span>
                       </div>
                       <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
@@ -414,7 +430,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                   </div>
                 </sc-for>
                 <sc-if value="{{q.empty}}" hint-placeholder-val="{{ false }}">
-                  <div class="empty">Burada görev yok. Bir kartı sürükleyip bırakın ya da + ile ekleyin.</div>
+                  <div class="empty">{{emptyText}}</div>
                 </sc-if>
               </div>
             </section>
@@ -612,13 +628,14 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     </sc-if>
   </main>
 
-  <nav class="tabbar" aria-label="Görünümler">
+  <nav class="tabbar {{tabCls}}" aria-label="Görünümler">
     <button class="tab {{navMatrix}}" onClick="{{goMatrix}}">
       <span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"></rect></svg></span>Matris
     </button>
     <button class="tab {{navDone}}" onClick="{{goDone}}">
       <span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg></span>Biten
     </button>
+    <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
     <button class="tab tab-new" onClick="{{newTask}}" aria-label="Yeni görev">
       <span class="ti"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Yeni
     </button>
@@ -628,12 +645,13 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     <button class="tab {{navProjects}}" onClick="{{goProjects}}">
       <span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.4l2 2.2h8.6A1.5 1.5 0 0 1 21 9.7v8.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5Z"></path></svg></span>Projeler
     </button>
+    </sc-if>
   </nav>
 
   <!-- TASK MODAL -->
   <sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
     <div class="overlay">
-      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+      <div class="dialog {{dialogCls}}" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
         <div class="dialog-head">
           <h2 id="dlg-title">{{modalTitle}}</h2>
           <button class="icon-btn" onClick="{{closeAll}}" aria-label="Kapat">
@@ -678,7 +696,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
           <div class="dialog-foot">
             <span class="grow"></span>
             <button class="btn ghost" onClick="{{closeAll}}">Kapat</button>
-            <button class="btn primary" onClick="{{vw.eTitle}}">Düzenle</button>
+            <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}"><button class="btn primary" onClick="{{vw.eTitle}}">Düzenle</button></sc-if>
           </div>
         </sc-if>
 
@@ -765,7 +783,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","default":"live","options":["live","matrix","filtered","empty","detail","edit","new","done","people","projects","viewer"]},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   constructor(...args) {
     super(...args);
@@ -819,21 +837,52 @@ class Component extends DCLogic {
     };
   }
   initialState() {
+    // a fixed screen (used by the design boards) starts from sample data and never saves
+    const scr = this.props && this.props.screen && this.props.screen !== 'live' ? this.props.screen : null;
+    this.preview = !!scr;
     let saved = null;
-    try { saved = JSON.parse(window.localStorage.getItem('task-table-proto-v1') || 'null'); } catch (e) { saved = null; }
+    if (!scr) { try { saved = JSON.parse(window.localStorage.getItem('task-table-proto-v1') || 'null'); } catch (e) { saved = null; } }
     const base = saved && saved.tasks ? saved : this.seed();
     const projects = base.projects || this.defaultProjects();
     const tasks = base.tasks.map((t) => (t.assigneeIds ? t : Object.assign({}, t, { assigneeIds: t.assigneeId ? [t.assigneeId] : [] })));
     const people = base.people.map((p) => Object.assign({ role: 'editor', projectIds: projects.map((x) => x.id) }, p));
-    return {
+    const st = {
       view: 'matrix',
       filter: null, tasks: tasks, people: people,
       projects: projects,
       pending: {}, dragId: null, overQ: null, dropTarget: null, hoverQ: null,
       modal: null, confirmClear: false, confirmPerson: null, confirmProject: null,
       pf: this.emptyPf(),
-      prf: { name: '', color: '#2563EB', error: '' }
+      prf: { name: '', color: '#2563EB', error: '' },
+      readOnly: false, meId: 'me'
     };
+    return scr ? this.applyScreen(st, scr) : st;
+  }
+  modalFor(t, mode) {
+    return { mode: mode, id: t ? t.id : null, error: '', inlineAdd: false, np: { name: '', email: '', error: '' },
+      form: t ? { title: t.title, desc: t.desc || '', q: t.q, projectId: t.projectId, assigneeIds: (t.assigneeIds || []).slice(), start: t.start || '', end: t.end || '' }
+              : { title: '', desc: '', q: '', projectId: '', assigneeIds: [], start: this.iso(new Date()), end: '' } };
+  }
+  applyScreen(st, scr) {
+    const t1 = st.tasks.find((t) => t.id === 't1');
+    if (scr === 'filtered') st.filter = 'web';
+    if (scr === 'empty') st.tasks = [];
+    if (scr === 'detail') st.modal = this.modalFor(t1, 'view');
+    if (scr === 'edit') st.modal = Object.assign(this.modalFor(t1, 'edit'), { from: 'view' });
+    if (scr === 'new') {
+      const m = this.modalFor(null, 'new');
+      m.form = Object.assign(m.form, { title: 'Basın bülteni taslağı', q: 'plan', projectId: 'mkt', assigneeIds: ['me', 'p1'] });
+      st.modal = m;
+    }
+    if (scr === 'done') st.view = 'done';
+    if (scr === 'people') {
+      const p1 = st.people.find((p) => p.id === 'p1');
+      st.view = 'people'; st.confirmPerson = 'p3';
+      st.pf = { editId: p1.id, name: p1.name, email: p1.email, role: p1.role, projectIds: p1.projectIds.slice(), error: '' };
+    }
+    if (scr === 'projects') { st.view = 'projects'; st.confirmProject = 'ops'; }
+    if (scr === 'viewer') { st.readOnly = true; st.meId = 'p3'; }
+    return st;
   }
 
   emptyPf() { return { editId: null, name: '', email: '', role: 'editor', projectIds: [], error: '' }; }
@@ -872,6 +921,7 @@ class Component extends DCLogic {
   }
 
   persist() {
+    if (this.preview) return;
     const s = this.state;
     const now = Date.now();
     // a card still fading counts as done after a reload
@@ -1027,7 +1077,9 @@ class Component extends DCLogic {
 
     const open = s.tasks.filter((t) => !t.doneAt);
     const done = s.tasks.filter((t) => t.doneAt).sort((a, b) => b.doneAt - a.doneAt);
-    const visible = open.filter((t) => !s.filter || t.projectId === s.filter);
+    const meP = s.meId === 'me' ? null : s.people.find((p) => p.id === s.meId);
+    const allowed = (pid) => !meP || (meP.projectIds || []).indexOf(pid) > -1;
+    const visible = open.filter((t) => allowed(t.projectId) && (!s.filter || t.projectId === s.filter));
     const isLate = (t) => !!t.end && t.end < today && !s.pending[t.id];
 
     const noProj = { name: 'Projesiz', color: 'var(--line-strong)' };
@@ -1063,8 +1115,8 @@ class Component extends DCLogic {
         assignee: whoText(ppl),
         avs: ppl.length ? ppl.slice(0, 3).map((p) => this.initials(p.name)) : ['–'],
         when: when, whenCls: late ? 'late' : '',
-        pending: pending, draggable: !pending,
-        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging ' : '') + (t.pinnedAt ? 'is-pinned' : ''),
+        pending: pending, draggable: !pending && !s.readOnly,
+        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging ' : '') + (t.pinnedAt ? 'is-pinned' : '') + (s.readOnly ? ' ro' : ''),
         pinCls: t.pinnedAt ? 'on' : '',
         pinPressed: t.pinnedAt ? 'true' : 'false',
         pinLabel: (t.pinnedAt ? 'Sabitlemeyi kaldır: ' : 'Başa sabitle: ') + t.title,
@@ -1145,7 +1197,7 @@ class Component extends DCLogic {
 
       allProjCls: s.filter ? '' : 'active',
       clearFilter: () => this.setState({ filter: null, view: 'matrix' }),
-      sideProjects: PR.map((p) => ({
+      sideProjects: PR.filter((p) => allowed(p.id)).map((p) => ({
         name: p.name, color: p.color,
         count: open.filter((t) => t.projectId === p.id).length,
         cls: s.filter === p.id ? 'active' : '',
@@ -1153,6 +1205,11 @@ class Component extends DCLogic {
       })),
 
       newTask: () => this.openNew(''),
+      canEdit: !s.readOnly,
+      tabCls: s.readOnly ? 'ro' : '',
+      dialogCls: s.readOnly ? 'ro' : '',
+      emptyText: s.readOnly ? 'Burada görev yok.' : (s.tasks.length ? 'Burada görev yok. Bir kartı sürükleyip bırakın ya da + ile ekleyin.' : 'Henüz görev yok. + ile bu kutuya ilk görevi ekleyin.'),
+      me: meP ? { name: meP.name, initials: this.initials(meP.name), sub: meP.email + ' · Görüntüleyici' } : { name: 'Süleyman Kara', initials: 'SK', sub: 'suleyman@ornek.com' },
       rows: [
         { grow: gRow[0], quads: [quads[0], quads[1]] },
         { grow: gRow[1], quads: [quads[2], quads[3]] }
@@ -1251,7 +1308,7 @@ class Component extends DCLogic {
         if (t.start && t.end) dates = this.fmt(t.start) + ' – ' + this.fmt(t.end);
         else if (t.end) dates = 'Bitiş ' + this.fmt(t.end);
         else if (t.start) dates = 'Başlangıç ' + this.fmt(t.start);
-        const go = (id) => () => this.editFromView(id);
+        const go = (id) => () => { if (!this.state.readOnly) this.editFromView(id); };
         return {
           title: t.title, qName: qd.name, qTag: qd.tag, qCls: 'q-' + qd.id,
           project: pr.name, color: pr.color,
