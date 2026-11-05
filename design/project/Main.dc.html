@@ -86,8 +86,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .axis-y .axis-label::before,.axis-y .axis-label::after{width:1px;height:auto;flex:1}
 .matrix{grid-column:2;grid-row:2;display:flex;flex-direction:column;gap:10px;min-height:0}
 .mrow{display:flex;gap:10px;flex:1 1 0;min-height:0}
-.quad{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;transition:border-color .15s,background .15s,flex-grow .34s cubic-bezier(.25,.8,.25,1)}
-.mrow,.axis-label{transition:flex-grow .34s cubic-bezier(.25,.8,.25,1)}
+.quad{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;transition:border-color .15s,background .15s,flex-grow .6s cubic-bezier(.45,0,.25,1)}
+.mrow,.axis-label{transition:flex-grow .6s cubic-bezier(.45,0,.25,1)}
 .quad.is-over{border-color:var(--ring);border-style:dashed;background:var(--panel-2)}
 .quad-head{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;border-bottom:1px solid var(--line)}
 .q-mark{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
@@ -134,14 +134,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .me-mail{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 a.icon-btn{text-decoration:none}
 @media (min-width:901px){
-.quad.is-expanded .card-desc{display:block;animation:fadein .2s ease .2s both}
+.quad.is-expanded .card-desc{display:block;animation:fadein .35s ease .3s both}
 }
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-.tipbox{position:fixed;z-index:40;max-width:380px;padding:9px 11px;border-radius:8px;background:#26262B;border:1px solid var(--line-strong);box-shadow:0 12px 32px -12px rgba(0,0,0,.8);font-size:12px;line-height:1.45;color:var(--ink);pointer-events:none;opacity:0;transition:opacity .18s ease}
-.tipbox.up{transform:translateY(-100%)}
-.tipbox.show{opacity:1}
-.tipbox b{display:block;font-weight:600;margin-bottom:2px}
-.tipbox span{display:block;color:var(--muted);white-space:pre-line}
 .who{display:flex;align-items:center;gap:5px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .av{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:9px;font-weight:600;color:var(--ink)}
 .av.lg{width:30px;height:30px;flex-basis:30px;font-size:11px}
@@ -336,7 +331,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
               </header>
               <div class="cards">
                 <sc-for list="{{q.tasks}}" as="t" hint-placeholder-count="2">
-                  <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragEnd="{{dragEnd}}" onMouseEnter="{{t.tipEnter}}" onMouseLeave="{{tipLeave}}">
+                  <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragEnd="{{dragEnd}}">
                     <button class="check" onClick="{{t.toggle}}" aria-label="{{t.checkLabel}}">
                       <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
                     </button>
@@ -572,13 +567,6 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     </sc-if>
   </main>
 
-  <sc-if value="{{tipOn}}" hint-placeholder-val="{{ false }}">
-    <div class="tipbox {{tipCls}}" role="tooltip" style="top: {{tip.top}}px; left: {{tip.left}}px; width: {{tip.width}}px">
-      <b>{{tip.title}}</b>
-      <sc-if value="{{tip.hasDesc}}" hint-placeholder-val="{{ true }}"><span>{{tip.desc}}</span></sc-if>
-    </div>
-  </sc-if>
-
   <!-- TASK MODAL -->
   <sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
     <div class="overlay">
@@ -734,7 +722,7 @@ class Component extends DCLogic {
       view: 'matrix',
       filter: null, tasks: tasks, people: people,
       projects: projects,
-      pending: {}, dragId: null, overQ: null, dropTarget: null, hoverQ: null, tip: null,
+      pending: {}, dragId: null, overQ: null, dropTarget: null, hoverQ: null,
       modal: null, confirmClear: false, confirmPerson: null, confirmProject: null,
       pf: this.emptyPf(),
       prf: { name: '', color: '#2563EB', error: '' }
@@ -758,7 +746,7 @@ class Component extends DCLogic {
   componentDidUpdate() { this.persist(); }
   componentWillUnmount() {
     Object.keys(this.timers).forEach((k) => clearTimeout(this.timers[k]));
-    clearTimeout(this.hoverT); clearTimeout(this.tipShowT); clearTimeout(this.tipHideT);
+    clearTimeout(this.hoverT);
   }
 
   /* ---------- hover: quadrant growth ---------- */
@@ -767,31 +755,6 @@ class Component extends DCLogic {
     this.hoverT = setTimeout(() => { if (this.state.hoverQ !== qid) this.setState({ hoverQ: qid }); }, delay);
   }
 
-  /* ---------- hover: task tooltip ---------- */
-  hideTip(now) {
-    clearTimeout(this.tipShowT); clearTimeout(this.tipHideT);
-    if (now) { if (this.state.tip) this.setState({ tip: null }); return; }
-    this.tipHideT = setTimeout(() => {
-      if (this.state.tip) this.setState({ tip: Object.assign({}, this.state.tip, { show: false }) });
-    }, 1500);
-  }
-  showTip(t, el) {
-    clearTimeout(this.tipShowT); clearTimeout(this.tipHideT);
-    if (this.state.dragId || this.state.modal) return;
-    const place = () => {
-      let r; try { r = el.getBoundingClientRect(); } catch (e) { return; }
-      const vw = window.innerWidth || 1280, vh = window.innerHeight || 800;
-      const width = Math.min(Math.max(r.width, 260), 380);
-      const below = r.bottom + 150 < vh;
-      this.setState({ tip: {
-        id: t.id, title: t.title, desc: t.desc || '', hasDesc: !!t.desc, show: true, up: !below,
-        width: Math.round(width), left: Math.round(Math.max(8, Math.min(r.left, vw - width - 8))),
-        top: Math.round(below ? r.bottom + 6 : r.top - 6)
-      } });
-    };
-    // already showing one: move to the new card right away; otherwise wait a moment
-    if (this.state.tip && this.state.tip.show) place(); else this.tipShowT = setTimeout(place, 500);
-  }
   persist() {
     const s = this.state;
     const now = Date.now();
@@ -963,7 +926,6 @@ class Component extends DCLogic {
       const pending = !!s.pending[t.id];
       return {
         id: t.id, title: t.title, desc: t.desc, hasDesc: !!t.desc,
-        tip: t.desc ? t.title + '\n\n' + t.desc : t.title,
         project: pr.name, color: pr.color,
         assignee: whoText(ppl),
         avs: ppl.length ? ppl.slice(0, 3).map((p) => this.initials(p.name)) : ['–'],
@@ -976,10 +938,8 @@ class Component extends DCLogic {
         pin: () => this.togglePin(t.id),
         checkLabel: pending ? 'Tamamlamayı geri al: ' + t.title : 'Tamamlandı olarak işaretle: ' + t.title,
         toggle: () => this.toggleDone(t.id),
-        open: () => { this.hideTip(true); this.openEdit(t); },
-        tipEnter: (e) => this.showTip(t, e.currentTarget),
+        open: () => this.openEdit(t),
         dragStart: (e) => {
-          this.hideTip(true);
           try { e.dataTransfer.setData('text/plain', t.id); e.dataTransfer.effectAllowed = 'move'; } catch (err) {}
           this.setState({ dragId: t.id });
         }
@@ -998,7 +958,7 @@ class Component extends DCLogic {
         id: q.id, name: q.name, tag: q.tag, count: list.length, empty: list.length === 0,
         cls: 'q-' + q.id + (s.overQ === q.id ? ' is-over' : '') + (growOn === q.id ? ' is-expanded' : ''),
         grow: gCol[colOf[q.id]],
-        enter: () => this.hoverTo(q.id, this.state.hoverQ ? 60 : 120),
+        enter: () => this.hoverTo(q.id, this.state.hoverQ ? 80 : 160),
         addLabel: q.name + ' kutusuna görev ekle',
         tasks: list.map(card),
         add: () => this.openNew(q.id),
@@ -1066,9 +1026,6 @@ class Component extends DCLogic {
       ],
       gColL: gCol[0], gColR: gCol[1], gRowT: gRow[0], gRowB: gRow[1],
       matrixLeave: () => this.hoverTo(null, 180),
-      tipOn: !!s.tip, tip: s.tip || { top: 0, left: 0, width: 0, title: '', desc: '', hasDesc: false },
-      tipCls: s.tip ? ((s.tip.show ? 'show' : '') + (s.tip.up ? ' up' : '')) : '',
-      tipLeave: () => this.hideTip(false),
       showProj: !s.filter,
       dragEnd: () => this.setState({ dragId: null, overQ: null, dropTarget: null }),
 
