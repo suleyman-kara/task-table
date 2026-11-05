@@ -87,9 +87,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 
 /* card */
 .card{position:relative;display:flex;align-items:center;gap:2px;padding:4px 10px 4px 2px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;cursor:grab;transition:opacity .25s,border-color .15s,box-shadow .15s}
-.card.drop-before::before,.card.drop-after::before{content:"";position:absolute;left:2px;right:2px;height:2px;border-radius:2px;background:var(--ring);z-index:4}
-.card.drop-before::before{top:-5px}
-.card.drop-after::before{bottom:-5px}
+.pin{position:relative;z-index:2;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin:-4px -6px -4px 0;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted);opacity:0;transition:opacity .15s}
+.card:hover .pin,.pin:focus-visible{opacity:1}
+.pin:hover{background:var(--soft);color:var(--ink)}
+.pin.on{opacity:1;color:var(--ink)}
+.pin.on svg{fill:currentColor}
+.card.is-pinned{border-color:var(--line-strong)}
+@media (hover:none){.pin{opacity:1}}
 .card:hover{border-color:var(--line-strong);box-shadow:var(--shadow)}
 .card.is-dragging{opacity:.4}
 .card.is-pending{opacity:.55}
@@ -247,14 +251,6 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
       </button>
     </nav>
 
-    <div class="side-sort">
-      <div class="side-label">Kutu içi sıralama</div>
-      <div class="seg" role="group" aria-label="Kutu içi sıralama">
-        <button class="{{sortCustomCls}}" onClick="{{sortCustom}}" aria-pressed="{{sortCustomPressed}}">Özel</button>
-        <button class="{{sortDateCls}}" onClick="{{sortDate}}" aria-pressed="{{sortDatePressed}}">Başlangıç</button>
-      </div>
-    </div>
-
     <div class="side-projects">
       <div class="side-label">Projeler</div>
       <div class="nav">
@@ -322,7 +318,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
               </header>
               <div class="cards">
                 <sc-for list="{{q.tasks}}" as="t" hint-placeholder-count="2">
-                  <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragOver="{{t.dragOver}}" onDragEnd="{{dragEnd}}">
+                  <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragEnd="{{dragEnd}}">
                     <button class="check" onClick="{{t.toggle}}" aria-label="{{t.checkLabel}}">
                       <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
                     </button>
@@ -334,6 +330,9 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                         <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                           <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
                         </sc-if>
+                        <button class="pin {{t.pinCls}}" onClick="{{t.pin}}" aria-label="{{t.pinLabel}}" aria-pressed="{{t.pinPressed}}" title="{{t.pinLabel}}">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg>
+                        </button>
                       </div>
                       <div class="card-meta">
                         <span class="who"><span class="av">{{t.initials}}</span>{{t.assignee}}</span>
@@ -658,7 +657,6 @@ class Component extends DCLogic {
     const base = saved && saved.tasks ? saved : this.seed();
     return {
       view: 'matrix',
-      sort: base.sort === 'date' ? 'date' : 'custom',
       filter: null, tasks: base.tasks, people: base.people,
       projects: base.projects || this.defaultProjects(),
       pending: {}, dragId: null, overQ: null, dropTarget: null,
@@ -687,7 +685,7 @@ class Component extends DCLogic {
     const now = Date.now();
     // a card still fading counts as done after a reload
     const tasks = s.tasks.map((t) => (s.pending[t.id] && !t.doneAt ? Object.assign({}, t, { doneAt: now }) : t));
-    try { window.localStorage.setItem('task-table-proto-v1', JSON.stringify({ tasks: tasks, people: s.people, projects: s.projects, sort: s.sort })); } catch (e) {}
+    try { window.localStorage.setItem('task-table-proto-v1', JSON.stringify({ tasks: tasks, people: s.people, projects: s.projects })); } catch (e) {}
   }
 
   /* ---------- task actions ---------- */
@@ -792,16 +790,10 @@ class Component extends DCLogic {
     const id = s.dragId;
     const moved = s.tasks.find((t) => t.id === id);
     if (!moved) { this.setState({ dragId: null, overQ: null, dropTarget: null }); return; }
-    const rest = s.tasks.filter((t) => t.id !== id);
-    const item = Object.assign({}, moved, { q: qid });
-    const dt = s.dropTarget;
-    let idx = rest.length;
-    if (s.sort === 'custom' && dt && dt.id !== id) {
-      const ti = rest.findIndex((t) => t.id === dt.id);
-      if (ti > -1 && rest[ti].q === qid) idx = dt.pos === 'before' ? ti : ti + 1;
-    }
-    rest.splice(idx, 0, item);
-    this.setState({ tasks: rest, dragId: null, overQ: null, dropTarget: null });
+    this.setState({ tasks: s.tasks.map((t) => (t.id === id ? Object.assign({}, t, { q: qid }) : t)), dragId: null, overQ: null, dropTarget: null });
+  }
+  togglePin(id) {
+    this.setState({ tasks: this.state.tasks.map((t) => (t.id === id ? Object.assign({}, t, { pinnedAt: t.pinnedAt ? null : Date.now() }) : t)) });
   }
 
   /* ---------- render ---------- */
@@ -821,13 +813,15 @@ class Component extends DCLogic {
     const isLate = (t) => !!t.end && t.end < today && !s.pending[t.id];
 
     const noProj = { name: 'Projesiz', color: 'var(--line-strong)' };
-    const byStart = (a, b) => {
-      const as = a.start || '9999', bs = b.start || '9999';
-      if (as !== bs) return as < bs ? -1 : 1;
+    // pinned first (in the order they were pinned), then by end date; no end date goes last
+    const order = (a, b) => {
+      if (!!a.pinnedAt !== !!b.pinnedAt) return a.pinnedAt ? -1 : 1;
+      if (a.pinnedAt && b.pinnedAt && a.pinnedAt !== b.pinnedAt) return a.pinnedAt - b.pinnedAt;
       const ae = a.end || '9999', be = b.end || '9999';
-      return ae < be ? -1 : ae > be ? 1 : 0;
+      if (ae !== be) return ae < be ? -1 : 1;
+      const as = a.start || '9999', bs = b.start || '9999';
+      return as < bs ? -1 : as > bs ? 1 : 0;
     };
-    const dt = s.dropTarget;
     const card = (t) => {
       const pr = prById[t.projectId] || noProj;
       const pe = peById[t.assigneeId];
@@ -845,20 +839,11 @@ class Component extends DCLogic {
         assignee: pe ? pe.name : 'Atanmadı', initials: pe ? this.initials(pe.name) : '–',
         when: when, whenCls: late ? 'late' : '',
         pending: pending, draggable: !pending,
-        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging ' : '') +
-          (dt && dt.id === t.id && s.dragId && s.dragId !== t.id ? 'drop-' + dt.pos : ''),
-        dragOver: (e) => {
-          if (!this.state.dragId) return;
-          e.preventDefault(); e.stopPropagation();
-          let pos = 'after';
-          try { const r = e.currentTarget.getBoundingClientRect(); pos = e.clientY < r.top + r.height / 2 ? 'before' : 'after'; } catch (err) {}
-          const cur = this.state.dropTarget;
-          const custom = this.state.sort === 'custom';
-          const next = custom ? { id: t.id, pos: pos } : null;
-          if (this.state.overQ !== t.q || (custom && (!cur || cur.id !== t.id || cur.pos !== pos)) || (!custom && cur)) {
-            this.setState({ overQ: t.q, dropTarget: next });
-          }
-        },
+        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging ' : '') + (t.pinnedAt ? 'is-pinned' : ''),
+        pinCls: t.pinnedAt ? 'on' : '',
+        pinPressed: t.pinnedAt ? 'true' : 'false',
+        pinLabel: (t.pinnedAt ? 'Sabitlemeyi kaldır: ' : 'Başa sabitle: ') + t.title,
+        pin: () => this.togglePin(t.id),
         checkLabel: pending ? 'Tamamlamayı geri al: ' + t.title : 'Tamamlandı olarak işaretle: ' + t.title,
         toggle: () => this.toggleDone(t.id),
         open: () => this.openEdit(t),
@@ -870,8 +855,7 @@ class Component extends DCLogic {
     };
 
     const quads = QD.map((q) => {
-      let list = visible.filter((t) => t.q === q.id);
-      if (s.sort === 'date') list = list.slice().sort(byStart);
+      const list = visible.filter((t) => t.q === q.id).sort(order);
       return {
         id: q.id, name: q.name, tag: q.tag, count: list.length, empty: list.length === 0,
         cls: 'q-' + q.id + (s.overQ === q.id ? ' is-over' : ''),
@@ -925,10 +909,6 @@ class Component extends DCLogic {
 
       openCount: open.length, doneCount: done.length, peopleCount: s.people.length, projectCount: PR.length,
 
-      sortCustomCls: s.sort === 'custom' ? 'on' : '', sortDateCls: s.sort === 'date' ? 'on' : '',
-      sortCustomPressed: s.sort === 'custom' ? 'true' : 'false', sortDatePressed: s.sort === 'date' ? 'true' : 'false',
-      sortCustom: () => this.setState({ sort: 'custom' }),
-      sortDate: () => this.setState({ sort: 'date' }),
 
       allProjCls: s.filter ? '' : 'active',
       clearFilter: () => this.setState({ filter: null, view: 'matrix' }),
