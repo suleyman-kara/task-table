@@ -19,6 +19,7 @@ display:flex;min-height:100vh;background:var(--bg);color:var(--ink);font-family:
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .mono{font-family:'Geist Mono',ui-monospace,monospace;font-feature-settings:"tnum"}
+.num{font-variant-numeric:tabular-nums}
 
 /* sidebar */
 .side{width:208px;flex:0 0 208px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 12px;gap:16px}
@@ -46,6 +47,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .me .grow{flex:1;min-width:0}
 .me-name{font-weight:500;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .me-mail{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me-role{display:block;margin:2px 0}
+.me-role .badge{display:inline-block;line-height:18px}
 
 /* shared bits */
 .badge{font-size:12px;padding:0 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
@@ -54,8 +57,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .row-btns{display:flex;gap:8px;justify-content:flex-end}
 .row-btns .btn{flex:1}
 .avs{display:inline-flex;flex:0 0 auto}
-.avs .av{border-color:var(--panel-2)}
-.avs .av + .av{margin-left:-6px}
+.avs .av{box-shadow:0 0 0 2px var(--panel-2)}
+.avs .av + .av{margin-left:-4px}
+/* the next avatar covers ~6px on the right: shift the covered initials left so they stay readable */
+.avs .av{letter-spacing:-.02em}
+.avs .av:not(:last-child){padding-right:6px}
 .who-names{overflow:hidden;text-overflow:ellipsis}
 .seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;padding:2px;background:var(--soft);border-radius:8px}
 .seg button{border:0;background:transparent;border-radius:6px;min-height:28px;padding:0 8px;font-size:12px;font-weight:500;color:var(--muted)}
@@ -98,11 +104,12 @@ a.icon-btn{text-decoration:none}
 .fpill:hover{border-color:var(--muted)}
 .fpill:hover svg{color:var(--ink)}
 .first-run{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted)}
+.first-run .btn{min-height:32px;padding:0 12px}
 .mrow{display:flex;gap:8px;flex:1 1 0;min-height:0}
 .quad{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,background .15s,flex-grow .45s cubic-bezier(.45,0,.25,1)}
 .mrow,.axis-label{transition:flex-grow .45s cubic-bezier(.45,0,.25,1)}
 .quad.is-over{border-color:var(--ring);border-style:dashed;background:var(--panel-2)}
-.quad-head{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;border-bottom:1px solid var(--line)}
+.quad-head{display:flex;align-items:center;gap:8px;min-height:40px;padding:4px 4px 4px 12px;border-bottom:1px solid var(--line)}
 .q-mark{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
 .q-do .q-mark{background:var(--q-do)}.q-plan .q-mark{background:var(--q-plan)}.q-delegate .q-mark{background:var(--q-delegate)}.q-drop .q-mark{background:var(--q-drop)}
 .quad-head h2{margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em;display:inline}
@@ -110,15 +117,28 @@ a.icon-btn{text-decoration:none}
 .quad-head .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .q-count{font-size:12px;color:var(--muted);padding:0 8px;border-radius:999px;background:var(--soft)}
 .cards{flex:1 1 auto;min-height:0;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:8px}
-.empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;min-height:64px;padding:12px;color:var(--muted);font-size:13px}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;min-height:64px;padding:12px;color:var(--muted);font-size:13px}
+.empty .e1{font-weight:500}
+.empty .e2{font-size:12px}
+/* skeleton (first load) */
+.sk{display:flex;flex-direction:column;justify-content:center;gap:8px;min-height:52px;padding:8px 12px 8px 36px;border-radius:8px;background:var(--panel-2);animation:skpulse 1.6s ease-in-out infinite}
+.sk span{display:block;height:8px;border-radius:6px;background:var(--line-strong)}
+.sk span + span{width:40%;opacity:.6}
+@keyframes skpulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}}
+/* offline notice + failed-save toast */
+.net-bar{display:flex;align-items:center;gap:8px;min-height:40px;padding:8px 24px;background:var(--panel);border-bottom:1px solid var(--line);color:var(--ink);font-size:13px}
+.net-bar svg,.toast svg{flex:0 0 auto;color:var(--danger)}
+.toast{position:fixed;z-index:40;left:224px;bottom:16px;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);padding:4px 4px 4px 12px;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:8px;box-shadow:var(--shadow);color:var(--ink);font-size:13px}
+.toast .btn{min-height:32px;padding:0 12px}
 
 /* card */
-.card{position:relative;display:flex;align-items:center;gap:4px;padding:4px 12px 4px 4px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;cursor:grab;transition:opacity .25s,border-color .15s,box-shadow .15s}
+.card{position:relative;display:flex;align-items:center;gap:4px;padding:4px 12px 4px 4px;background:var(--panel-2);border:1px solid transparent;border-radius:8px;cursor:grab;transition:opacity .25s,border-color .15s,box-shadow .15s}
 .card:hover{border-color:var(--line-strong);box-shadow:var(--shadow)}
 .card.is-pinned{border-color:var(--line-strong)}
 .card.is-dragging{opacity:.4}
 .card.is-pending .card-title{text-decoration:line-through}
-.card.is-pending .card-body,.card.is-pending .check{opacity:.45}
+.card.is-pending .card-body,.card.is-pending .check{opacity:.7}
 .pin{position:relative;z-index:2;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin:-4px -4px -4px 0;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted);opacity:0;transition:opacity .15s}
 .card:hover .pin,.pin:focus-visible{opacity:1}
 .pin:hover{background:var(--soft);color:var(--ink)}
@@ -133,20 +153,23 @@ a.icon-btn{text-decoration:none}
 .line1{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap}
 .line1 .when{flex:0 0 auto;font-size:12px;color:var(--muted)}
 .line1 .when.late{color:var(--danger)}
-.desc-ic{flex:0 0 auto;display:inline-flex;color:var(--muted)}
-.card-title{position:static;display:block;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
+.desc-ic{flex:0 0 auto;display:inline-flex;margin-left:-4px;color:var(--muted)}
+.l1-sp{flex:1 1 0;min-width:0;margin-left:-8px}
+.card-title{position:static;display:block;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
 .card-title::after{content:"";position:absolute;inset:0;border-radius:8px;z-index:1}
 .card-title:focus-visible{outline:none}
 .card-title:focus-visible::after{outline:2px solid var(--ring);outline-offset:2px}
 .card-desc{display:none;margin:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
-.proj{flex:0 1 auto;max-width:50%;display:flex;align-items:center;gap:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px;color:var(--muted)}
+.meta-l{flex:1 1 auto;display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden}
+.m-when{display:none;flex:0 0 auto}
+.proj{flex:0 1 auto;max-width:100%;display:flex;align-items:center;gap:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px;color:var(--muted)}
 @media (min-width:901px){
 .quad.is-expanded .card-desc{display:block;animation:fadein .3s ease .22s both}
 }
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-.who{display:flex;align-items:center;gap:4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.av{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:0 0 20px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:10px;font-weight:600;color:var(--ink)}
+.who{flex:0 1 auto;max-width:60%;display:flex;align-items:center;gap:4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--ink)}
 .av.lg{width:32px;height:32px;flex-basis:32px;font-size:12px}
 .swatches{display:flex;gap:4px;flex-wrap:wrap}
 .sw{width:32px;height:32px;padding:0;border-radius:50%;border:2px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center}
@@ -176,6 +199,20 @@ a.icon-btn{text-decoration:none}
 .done-mark{width:20px;height:20px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--muted);flex:0 0 20px}
 .confirm{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .people-grid{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:16px;align-items:start}
+.people-stack{display:flex;flex-direction:column;gap:16px;max-width:760px}
+.people-stack > .btn{align-self:flex-start}
+.ritem{border-bottom:1px solid var(--line)}
+.ritem:last-child{border-bottom:0}
+.ritem > .row{border-bottom:0}
+.row.editing{background:var(--soft)}
+.row.nowrap{flex-wrap:nowrap}
+.row.nowrap .grow{flex:1 1 0}
+.row-load{flex:0 0 auto;min-width:88px;text-align:right}
+.row-acts{flex:0 0 88px;display:flex;justify-content:flex-end;gap:4px;margin-left:auto}
+.ritem:last-child .confirm-strip{border-radius:0 0 12px 12px}
+.confirm-strip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 16px 8px 60px;border-top:1px dashed var(--line-strong);background:var(--panel-2);font-size:13px;color:var(--ink)}
+.confirm-strip .grow{flex:1 1 auto}
+.confirm-strip.proj-strip{padding-left:38px}
 .form-body{padding:16px;display:flex;flex-direction:column;gap:12px}
 
 /* fields */
@@ -192,12 +229,12 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 
 /* modal */
 .overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px 16px;overflow-y:auto}
-.dialog{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line-strong);border-radius:12px;box-shadow:0 24px 64px -24px rgba(0,0,0,.45)}
+.dialog{display:flex;flex-direction:column;width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line-strong);border-radius:12px;box-shadow:0 24px 64px -24px rgba(0,0,0,.45)}
 .dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 12px 12px 20px;border-bottom:1px solid var(--line)}
 .dialog-head h2{flex:1;min-width:0;margin:0;padding:4px 0;font-size:16px;font-weight:600;line-height:1.5}
 .dialog-head h2.vhead{padding:0}
 .dialog-body{padding:16px 20px;display:flex;flex-direction:column;gap:16px}
-.dialog-foot{display:flex;align-items:center;gap:8px;padding:12px 20px;border-top:1px solid var(--line);background:var(--panel);border-radius:0 0 12px 12px}
+.dialog-foot{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 20px;border-top:1px solid var(--line);background:var(--panel);border-radius:0 0 12px 12px}
 .dialog-foot .grow{flex:1}
 .dialog-foot .confirm{flex:1}
 .vtitle{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;width:calc(100% + 16px);margin:0 -8px;padding:4px 8px;border:0;border-radius:8px;background:none;text-align:left;font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;color:var(--ink)}
@@ -227,7 +264,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 .chip:hover{border-color:var(--line-strong)}
 .chip.sel{border-color:var(--ink);background:var(--soft)}
 .chip.add{border-style:dashed;color:var(--muted);padding:0 12px}
-.chip .av{width:22px;height:22px;flex-basis:22px;margin-left:-4px}
+.chip .av{width:24px;height:24px;flex-basis:24px;margin-left:-4px}
 .inline-add{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;padding:8px;border:1px dashed var(--line-strong);border-radius:8px}
 
 /* read-only (viewer) */
@@ -267,22 +304,48 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 .mrow{flex-direction:column;flex:none!important}
 .quad{flex:none!important}
 .quad-head p{display:inline}
+.quad-head{min-height:52px}
 .quad-head .icon-btn{width:44px;height:44px}
+.empty .e2{display:none}
 .cards{overflow:visible}
 .card{padding:0 12px 0 0}
 .check{flex:0 0 44px;width:44px;height:44px}
 .pin{width:40px;height:40px;margin:-12px -8px -12px -4px}
 .btn,.chip,.seg button{min-height:44px}
 .sw{width:44px;height:44px}
-.overlay{padding:12px 8px calc(12px + env(safe-area-inset-bottom))}
+.row-acts{gap:0}
+.row-acts .icon-btn{width:44px;height:44px}
+.swatches{display:grid;grid-template-columns:repeat(4,44px);gap:8px}
+.overlay{padding:12px 8px calc(12px + env(safe-area-inset-bottom));overflow:hidden}
+.dialog{max-height:calc(100dvh - 24px)}
+.dialog-body{flex:1 1 auto;min-height:0;overflow:auto}
+.toast{left:16px;bottom:calc(76px + env(safe-area-inset-bottom))}
+.net-bar{padding:8px 16px}
 .dialog-head .icon-btn{width:44px;height:44px}
 .dialog-head h2{padding:8px 0}
-.dialog-foot{position:sticky;bottom:0;z-index:2}
 .page{padding:0 16px 16px}
 .people-grid{grid-template-columns:minmax(0,1fr)}
 .inline-add{grid-template-columns:minmax(0,1fr)}
 }
-@media (max-width:520px){.two,.qpick{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:520px){
+.two{grid-template-columns:minmax(0,1fr)}
+.qopt{gap:8px;padding:8px}
+/* footer: text actions on the first row, full-width save below */
+.dialog-foot{flex-wrap:wrap;padding:8px 12px 12px;row-gap:4px}
+.dialog-foot .btn.danger,.dialog-foot .btn.ghost{background:transparent;border-color:transparent;padding:0 8px}
+.dialog-foot .btn.ghost{color:var(--ink)}
+.dialog-foot > .btn.primary{flex:1 0 100%}
+.dialog-foot .confirm .btn{flex:1 1 auto}
+/* card: title alone on line 1; project · dates and avatars on line 2 */
+.line1 .when{display:none}
+.card-title{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.m-when{display:inline}
+.meta-l .proj{max-width:none}
+.meta-l .proj + .m-when::before{content:"·";margin-right:4px;font-family:'Geist',system-ui,sans-serif}
+.who-names{display:none}
+.row-load{min-width:0}
+.confirm-strip{padding-left:16px}
+}
 </style>
 </helmet>
 
@@ -304,11 +367,11 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
     <nav class="nav" aria-label="Görünümler">
       <button class="nav-btn {{navMatrix}}" onClick="{{goMatrix}}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"></rect></svg>
-        <span class="grow">Matris</span><span class="nav-count mono">{{openCount}}</span>
+        <span class="grow">Matris</span><sc-if value="{{showCounts}}" hint-placeholder-val="{{ true }}"><span class="nav-count num">{{openCount}}</span></sc-if>
       </button>
       <button class="nav-btn {{navDone}}" onClick="{{goDone}}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg>
-        <span class="grow">{{doneName}}</span><span class="nav-count mono">{{doneCount}}</span>
+        <span class="grow">{{doneName}}</span><sc-if value="{{showCounts}}" hint-placeholder-val="{{ true }}"><span class="nav-count num">{{doneCount}}</span></sc-if>
       </button>
       <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
       <button class="nav-btn {{navPeople}}" onClick="{{goPeople}}">
@@ -335,7 +398,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
             <span class="dot" style="background: {{p.color}}"></span>
             <span class="grow">{{p.name}}</span>
             <sc-if value="{{p.on}}" hint-placeholder-val="{{ false }}"><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></sc-if>
-            <span class="nav-count mono">{{p.count}}</span>
+            <sc-if value="{{showCounts}}" hint-placeholder-val="{{ true }}"><span class="nav-count num">{{p.count}}</span></sc-if>
           </button>
         </sc-for>
       </div>
@@ -346,6 +409,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
         <span class="av lg">{{me.initials}}</span>
         <div class="grow">
           <div class="me-name">{{me.name}}</div>
+          <sc-if value="{{me.viewer}}" hint-placeholder-val="{{ false }}"><span class="me-role"><span class="badge">Görüntüleyici</span></span></sc-if>
           <div class="me-mail">{{me.sub}}</div>
         </div>
         <a class="icon-btn" href="Login.dc.html" aria-label="Çıkış yap" title="Çıkış yap">
@@ -359,11 +423,17 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
     <div class="mtop">
       <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Task Table</div>
       <span class="grow"></span>
-      <span class="av lg" title="{{me.name}} · {{me.sub}}">{{me.initials}}</span>
+      <span class="av lg" title="{{me.title}}">{{me.initials}}</span>
       <a class="icon-btn" href="Login.dc.html" aria-label="Çıkış yap">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"></path><path d="M10 16l-4-4 4-4M6 12h10"></path></svg>
       </a>
     </div>
+    <sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+      <div class="net-bar" role="status">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M8.5 16.5a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 5.2-2.7M19 12.9a10 10 0 0 0-2.4-1.7M2 9.3a15 15 0 0 1 4.3-2.7M22 9.3A15 15 0 0 0 11 5.1"></path><path d="M12 20h.01"></path></svg>
+        <span>Bağlantı yok. Değişiklikler bağlantı gelince kaydedilecek.</span>
+      </div>
+    </sc-if>
     <sc-if value="{{showTop}}" hint-placeholder-val="{{ false }}">
       <header class="top">
         <div>
@@ -422,7 +492,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
                   <h2>{{q.name}}</h2>
                   <p>{{q.tag}}</p>
                 </div>
-                <span class="q-count mono">{{q.count}}</span>
+                <sc-if value="{{q.hasCount}}" hint-placeholder-val="{{ true }}"><span class="q-count num">{{q.count}}</span></sc-if>
                 <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
                 <button class="icon-btn" onClick="{{q.add}}" aria-label="{{q.addLabel}}">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
@@ -439,10 +509,11 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
                     </sc-if>
                     <div class="card-body">
                       <div class="line1">
+                        <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
                         <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                           <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
                         </sc-if>
-                        <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
+                        <span class="l1-sp"></span>
                         <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
                         <button class="pin {{t.pinCls}}" onClick="{{t.pin}}" aria-label="{{t.pinLabel}}" aria-pressed="{{t.pinPressed}}" title="{{t.pinLabel}}">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg>
@@ -454,9 +525,12 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
                         <p class="card-desc">{{t.desc}}</p>
                       </sc-if>
                       <div class="card-meta">
-                        <sc-if value="{{showProj}}" hint-placeholder-val="{{ true }}">
-                          <span class="proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</span>
-                        </sc-if>
+                        <span class="meta-l">
+                          <sc-if value="{{showProj}}" hint-placeholder-val="{{ true }}">
+                            <span class="proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</span>
+                          </sc-if>
+                          <span class="when m-when mono {{t.whenCls}}">{{t.when}}</span>
+                        </span>
                         <span class="who">
                           <span class="avs">
                             <sc-for list="{{t.avs}}" as="a" hint-placeholder-count="1"><span class="av">{{a}}</span></sc-for>
@@ -473,8 +547,19 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
                     </sc-if>
                   </div>
                 </sc-for>
+                <sc-if value="{{loading}}" hint-placeholder-val="{{ false }}">
+                  <sc-for list="{{q.skel}}" as="k" hint-placeholder-count="2">
+                    <div class="sk" aria-hidden="true"><span style="width: {{k}}"></span><span></span></div>
+                  </sc-for>
+                </sc-if>
                 <sc-if value="{{q.empty}}" hint-placeholder-val="{{ false }}">
-                  <div class="empty">{{emptyText}}</div>
+                  <div class="empty">
+                    <sc-if value="{{firstUse}}" hint-placeholder-val="{{ false }}"><span>{{q.hint}}</span></sc-if>
+                    <sc-if value="{{notFirstUse}}" hint-placeholder-val="{{ true }}">
+                      <span class="e1">Görev yok</span>
+                      <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}"><span class="e2">Sürükleyin ya da +&nbsp;ile ekleyin</span></sc-if>
+                    </sc-if>
+                  </div>
                 </sc-if>
               </div>
             </section>
@@ -534,17 +619,72 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
     <!-- PEOPLE -->
     <sc-if value="{{isPeople}}" hint-placeholder-val="{{ false }}">
       <div class="page">
-        <div class="people-grid">
+        <div class="people-stack">
+          <div class="panel">
+            <div class="panel-head"><h2>Ekip</h2><span class="row-sub">Yalnızca bu listedeki e-postalar giriş yapabilir</span></div>
+            <div class="ritem">
+              <div class="row">
+                <span class="av lg">SK</span>
+                <div class="grow">
+                  <div class="row-title">Süleyman Kara</div>
+                  <div class="row-sub">suleyman@ornek.com · tüm projeler · şifreyle giriş</div>
+                </div>
+                <span class="badge strong">Yönetici</span>
+                <span class="row-sub row-load num">{{meLoad}}</span>
+                <span class="row-acts" aria-hidden="true"></span>
+              </div>
+            </div>
+            <sc-for list="{{peopleList}}" as="m" hint-placeholder-count="3">
+              <div class="ritem">
+                <div class="row {{m.rowCls}}">
+                  <span class="av lg">{{m.initials}}</span>
+                  <div class="grow">
+                    <div class="row-title">{{m.name}}</div>
+                    <div class="row-sub">{{m.email}} · {{m.projects}}</div>
+                  </div>
+                  <span class="badge">{{m.role}}</span>
+                  <span class="row-sub row-load num">{{m.load}}</span>
+                  <span class="row-acts">
+                    <button class="icon-btn" onClick="{{m.edit}}" aria-label="{{m.editLabel}}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+                    </button>
+                    <button class="icon-btn" onClick="{{m.ask}}" aria-label="{{m.removeLabel}}" aria-expanded="{{m.askPressed}}">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                    </button>
+                  </span>
+                </div>
+                <sc-if value="{{m.confirming}}" hint-placeholder-val="{{ false }}">
+                  <div class="confirm-strip" role="alert">
+                    <span class="grow">{{m.warn}}</span>
+                    <button class="btn ghost" onClick="{{m.cancel}}">Vazgeç</button>
+                    <button class="btn danger-solid" onClick="{{m.remove}}">Evet, sil</button>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{peopleEmpty}}" hint-placeholder-val="{{ false }}">
+              <div class="row"><span class="row-sub">Henüz kimse eklenmedi.</span></div>
+            </sc-if>
+          </div>
+          <sc-if value="{{pfClosed}}" hint-placeholder-val="{{ false }}">
+            <button class="btn" onClick="{{openPf}}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+              Kişi ekle
+            </button>
+          </sc-if>
+          <sc-if value="{{pfShown}}" hint-placeholder-val="{{ true }}">
           <div class="panel">
             <div class="panel-head"><h2>{{pfTitle}}</h2></div>
             <div class="form-body">
-              <div class="field">
-                <label class="field-label" for="p-name">Ad soyad</label>
-                <input class="input" id="p-name" type="text" placeholder="Örn. Zeynep Arslan" value="{{pf.name}}" onChange="{{pfName}}">
-              </div>
-              <div class="field">
-                <label class="field-label" for="p-mail">E-posta</label>
-                <input class="input" id="p-mail" type="email" placeholder="ad@sirket.com" value="{{pf.email}}" onChange="{{pfEmail}}">
+              <div class="two">
+                <div class="field">
+                  <label class="field-label" for="p-name">Ad soyad</label>
+                  <input class="input" id="p-name" type="text" placeholder="Örn. Zeynep Arslan" value="{{pf.name}}" onChange="{{pfName}}">
+                </div>
+                <div class="field">
+                  <label class="field-label" for="p-mail">E-posta</label>
+                  <input class="input" id="p-mail" type="email" placeholder="ad@sirket.com" value="{{pf.email}}" onChange="{{pfEmail}}">
+                </div>
               </div>
               <div class="field">
                 <span class="field-label">İzin</span>
@@ -567,54 +707,12 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
               </div>
               <sc-if value="{{pfHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{pf.error}}</p></sc-if>
               <div class="row-btns">
-                <sc-if value="{{pfEditing}}" hint-placeholder-val="{{ false }}">
-                  <button class="btn ghost" onClick="{{pfCancel}}">Vazgeç</button>
-                </sc-if>
+                <button class="btn ghost" onClick="{{pfCancel}}">Vazgeç</button>
                 <button class="btn primary" onClick="{{savePerson}}">{{pfSaveLabel}}</button>
               </div>
             </div>
           </div>
-          <div class="panel">
-            <div class="panel-head"><h2>Ekip</h2><span class="row-sub">Yalnızca bu listedeki e-postalar giriş yapabilir</span></div>
-            <div class="row">
-              <span class="av lg">SK</span>
-              <div class="grow">
-                <div class="row-title">Süleyman Kara</div>
-                <div class="row-sub">suleyman@ornek.com · tüm projeler · şifreyle giriş</div>
-              </div>
-              <span class="badge strong">Yönetici</span>
-              <span class="row-sub mono">{{meLoad}}</span>
-            </div>
-            <sc-for list="{{peopleList}}" as="m" hint-placeholder-count="3">
-              <div class="row">
-                <span class="av lg">{{m.initials}}</span>
-                <div class="grow">
-                  <div class="row-title">{{m.name}}</div>
-                  <div class="row-sub">{{m.email}} · {{m.projects}}</div>
-                </div>
-                <sc-if value="{{m.idle}}" hint-placeholder-val="{{ true }}">
-                  <span class="badge">{{m.role}}</span>
-                  <span class="row-sub mono">{{m.load}}</span>
-                  <button class="icon-btn" onClick="{{m.edit}}" aria-label="{{m.editLabel}}">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
-                  </button>
-                  <button class="icon-btn" onClick="{{m.ask}}" aria-label="{{m.removeLabel}}">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
-                  </button>
-                </sc-if>
-                <sc-if value="{{m.confirming}}" hint-placeholder-val="{{ false }}">
-                  <div class="confirm" role="alert">
-                    <span>{{m.warn}}</span>
-                    <button class="btn ghost" onClick="{{m.cancel}}">Vazgeç</button>
-                    <button class="btn danger-solid" onClick="{{m.remove}}">Evet, sil</button>
-                  </div>
-                </sc-if>
-              </div>
-            </sc-for>
-            <sc-if value="{{peopleEmpty}}" hint-placeholder-val="{{ false }}">
-              <div class="row"><span class="row-sub">Henüz kimse eklenmedi.</span></div>
-            </sc-if>
-          </div>
+          </sc-if>
         </div>
       </div>
     </sc-if>
@@ -624,7 +722,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
       <div class="page">
         <div class="people-grid">
           <div class="panel">
-            <div class="panel-head"><h2>Proje ekle</h2></div>
+            <div class="panel-head"><h2>{{prfTitle}}</h2></div>
             <div class="form-body">
               <div class="field">
                 <label class="field-label" for="pr-name">Proje adı</label>
@@ -639,26 +737,36 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
                 </div>
               </div>
               <sc-if value="{{prfHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{prf.error}}</p></sc-if>
-              <button class="btn primary" onClick="{{addProject}}">Projeyi ekle</button>
+              <div class="row-btns">
+                <sc-if value="{{prfEditing}}" hint-placeholder-val="{{ false }}">
+                  <button class="btn ghost" onClick="{{prfCancel}}">Vazgeç</button>
+                </sc-if>
+                <button class="btn primary" onClick="{{saveProject}}">{{prfSaveLabel}}</button>
+              </div>
             </div>
           </div>
           <div class="panel">
-            <div class="panel-head"><h2>{{projectHeading}}</h2><span class="row-sub">Görev eklerken bu listeden seçilir</span></div>
+            <div class="panel-head"><h2>{{projectHeading}}</h2></div>
             <sc-for list="{{projectList}}" as="m" hint-placeholder-count="4">
-              <div class="row">
-                <span class="dot" style="background: {{m.color}}; width: 10px; height: 10px; flex-basis: 10px"></span>
-                <div class="grow">
-                  <div class="row-title">{{m.name}}</div>
+              <div class="ritem">
+                <div class="row nowrap {{m.rowCls}}">
+                  <span class="dot" style="background: {{m.color}}; width: 10px; height: 10px; flex-basis: 10px"></span>
+                  <div class="grow">
+                    <div class="row-title">{{m.name}}</div>
+                  </div>
+                  <span class="row-sub num">{{m.load}}</span>
+                  <span class="row-acts">
+                    <button class="icon-btn" onClick="{{m.edit}}" aria-label="{{m.editLabel}}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+                    </button>
+                    <button class="icon-btn" onClick="{{m.ask}}" aria-label="{{m.removeLabel}}" aria-expanded="{{m.askPressed}}">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                    </button>
+                  </span>
                 </div>
-                <sc-if value="{{m.idle}}" hint-placeholder-val="{{ true }}">
-                  <span class="row-sub mono">{{m.load}}</span>
-                  <button class="icon-btn" onClick="{{m.ask}}" aria-label="{{m.removeLabel}}">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
-                  </button>
-                </sc-if>
                 <sc-if value="{{m.confirming}}" hint-placeholder-val="{{ false }}">
-                  <div class="confirm" role="alert">
-                    <span>{{m.warn}}</span>
+                  <div class="confirm-strip proj-strip" role="alert">
+                    <span class="grow">{{m.warn}}</span>
                     <button class="btn ghost" onClick="{{m.cancel}}">Vazgeç</button>
                     <button class="btn danger-solid" onClick="{{m.remove}}">Evet, sil</button>
                   </div>
@@ -693,6 +801,14 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
     </button>
     </sc-if>
   </nav>
+
+  <sc-if value="{{saveFailed}}" hint-placeholder-val="{{ false }}">
+    <div class="toast" role="alert">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5h.01"></path></svg>
+      <span>Kaydedilemedi.</span>
+      <button class="btn" onClick="{{retrySave}}">Tekrar dene</button>
+    </div>
+  </sc-if>
 
   <!-- TASK MODAL -->
   <sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
@@ -848,7 +964,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","default":"live","options":["live","matrix","filtered","empty","detail","edit","new","done","people","projects","viewer"]},"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","default":"live","options":["live","matrix","filtered","empty","detail","edit","new","done","people","projects","projects-edit","viewer","loading","offline"]},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   constructor(...args) {
     super(...args);
@@ -859,10 +975,10 @@ class Component extends DCLogic {
   /* ---------- static data ---------- */
   qdefs() {
     return [
-      { id: 'do', name: 'Hemen yap', tag: 'Acil · Önemli' },
-      { id: 'plan', name: 'Planla', tag: 'Önemli · Acil değil' },
-      { id: 'delegate', name: 'Devret', tag: 'Acil · Önemli değil' },
-      { id: 'drop', name: 'Bırak', tag: 'Acil değil · Önemli değil' }
+      { id: 'do', name: 'Hemen yap', tag: 'Acil · Önemli', hint: 'Bugün ilgilenilmesi gerekenler' },
+      { id: 'plan', name: 'Planla', tag: 'Acil değil · Önemli', hint: 'Önemli ama beklenebilecekler' },
+      { id: 'delegate', name: 'Devret', tag: 'Acil · Önemli değil', hint: 'Başkasına verilebilecek acil işler' },
+      { id: 'drop', name: 'Bırak', tag: 'Acil değil · Önemli değil', hint: 'Gerekirse sonra bakılacaklar' }
     ];
   }
   palette() {
@@ -927,9 +1043,10 @@ class Component extends DCLogic {
       projects: projects,
       pending: {}, dragId: null, overQ: null, dropTarget: null, hoverQ: null,
       modal: null, confirmClear: false, confirmPerson: null, confirmProject: null,
-      pf: this.emptyPf(),
-      prf: { name: '', color: this.palette()[0].hex, error: '' },
-      readOnly: false, meId: 'me'
+      pf: this.emptyPf(), pfOpen: false,
+      prf: this.emptyPrf(),
+      readOnly: false, meId: 'me',
+      loading: false, offline: false, saveFailed: false
     };
     return scr ? this.applyScreen(st, scr) : st;
   }
@@ -952,15 +1069,22 @@ class Component extends DCLogic {
     if (scr === 'done') st.view = 'done';
     if (scr === 'people') {
       const p1 = st.people.find((p) => p.id === 'p1');
-      st.view = 'people'; st.confirmPerson = 'p3';
+      st.view = 'people'; st.confirmPerson = 'p3'; st.pfOpen = true;
       st.pf = { editId: p1.id, name: p1.name, email: p1.email, role: p1.role, projectIds: p1.projectIds.slice(), error: '' };
     }
     if (scr === 'projects') { st.view = 'projects'; st.confirmProject = 'ops'; }
+    if (scr === 'projects-edit') {
+      const pm = st.projects.find((p) => p.id === 'mkt');
+      st.view = 'projects'; st.prf = { editId: pm.id, name: pm.name, color: pm.color, error: '' };
+    }
+    if (scr === 'loading') st.loading = true;
+    if (scr === 'offline') { st.offline = true; st.saveFailed = true; }
     if (scr === 'viewer') { st.readOnly = true; st.meId = 'p3'; }
     return st;
   }
 
   emptyPf() { return { editId: null, name: '', email: '', role: 'editor', projectIds: [], error: '' }; }
+  emptyPrf(color) { return { editId: null, name: '', color: color || this.palette()[0].hex, error: '' }; }
 
   /* ---------- helpers ---------- */
   iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -1090,10 +1214,11 @@ class Component extends DCLogic {
     const r = this.makePerson(f.name, f.email, { role: f.role, projectIds: f.projectIds.slice() }, f.editId);
     if (r.error) { this.setState({ pf: Object.assign({}, f, { error: r.error }) }); return; }
     const people = f.editId ? this.state.people.map((p) => (p.id === f.editId ? r.person : p)) : this.state.people.concat([r.person]);
-    this.setState({ people: people, pf: this.emptyPf() });
+    this.setState({ people: people, pf: this.emptyPf(), pfOpen: false });
   }
   editPerson(p) {
-    this.setState({ confirmPerson: null, pf: { editId: p.id, name: p.name, email: p.email, role: p.role || 'editor', projectIds: (p.projectIds || []).slice(), error: '' } });
+    this.focusId = 'p-name';
+    this.setState({ confirmPerson: null, pfOpen: true, pf: { editId: p.id, name: p.name, email: p.email, role: p.role || 'editor', projectIds: (p.projectIds || []).slice(), error: '' } });
   }
   setPf(patch) { this.setState({ pf: Object.assign({}, this.state.pf, { error: '' }, patch) }); }
   addPersonInline() {
@@ -1108,23 +1233,32 @@ class Component extends DCLogic {
   }
   removePerson(id) {
     this.setState({ confirmPerson: null, people: this.state.people.filter((p) => p.id !== id), tasks: this.state.tasks.map((t) => ((t.assigneeIds || []).indexOf(id) > -1 ? Object.assign({}, t, { assigneeIds: t.assigneeIds.filter((x) => x !== id) }) : t)),
-      pf: this.state.pf.editId === id ? this.emptyPf() : this.state.pf });
+      pf: this.state.pf.editId === id ? this.emptyPf() : this.state.pf,
+      pfOpen: this.state.pf.editId === id ? false : this.state.pfOpen });
   }
 
   /* ---------- projects ---------- */
-  addProject() {
+  saveProject() {
     const f = this.state.prf; const name = (f.name || '').trim();
     let err = '';
     if (!name) err = 'Proje adı girin.';
-    else if (this.state.projects.some((p) => p.name.toLocaleLowerCase('tr-TR') === name.toLocaleLowerCase('tr-TR'))) err = 'Bu adda bir proje zaten var.';
+    else if (this.state.projects.some((p) => p.id !== f.editId && p.name.toLocaleLowerCase('tr-TR') === name.toLocaleLowerCase('tr-TR'))) err = 'Bu adda bir proje zaten var.';
     if (err) { this.setState({ prf: Object.assign({}, f, { error: err }) }); return; }
-    this.setState({ projects: this.state.projects.concat([{ id: this.uid(), name: name, color: f.color }]), prf: { name: '', color: f.color, error: '' } });
+    const projects = f.editId
+      ? this.state.projects.map((p) => (p.id === f.editId ? Object.assign({}, p, { name: name, color: f.color }) : p))
+      : this.state.projects.concat([{ id: this.uid(), name: name, color: f.color }]);
+    this.setState({ projects: projects, prf: this.emptyPrf(f.editId ? null : f.color) });
+  }
+  editProject(p) {
+    this.focusId = 'pr-name';
+    this.setState({ confirmProject: null, prf: { editId: p.id, name: p.name, color: p.color, error: '' } });
   }
   removeProject(id) {
     this.setState({
       confirmProject: null,
       filter: this.state.filter === id ? null : this.state.filter,
       projects: this.state.projects.filter((p) => p.id !== id),
+      prf: this.state.prf.editId === id ? this.emptyPrf() : this.state.prf,
       people: this.state.people.map((p) => Object.assign({}, p, { projectIds: (p.projectIds || []).filter((x) => x !== id) })),
       tasks: this.state.tasks.map((t) => (t.projectId === id ? Object.assign({}, t, { projectId: '' }) : t))
     });
@@ -1218,15 +1352,19 @@ class Component extends DCLogic {
     const rowOf = { do: 0, plan: 0, delegate: 1, drop: 1 };
     const gCol = [1, 1], gRow = [1, 1];
     if (growOn) { gCol[colOf[growOn]] = G; gRow[rowOf[growOn]] = G; }
+    // first load: muted placeholder rows at card size (title bar widths vary)
+    const SKEL = { do: ['72%', '54%', '64%'], plan: ['60%', '78%'], delegate: ['66%', '48%'], drop: ['58%'] };
     const quads = QD.map((q) => {
       const list = visible.filter((t) => t.q === q.id).sort(order);
       return {
-        id: q.id, name: q.name, tag: q.tag, count: list.length, empty: list.length === 0,
+        id: q.id, name: q.name, tag: q.tag, hint: q.hint, count: list.length,
+        hasCount: list.length > 0 && !s.loading, empty: list.length === 0 && !s.loading,
+        skel: s.loading ? SKEL[q.id] : [],
         cls: 'q-' + q.id + (s.overQ === q.id ? ' is-over' : '') + (growOn === q.id ? ' is-expanded' : ''),
         grow: gCol[colOf[q.id]],
         enter: () => this.hoverTo(q.id, this.state.hoverQ ? 80 : 160),
         addLabel: q.name + ' kutusuna görev ekle',
-        tasks: list.map(card),
+        tasks: s.loading ? [] : list.map(card),
         add: () => this.openNew(q.id),
         dragOver: (e) => {
           e.preventDefault();
@@ -1255,7 +1393,8 @@ class Component extends DCLogic {
     const DONE = 'Bitenler';
     const filterP = s.filter ? prById[s.filter] : null;
     const noOpen = open.length === 0;
-    const showFirstRun = noOpen && !s.readOnly;
+    const showFirstRun = noOpen && !s.readOnly && !s.loading;
+    const firstUse = noOpen && !s.readOnly && !s.filter;
     const hasProjects = PR.length > 0;
     const titles = {
       matrix: ['Matris', ''],
@@ -1310,8 +1449,12 @@ class Component extends DCLogic {
       canEdit: !s.readOnly,
       tabCls: s.readOnly ? 'ro' : '',
       dialogCls: s.readOnly ? 'ro' : '',
-      emptyText: s.readOnly ? 'Burada görev yok.' : (noOpen ? 'Görev yok' : 'Burada görev yok. Bir kartı sürükleyip bırakın ya da + ile ekleyin.'),
-      me: meP ? { name: meP.name, initials: this.initials(meP.name), sub: meP.email + ' · Görüntüleyici' } : { name: 'Süleyman Kara', initials: 'SK', sub: 'suleyman@ornek.com' },
+      firstUse: firstUse, notFirstUse: !firstUse,
+      loading: !!s.loading, showCounts: !s.loading,
+      offline: !!s.offline, saveFailed: !!s.saveFailed,
+      retrySave: () => this.setState({ saveFailed: false }),
+      me: meP ? { name: meP.name, initials: this.initials(meP.name), sub: meP.email, viewer: true, title: meP.name + ' · ' + meP.email + ' · Görüntüleyici' }
+              : { name: 'Süleyman Kara', initials: 'SK', sub: 'suleyman@ornek.com', viewer: false, title: 'Süleyman Kara · suleyman@ornek.com' },
       rows: [
         { grow: gRow[0], quads: [quads[0], quads[1]] },
         { grow: gRow[1], quads: [quads[2], quads[3]] }
@@ -1346,7 +1489,9 @@ class Component extends DCLogic {
       pfSaveLabel: s.pf.editId ? 'Değişiklikleri kaydet' : 'Kişiyi ekle',
       pfName: (e) => this.setPf({ name: e.target.value }),
       pfEmail: (e) => this.setPf({ email: e.target.value }),
-      pfCancel: () => this.setState({ pf: this.emptyPf() }),
+      pfCancel: () => this.setState({ pf: this.emptyPf(), pfOpen: false }),
+      pfShown: !!s.pfOpen, pfClosed: !s.pfOpen,
+      openPf: () => { this.focusId = 'p-name'; this.setState({ pf: this.emptyPf(), pfOpen: true }); },
       savePerson: () => this.savePerson(),
       roleEditCls: s.pf.role === 'editor' ? 'on' : '', roleViewCls: s.pf.role === 'viewer' ? 'on' : '',
       roleEditPressed: s.pf.role === 'editor' ? 'true' : 'false', roleViewPressed: s.pf.role === 'viewer' ? 'true' : 'false',
@@ -1366,9 +1511,10 @@ class Component extends DCLogic {
           role: p.role === 'viewer' ? 'Görüntüleyici' : 'Düzenleyici',
           projects: pnames.length ? pnames.join(', ') : 'Proje yok',
           edit: () => this.editPerson(p), editLabel: p.name + ' kişisini düzenle',
-          idle: !asking, confirming: asking,
+          idle: !asking, confirming: asking, askPressed: asking ? 'true' : 'false',
+          rowCls: s.pfOpen && s.pf.editId === p.id ? 'editing' : '',
           warn: n > 0 ? p.name + ' silinecek. ' + n + ' görevi "Atanmadı" olarak kalacak.' : p.name + ' silinecek.',
-          ask: () => this.setState({ confirmPerson: p.id }),
+          ask: () => this.setState({ confirmPerson: this.state.confirmPerson === p.id ? null : p.id }),
           cancel: () => this.setState({ confirmPerson: null }),
           remove: () => this.removePerson(p.id), removeLabel: p.name + ' kişisini kaldır' };
       }),
@@ -1376,9 +1522,12 @@ class Component extends DCLogic {
       meLoad: open.filter((t) => (t.assigneeIds || []).indexOf('me') > -1).length + ' açık görev',
 
       /* projects */
-      prf: s.prf, prfHasError: !!s.prf.error,
+      prf: s.prf, prfHasError: !!s.prf.error, prfEditing: !!s.prf.editId,
+      prfTitle: s.prf.editId ? 'Projeyi düzenle' : 'Proje ekle',
+      prfSaveLabel: s.prf.editId ? 'Değişiklikleri kaydet' : 'Projeyi ekle',
+      prfCancel: () => this.setState({ prf: this.emptyPrf() }),
+      saveProject: () => this.saveProject(),
       prfName: (e) => this.setState({ prf: Object.assign({}, this.state.prf, { name: e.target.value, error: '' }) }),
-      addProject: () => this.addProject(),
       swatches: this.palette().map((c) => ({
         hex: c.hex, label: c.label,
         sel: s.prf.color === c.hex ? 'sel' : '', pressed: s.prf.color === c.hex ? 'true' : 'false',
@@ -1388,9 +1537,11 @@ class Component extends DCLogic {
         const n = s.tasks.filter((t) => t.projectId === p.id).length;
         const asking = s.confirmProject === p.id;
         return { name: p.name, color: p.color, load: n + ' görev',
-          idle: !asking, confirming: asking,
+          idle: !asking, confirming: asking, askPressed: asking ? 'true' : 'false',
+          rowCls: s.prf.editId === p.id ? 'editing' : '',
+          edit: () => this.editProject(p), editLabel: p.name + ' projesini düzenle',
           warn: n > 0 ? p.name + ' silinecek. ' + n + ' görevi "Projesiz" olarak kalacak.' : p.name + ' silinecek.',
-          ask: () => this.setState({ confirmProject: p.id }),
+          ask: () => this.setState({ confirmProject: this.state.confirmProject === p.id ? null : p.id }),
           cancel: () => this.setState({ confirmProject: null }),
           remove: () => this.removeProject(p.id), removeLabel: p.name + ' projesini sil' };
       }),
