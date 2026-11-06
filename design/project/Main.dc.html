@@ -13,174 +13,339 @@
 <style>
 body{margin:0}
 *{box-sizing:border-box}
-a{color:#1D5FD1}a:hover{color:#16479E}
-.app{--bg:#F3F3F1;--panel:#FFFFFF;--panel-2:#FAFAF9;--line:#E4E4E0;--line-strong:#CBCBC5;--ink:#18181B;--muted:#5F5F67;--soft:#EDEDE9;--primary:#18181B;--on-primary:#FFFFFF;--danger:#B42318;--q-do:#D2460C;--q-plan:#1D5FD1;--q-delegate:#9A6200;--q-drop:#6B6B73;--ring:#1D5FD1;--shadow:0 1px 2px rgba(20,20,20,.05),0 8px 24px -12px rgba(20,20,20,.18);
-display:flex;min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
-.app.theme-dark{--bg:#0E0E10;--panel:#161619;--panel-2:#1C1C20;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF8A7A;--q-do:#FF7A45;--q-plan:#78A6FF;--q-delegate:#E8AE45;--q-drop:#A3A3AC;--ring:#78A6FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.7)}
+a{color:#78A6FF}a:hover{color:#A3C2FF}
+.app{--bg:#0E0E10;--panel:#161619;--panel-2:#1C1C20;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--q-do:#FF7A45;--q-plan:#78A6FF;--q-delegate:#E8AE45;--q-drop:#A3A3AC;--ring:#78A6FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.7);
+display:flex;min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.4;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
 .mono{font-family:'Geist Mono',ui-monospace,monospace;font-feature-settings:"tnum"}
+.num{font-variant-numeric:tabular-nums}
 
 /* sidebar */
-.side{width:236px;flex:0 0 236px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 12px;gap:22px}
-.brand{display:flex;align-items:center;gap:10px;padding:2px 8px;font-weight:600;font-size:15px;letter-spacing:-.01em}
-.brand-mark{width:22px;height:22px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
+.side{width:208px;flex:0 0 208px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 12px;gap:16px}
+.brand{display:flex;align-items:center;gap:8px;padding:4px 8px;font-weight:600;font-size:14px;letter-spacing:-.01em}
+.brand-mark{width:18px;height:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
 .brand-mark span{border-radius:3px;background:var(--ink)}
 .brand-mark span:nth-child(2),.brand-mark span:nth-child(3){opacity:.35}
 .brand-mark span:nth-child(4){opacity:.15}
+.new-btn{display:flex;align-items:center;gap:9px;width:100%;min-height:36px;padding:0 10px 0 6px;border:1px solid var(--line-strong);border-radius:8px;background:var(--soft);color:var(--ink);font-weight:500;font-size:13px}
+.new-btn .plus{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:5px;background:var(--ink);color:var(--panel)}
+.new-btn:hover{border-color:var(--muted)}
 .nav{display:flex;flex-direction:column;gap:2px}
-.side-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:0 10px;margin-bottom:6px}
-.nav-btn{display:flex;align-items:center;gap:10px;width:100%;min-height:36px;padding:7px 10px;border:0;border-radius:8px;background:transparent;text-align:left;color:var(--muted);font-weight:500}
+.side-label{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:0 8px;margin-bottom:8px}
+.nav-btn{display:flex;align-items:center;gap:8px;width:100%;min-height:32px;padding:4px 8px;border:0;border-radius:8px;background:transparent;text-align:left;color:var(--muted);font-weight:500}
 .nav-btn:hover{background:var(--soft);color:var(--ink)}
 .nav-btn.active{background:var(--soft);color:var(--ink)}
+.nav-btn.picked{color:var(--ink);font-weight:600}
+.nav-btn .tick{flex:0 0 auto;color:var(--ink)}
 .nav-btn svg{flex:0 0 auto}
-.nav-btn .grow{flex:1}
-.nav-count{font-size:12px;color:var(--muted)}
+.nav-btn .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-count{font-size:12px;font-weight:400;color:var(--muted)}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:0 0 8px}
-.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:12px}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:8px}
+.me{display:flex;align-items:center;gap:8px;padding:8px 4px 8px 8px;border-radius:8px}
+.me .grow{flex:1;min-width:0}
+.me-name{font-weight:500;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me-mail{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me-role{display:block;margin:2px 0}
+.me-role .badge{display:inline-block;line-height:18px}
+
+/* shared bits */
+.badge{font-size:12px;padding:0 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.badge.strong{color:var(--ink);border-color:var(--line-strong)}
+.hint{font-size:12px;color:var(--muted)}
+.row-btns{display:flex;gap:8px;justify-content:flex-end}
+.row-btns .btn{flex:1}
+.avs{display:inline-flex;flex:0 0 auto}
+.avs .av{box-shadow:0 0 0 2px var(--panel-2)}
+.avs .av + .av{margin-left:-4px}
+/* the next avatar covers ~6px on the right: shift the covered initials left so they stay readable */
+.avs .av{letter-spacing:-.02em}
+.avs .av:not(:last-child){padding-right:6px}
+.who-names{overflow:hidden;text-overflow:ellipsis}
+.seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;padding:2px;background:var(--soft);border-radius:8px}
+.seg button{border:0;background:transparent;border-radius:6px;min-height:28px;padding:0 8px;font-size:12px;font-weight:500;color:var(--muted)}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
 
 /* main */
 .main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;height:100vh}
-.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 28px 16px}
-.top h1{margin:0;font-size:22px;font-weight:600;letter-spacing:-.02em}
-.top .sub{margin:2px 0 0;color:var(--muted);font-size:13px}
-.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.stat{display:flex;align-items:baseline;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:12px;color:var(--muted)}
-.stat b{font-weight:600;color:var(--ink);font-size:13px}
-.stat.warn b{color:var(--danger)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-weight:500;font-size:13px;white-space:nowrap}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 24px 12px}
+.top h1{margin:0;font-size:18px;font-weight:600;letter-spacing:-.02em}
+.top .sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-weight:500;font-size:13px;white-space:nowrap}
 .btn:hover{border-color:var(--line-strong)}
 .btn.primary{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
 .btn.primary:hover{opacity:.9}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
 .btn.ghost:hover{background:var(--soft);color:var(--ink)}
 .btn.danger{color:var(--danger)}
-.btn.danger-solid{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.danger-solid{background:var(--danger);border-color:var(--danger);color:#141416}
 .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--muted)}
 .icon-btn:hover{background:var(--soft);color:var(--ink)}
+a.icon-btn{text-decoration:none}
 
 /* matrix */
-.matrix-wrap{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:28px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:8px 10px;padding:0 28px 24px}
-.axis-x{grid-column:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.axis-y{grid-row:2;display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px}
-.axis-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:8px}
-.axis-label::after{content:"";flex:1;height:1px;background:var(--line)}
-.axis-y .axis-label{writing-mode:vertical-rl;transform:rotate(180deg);justify-content:flex-start}
-.axis-y .axis-label::after{width:1px;height:auto;flex:1}
-.matrix{grid-column:2;grid-row:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:12px;min-height:0}
-.quad{display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,background .15s}
+.matrix-wrap{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:20px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:8px;padding:12px 16px 16px 12px}
+.matrix-wrap.has-bar{grid-template-rows:auto auto minmax(0,1fr)}
+.mbar{grid-column:2;grid-row:1;display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}
+.axis-x{grid-column:2;grid-row:1;display:flex;gap:8px}
+.axis-y{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:8px}
+.matrix{grid-column:2;grid-row:2;display:flex;flex-direction:column;gap:8px;min-height:0}
+.has-bar .axis-x{grid-row:2}
+.has-bar .axis-y,.has-bar .matrix{grid-row:3}
+.axis-x .axis-label{flex:1 1 0;min-width:0}
+.axis-y .axis-label{flex:1 1 0;min-height:0}
+.axis-label{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.axis-label::before,.axis-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.axis-y .axis-label{writing-mode:vertical-rl;transform:rotate(180deg)}
+.axis-y .axis-label::before,.axis-y .axis-label::after{width:1px;height:auto;flex:1}
+.fpill{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:0 8px 0 12px;border:1px solid var(--line-strong);border-radius:999px;background:var(--soft);color:var(--ink);font-size:12px;font-weight:500;white-space:nowrap}
+.fpill svg{color:var(--muted)}
+.fpill:hover{border-color:var(--muted)}
+.fpill:hover svg{color:var(--ink)}
+.first-run{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted)}
+.first-run .btn{min-height:32px;padding:0 12px}
+.mrow{display:flex;gap:8px;flex:1 1 0;min-height:0}
+.quad{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,background .15s,flex-grow .45s cubic-bezier(.45,0,.25,1)}
+.mrow,.axis-label{transition:flex-grow .45s cubic-bezier(.45,0,.25,1)}
 .quad.is-over{border-color:var(--ring);border-style:dashed;background:var(--panel-2)}
-.quad-head{display:flex;align-items:center;gap:10px;padding:12px 10px 10px 14px;border-bottom:1px solid var(--line)}
-.q-mark{width:10px;height:10px;border-radius:3px;flex:0 0 10px}
+.quad-head{display:flex;align-items:center;gap:8px;min-height:40px;padding:4px 4px 4px 12px;border-bottom:1px solid var(--line)}
+.q-mark{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
 .q-do .q-mark{background:var(--q-do)}.q-plan .q-mark{background:var(--q-plan)}.q-delegate .q-mark{background:var(--q-delegate)}.q-drop .q-mark{background:var(--q-drop)}
-.quad-head h2{margin:0;font-size:14px;font-weight:600;letter-spacing:-.01em}
-.quad-head p{margin:0;font-size:12px;color:var(--muted)}
-.quad-head .grow{flex:1;min-width:0}
-.q-count{font-size:12px;color:var(--muted);padding:2px 8px;border-radius:999px;background:var(--soft)}
-.cards{flex:1 1 auto;min-height:0;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
-.empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--muted);font-size:13px;border:1px dashed var(--line);border-radius:10px;min-height:80px}
+.quad-head h2{margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em;display:inline}
+.quad-head p{display:none;margin:0 0 0 8px;font-size:12px;color:var(--muted)}
+.quad-head .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q-count{font-size:12px;color:var(--muted);padding:0 8px;border-radius:999px;background:var(--soft)}
+.cards{flex:1 1 auto;min-height:0;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:8px}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;min-height:64px;padding:12px;color:var(--muted);font-size:13px}
+.empty .e1{font-weight:500}
+.empty .e2{font-size:12px}
+/* skeleton (first load) */
+.sk{display:flex;flex-direction:column;justify-content:center;gap:8px;min-height:52px;padding:8px 12px 8px 36px;border-radius:8px;background:var(--panel-2);animation:skpulse 1.6s ease-in-out infinite}
+.sk span{display:block;height:8px;border-radius:6px;background:var(--line-strong)}
+.sk span + span{width:40%;opacity:.6}
+@keyframes skpulse{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}}
+/* offline notice + failed-save toast */
+.net-bar{display:flex;align-items:center;gap:8px;min-height:40px;padding:8px 24px;background:var(--panel);border-bottom:1px solid var(--line);color:var(--ink);font-size:13px}
+.net-bar svg,.toast svg{flex:0 0 auto;color:var(--danger)}
+.toast{position:fixed;z-index:40;left:224px;bottom:16px;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);padding:4px 4px 4px 12px;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:8px;box-shadow:var(--shadow);color:var(--ink);font-size:13px}
+.toast .btn{min-height:32px;padding:0 12px}
 
 /* card */
-.card{position:relative;display:flex;gap:6px;padding:10px 12px 10px 6px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;cursor:grab;transition:opacity .25s,border-color .15s,box-shadow .15s}
+.card{position:relative;display:flex;align-items:center;gap:4px;padding:4px 12px 4px 4px;background:var(--panel-2);border:1px solid transparent;border-radius:8px;cursor:grab;transition:opacity .25s,border-color .15s,box-shadow .15s}
 .card:hover{border-color:var(--line-strong);box-shadow:var(--shadow)}
+.card.is-pinned{border-color:var(--line-strong)}
 .card.is-dragging{opacity:.4}
-.card.is-pending{opacity:.55}
 .card.is-pending .card-title{text-decoration:line-through}
-.check{position:relative;z-index:2;flex:0 0 32px;width:32px;height:32px;margin-top:-5px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;border-radius:8px}
-.check span{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:transparent;transition:all .15s}
+.card.is-pending .card-body,.card.is-pending .check{opacity:.7}
+.pin{position:relative;z-index:2;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin:-4px -4px -4px 0;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted);opacity:0;transition:opacity .15s}
+.card:hover .pin,.pin:focus-visible{opacity:1}
+.pin:hover{background:var(--soft);color:var(--ink)}
+.pin.on{opacity:1;color:var(--ink)}
+.pin.on svg{fill:currentColor}
+@media (hover:none){.pin{opacity:1}}
+.check{position:relative;z-index:2;flex:0 0 28px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;border-radius:8px}
+.check span{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;color:transparent;transition:all .15s}
 .check:hover span{border-color:var(--ink)}
 .is-pending .check span{background:var(--ink);border-color:var(--ink);color:var(--panel)}
-.card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.card-proj{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-.card-title{position:static;display:block;width:100%;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:14px;line-height:1.35;color:var(--ink);cursor:pointer}
-.card-title::after{content:"";position:absolute;inset:0;border-radius:10px;z-index:1}
+.card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.line1{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap}
+.line1 .when{flex:0 0 auto;font-size:12px;color:var(--muted)}
+.line1 .when.late{color:var(--danger)}
+.desc-ic{flex:0 0 auto;display:inline-flex;margin-left:-4px;color:var(--muted)}
+.l1-sp{flex:1 1 0;min-width:0;margin-left:-8px}
+.card-title{position:static;display:block;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
+.card-title::after{content:"";position:absolute;inset:0;border-radius:8px;z-index:1}
 .card-title:focus-visible{outline:none}
 .card-title:focus-visible::after{outline:2px solid var(--ring);outline-offset:2px}
-.card-desc{margin:0;font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px;font-size:12px;color:var(--muted)}
-.who{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.av{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:0 0 20px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:10px;font-weight:600;color:var(--ink)}
+.card-desc{display:none;margin:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+.meta-l{flex:1 1 auto;display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden}
+.m-when{display:none;flex:0 0 auto}
+.proj{flex:0 1 auto;max-width:100%;display:flex;align-items:center;gap:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px;color:var(--muted)}
+@media (min-width:901px){
+.quad.is-expanded .card-desc{display:block;animation:fadein .3s ease .22s both}
+}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.who{flex:0 1 auto;max-width:60%;display:flex;align-items:center;gap:4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--ink)}
 .av.lg{width:32px;height:32px;flex-basis:32px;font-size:12px}
+.swatches{display:flex;gap:4px;flex-wrap:wrap}
+.sw{width:32px;height:32px;padding:0;border-radius:50%;border:2px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center}
+.sw span{width:20px;height:20px;border-radius:50%}
+.sw.sel{border-color:var(--ink)}
 .when{white-space:nowrap}
 .when.late{color:var(--danger);font-weight:500}
-.undo-bar{position:absolute;z-index:3;left:8px;right:8px;bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 6px 6px 12px;border-radius:8px;background:var(--primary);color:var(--on-primary);font-size:12px;font-weight:500;overflow:hidden;opacity:1}
-.card.is-pending .undo-bar{opacity:1}
-.undo-bar button{border:0;background:transparent;color:var(--on-primary);font-weight:600;font-size:12px;padding:6px 10px;border-radius:6px;text-decoration:underline;text-underline-offset:2px}
-.undo-bar::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--on-primary);opacity:.5;transform-origin:left;animation:drain 4s linear forwards}
+.undo-bar{position:absolute;z-index:3;inset:4px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 4px 0 12px;border-radius:6px;background:var(--soft);color:var(--ink);border:1px solid var(--line-strong);font-size:12px;font-weight:500;overflow:hidden}
+.undo-msg{display:flex;min-width:0;white-space:nowrap}
+.undo-t{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.undo-msg span:last-child{flex:0 0 auto}
+.undo-bar button{flex:0 0 auto;border:0;background:transparent;color:var(--ink);font-weight:600;font-size:12px;padding:4px 8px;border-radius:6px;text-decoration:underline;text-underline-offset:2px}
+.undo-bar::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--ink);opacity:.35;transform-origin:left;animation:drain 4s linear forwards}
 @keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-.card.is-pending{opacity:1}
-.card.is-pending .card-body,.card.is-pending .check{opacity:.45}
 
-/* lists (done / people) */
-.page{flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 28px 28px}
+/* lists (done / people / projects) */
+.page{flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 24px 24px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px}
-.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
 .panel-head h2{margin:0;font-size:14px;font-weight:600}
-.row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .row:last-child{border-bottom:0}
 .row .grow{flex:1 1 220px;min-width:0}
 .row-title{font-weight:500}
 .row-title.struck{text-decoration:line-through;color:var(--muted)}
-.row-sub{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);flex-wrap:wrap}
-.done-mark{width:18px;height:18px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--muted);flex:0 0 18px}
+.row-sub{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.done-mark{width:20px;height:20px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--muted);flex:0 0 20px}
 .confirm{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .people-grid{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:16px;align-items:start}
-.form-body{padding:14px;display:flex;flex-direction:column;gap:12px}
+.people-stack{display:flex;flex-direction:column;gap:16px;max-width:760px}
+.people-stack > .btn{align-self:flex-start}
+.ritem{border-bottom:1px solid var(--line)}
+.ritem:last-child{border-bottom:0}
+.ritem > .row{border-bottom:0}
+.row.editing{background:var(--soft)}
+.row.nowrap{flex-wrap:nowrap}
+.row.nowrap .grow{flex:1 1 0}
+.row-load{flex:0 0 auto;min-width:88px;text-align:right}
+.row-acts{flex:0 0 88px;display:flex;justify-content:flex-end;gap:4px;margin-left:auto}
+.ritem:last-child .confirm-strip{border-radius:0 0 12px 12px}
+.confirm-strip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 16px 8px 60px;border-top:1px dashed var(--line-strong);background:var(--panel-2);font-size:13px;color:var(--ink)}
+.confirm-strip .grow{flex:1 1 auto}
+.confirm-strip.proj-strip{padding-left:38px}
+.form-body{padding:16px;display:flex;flex-direction:column;gap:12px}
 
 /* fields */
-.field{display:flex;flex-direction:column;gap:6px}
+.field{display:flex;flex-direction:column;gap:8px}
 .field-label{font-size:12px;font-weight:500;color:var(--muted)}
 .field-label i{font-style:normal;font-weight:400;opacity:.8}
-.input{width:100%;min-height:38px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:14px}
+.input{width:100%;min-height:36px;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:14px;color-scheme:dark}
 .input:hover{border-color:var(--line-strong)}
-textarea.input{min-height:84px;resize:vertical;line-height:1.45}
+textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45}
 .input::placeholder{color:var(--muted);opacity:.75}
-.app.theme-dark .input{color-scheme:dark}
+.title-input{font-size:16px;font-weight:500;min-height:40px}
 .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .err{margin:0;font-size:12px;color:var(--danger)}
 
 /* modal */
-.overlay{position:fixed;inset:0;z-index:50;background:rgba(10,10,12,.45);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px 16px;overflow-y:auto}
-.dialog{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 64px -24px rgba(0,0,0,.45)}
-.dialog-head{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 12px 18px;border-bottom:1px solid var(--line)}
-.dialog-head h2{margin:0;font-size:16px;font-weight:600}
-.dialog-body{padding:16px 18px;display:flex;flex-direction:column;gap:16px}
-.dialog-foot{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px 16px;overflow-y:auto}
+.dialog{display:flex;flex-direction:column;width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line-strong);border-radius:12px;box-shadow:0 24px 64px -24px rgba(0,0,0,.45)}
+.dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 12px 12px 20px;border-bottom:1px solid var(--line)}
+.dialog-head h2{flex:1;min-width:0;margin:0;padding:4px 0;font-size:16px;font-weight:600;line-height:1.5}
+.dialog-head h2.vhead{padding:0}
+.dialog-body{padding:16px 20px;display:flex;flex-direction:column;gap:16px}
+.dialog-foot{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 20px;border-top:1px solid var(--line);background:var(--panel);border-radius:0 0 12px 12px}
 .dialog-foot .grow{flex:1}
-.title-input{font-size:16px;font-weight:500;min-height:42px}
-.qpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.qopt{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);text-align:left}
+.dialog-foot .confirm{flex:1}
+.vtitle{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;width:calc(100% + 16px);margin:0 -8px;padding:4px 8px;border:0;border-radius:8px;background:none;text-align:left;font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;color:var(--ink)}
+.vtitle .edit-ic{margin-top:4px}
+.vlist{display:flex;flex-direction:column;margin:-8px -8px 0}
+.vrow{display:grid;grid-template-columns:96px minmax(0,1fr) 14px;gap:12px;align-items:start;width:100%;padding:8px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;color:var(--ink)}
+.vrow:last-child{border-bottom:0}
+.vtitle:hover,.vrow:hover{background:var(--soft)}
+.vlabel{font-size:12px;color:var(--muted);padding-top:2px}
+.vval{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0;font-size:13px}
+.vval small{font-size:12px;color:var(--muted)}
+.vval.desc{display:block;white-space:pre-wrap;line-height:1.55;max-height:240px;overflow-y:auto}
+.vval .muted{color:var(--muted)}
+.vval .late{color:var(--danger);font-weight:500}
+.pchip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px 2px 2px;border:1px solid var(--line);border-radius:999px;font-size:12px}
+.edit-ic{color:var(--muted);opacity:0;transition:opacity .15s;flex:0 0 auto;margin-top:2px}
+.vtitle:hover .edit-ic,.vrow:hover .edit-ic,.vtitle:focus-visible .edit-ic,.vrow:focus-visible .edit-ic{opacity:1}
+@media (hover:none){.edit-ic{opacity:1}}
+.qpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.qopt{display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);text-align:left}
 .qopt:hover{border-color:var(--line-strong)}
-.qopt.sel{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.qopt.sel{border-color:var(--ink);background:var(--soft)}
 .qopt b{display:block;font-size:13px;font-weight:600}
-.qopt small{display:block;font-size:11px;color:var(--muted)}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 12px 0 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:13px;font-weight:500}
+.qopt small{display:block;font-size:12px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 12px 0 8px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:13px;font-weight:500}
 .chip:hover{border-color:var(--line-strong)}
-.chip.sel{border-color:var(--ink);background:var(--soft);box-shadow:inset 0 0 0 1px var(--ink)}
+.chip.sel{border-color:var(--ink);background:var(--soft)}
 .chip.add{border-style:dashed;color:var(--muted);padding:0 12px}
-.chip .av{width:22px;height:22px;flex-basis:22px;margin-left:-4px}
-.inline-add{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;padding:10px;border:1px dashed var(--line-strong);border-radius:10px}
+.chip .av{width:24px;height:24px;flex-basis:24px;margin-left:-4px}
+.inline-add{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:8px;padding:8px;border:1px dashed var(--line-strong);border-radius:8px}
 
+/* read-only (viewer) */
+.card.ro{padding-left:12px;cursor:default}
+.dialog.ro .edit-ic{display:none}
+.dialog.ro .vrow,.dialog.ro .vtitle{cursor:default;color:var(--ink)}
+.dialog.ro .vrow:hover,.dialog.ro .vtitle:hover{background:none}
+
+/* mobile-only pieces, hidden on desktop */
+.mtop,.tabbar,.mfilter{display:none}
 @media (max-width:900px){
 .app{flex-direction:column}
-.side{width:auto;flex:0 0 auto;border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 16px}
-.nav{flex-direction:row;flex-wrap:wrap}
-.nav-btn{width:auto}
-.side-projects{display:none}
-.side-foot{margin-top:0;border-top:0;padding-top:0;margin-left:auto}
-.main{height:auto}
-.top{padding:16px}
-.matrix-wrap{display:block;padding:0 16px 16px}
+.side{display:none}
+.main{height:auto;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+/* top bar: 8 + 44 + 8 + 1px border = 61px */
+.mtop{display:flex;align-items:center;gap:4px;position:sticky;top:0;z-index:20;padding:8px 8px 8px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.mtop .grow{flex:1}
+.mtop .icon-btn{width:44px;height:44px}
+.tabbar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:30;padding:4px 4px calc(4px + env(safe-area-inset-bottom));background:var(--panel);border-top:1px solid var(--line)}
+.tabbar.ro{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px;padding:0;border:0;border-radius:8px;background:none;color:var(--muted);font-size:12px;font-weight:500}
+.tab .ti{display:inline-flex;align-items:center;justify-content:center;width:40px;height:28px;border-radius:999px}
+.tab.active{color:var(--ink)}
+.tab.active .ti{background:var(--soft)}
+.tab-new{color:var(--ink)}
+.tab-new .ti{width:36px;border-radius:8px;background:var(--ink);color:var(--panel)}
+.mfilter{display:flex;gap:8px;overflow-x:auto;position:sticky;top:61px;z-index:15;padding:12px 16px;background:var(--bg);scrollbar-width:none}
+.mfilter::-webkit-scrollbar{display:none}
+.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:12px;font-weight:500;white-space:nowrap}
+.fchip.active{color:var(--ink);border-color:var(--ink);background:var(--soft)}
+.top{padding:16px 16px 8px}
+.matrix-wrap{display:block;padding:4px 16px 16px}
+.mbar .fpill{display:none}
+.first-run{margin-bottom:12px}
 .axis-x,.axis-y{display:none}
-.matrix{grid-template-columns:minmax(0,1fr);grid-template-rows:none}
-.quad{min-height:220px}
+.matrix{display:flex;flex-direction:column}
+.mrow{flex-direction:column;flex:none!important}
+.quad{flex:none!important}
+.quad-head p{display:inline}
+.quad-head{min-height:52px}
+.quad-head .icon-btn{width:44px;height:44px}
+.empty .e2{display:none}
 .cards{overflow:visible}
+.card{padding:0 12px 0 0}
+.check{flex:0 0 44px;width:44px;height:44px}
+.pin{width:40px;height:40px;margin:-12px -8px -12px -4px}
+.btn,.chip,.seg button{min-height:44px}
+.sw{width:44px;height:44px}
+.row-acts{gap:0}
+.row-acts .icon-btn{width:44px;height:44px}
+.swatches{display:grid;grid-template-columns:repeat(4,44px);gap:8px}
+.overlay{padding:12px 8px calc(12px + env(safe-area-inset-bottom));overflow:hidden}
+.dialog{max-height:calc(100dvh - 24px)}
+.dialog-body{flex:1 1 auto;min-height:0;overflow:auto}
+.toast{left:16px;bottom:calc(76px + env(safe-area-inset-bottom))}
+.net-bar{padding:8px 16px}
+.dialog-head .icon-btn{width:44px;height:44px}
+.dialog-head h2{padding:8px 0}
 .page{padding:0 16px 16px}
 .people-grid{grid-template-columns:minmax(0,1fr)}
 .inline-add{grid-template-columns:minmax(0,1fr)}
 }
-@media (max-width:520px){.two,.qpick{grid-template-columns:minmax(0,1fr)}.stat{display:none}}
+@media (max-width:520px){
+.two{grid-template-columns:minmax(0,1fr)}
+.qopt{gap:8px;padding:8px}
+/* footer: text actions on the first row, full-width save below */
+.dialog-foot{flex-wrap:wrap;padding:8px 12px 12px;row-gap:4px}
+.dialog-foot .btn.danger,.dialog-foot .btn.ghost{background:transparent;border-color:transparent;padding:0 8px}
+.dialog-foot .btn.ghost{color:var(--ink)}
+.dialog-foot > .btn.primary{flex:1 0 100%}
+.dialog-foot .confirm .btn{flex:1 1 auto}
+/* card: title alone on line 1; project · dates and avatars on line 2 */
+.line1 .when{display:none}
+.card-title{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.m-when{display:inline}
+.meta-l .proj{max-width:none}
+.meta-l .proj + .m-when::before{content:"·";margin-right:4px;font-family:'Geist',system-ui,sans-serif}
+.who-names{display:none}
+.row-load{min-width:0}
+.confirm-strip{padding-left:16px}
+}
 </style>
 </helmet>
 
@@ -192,124 +357,214 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
       Task Table
     </div>
 
+    <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
+    <button class="new-btn" onClick="{{newTask}}">
+      <span class="plus" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
+      Yeni görev
+    </button>
+    </sc-if>
+
     <nav class="nav" aria-label="Görünümler">
       <button class="nav-btn {{navMatrix}}" onClick="{{goMatrix}}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"></rect></svg>
-        <span class="grow">Matris</span><span class="nav-count mono">{{openCount}}</span>
+        <span class="grow">Matris</span><sc-if value="{{showCounts}}" hint-placeholder-val="{{ true }}"><span class="nav-count num">{{openCount}}</span></sc-if>
       </button>
       <button class="nav-btn {{navDone}}" onClick="{{goDone}}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg>
-        <span class="grow">Tamamlananlar</span><span class="nav-count mono">{{doneCount}}</span>
+        <span class="grow">{{doneName}}</span><sc-if value="{{showCounts}}" hint-placeholder-val="{{ true }}"><span class="nav-count num">{{doneCount}}</span></sc-if>
       </button>
+      <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
       <button class="nav-btn {{navPeople}}" onClick="{{goPeople}}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.8 2.7 2.5 3 5.2"></path></svg>
-        <span class="grow">Kişiler</span><span class="nav-count mono">{{peopleCount}}</span>
+        <span class="grow">Kişiler</span>
       </button>
+      <button class="nav-btn {{navProjects}}" onClick="{{goProjects}}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.4l2 2.2h8.6A1.5 1.5 0 0 1 21 9.7v8.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5Z"></path></svg>
+        <span class="grow">Projeler</span>
+      </button>
+      </sc-if>
     </nav>
 
     <div class="side-projects">
-      <div class="side-label">Projeler</div>
-      <div class="nav">
-        <button class="nav-btn {{allProjCls}}" onClick="{{clearFilter}}">
+      <div class="side-label">Filtre</div>
+      <div class="nav" role="group" aria-label="Projeye göre filtrele">
+        <button class="nav-btn {{allProjSide}}" onClick="{{clearFilter}}" aria-pressed="{{allProjPressed}}">
           <span class="dot" style="background: var(--line-strong)"></span>
           <span class="grow">Tüm projeler</span>
+          <sc-if value="{{allProjOn}}" hint-placeholder-val="{{ true }}"><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></sc-if>
         </button>
         <sc-for list="{{sideProjects}}" as="p" hint-placeholder-count="4">
-          <button class="nav-btn {{p.cls}}" onClick="{{p.pick}}">
+          <button class="nav-btn {{p.sideCls}}" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}">
             <span class="dot" style="background: {{p.color}}"></span>
-            <span class="grow">{{p.name}}</span><span class="nav-count mono">{{p.count}}</span>
+            <span class="grow">{{p.name}}</span>
+            <sc-if value="{{p.on}}" hint-placeholder-val="{{ false }}"><svg class="tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></sc-if>
+            <sc-if value="{{showCounts}}" hint-placeholder-val="{{ true }}"><span class="nav-count num">{{p.count}}</span></sc-if>
           </button>
         </sc-for>
       </div>
     </div>
 
     <div class="side-foot">
-      <button class="nav-btn" onClick="{{toggleTheme}}">
-        <sc-if value="{{isDark}}" hint-placeholder-val="{{ false }}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path></svg>
-        </sc-if>
-        <sc-if value="{{isLight}}" hint-placeholder-val="{{ true }}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"></path></svg>
-        </sc-if>
-        <span class="grow">{{themeLabel}}</span>
-      </button>
+      <div class="me">
+        <span class="av lg">{{me.initials}}</span>
+        <div class="grow">
+          <div class="me-name">{{me.name}}</div>
+          <sc-if value="{{me.viewer}}" hint-placeholder-val="{{ false }}"><span class="me-role"><span class="badge">Görüntüleyici</span></span></sc-if>
+          <div class="me-mail">{{me.sub}}</div>
+        </div>
+        <a class="icon-btn" href="Login.dc.html" aria-label="Çıkış yap" title="Çıkış yap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"></path><path d="M10 16l-4-4 4-4M6 12h10"></path></svg>
+        </a>
+      </div>
     </div>
   </aside>
 
   <main class="main">
-    <header class="top">
-      <div>
-        <h1>{{viewTitle}}</h1>
-        <p class="sub">{{viewSub}}</p>
+    <div class="mtop">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Task Table</div>
+      <span class="grow"></span>
+      <span class="av lg" title="{{me.title}}">{{me.initials}}</span>
+      <a class="icon-btn" href="Login.dc.html" aria-label="Çıkış yap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14"></path><path d="M10 16l-4-4 4-4M6 12h10"></path></svg>
+      </a>
+    </div>
+    <sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+      <div class="net-bar" role="status">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M8.5 16.5a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 5.2-2.7M19 12.9a10 10 0 0 0-2.4-1.7M2 9.3a15 15 0 0 1 4.3-2.7M22 9.3A15 15 0 0 0 11 5.1"></path><path d="M12 20h.01"></path></svg>
+        <span>Bağlantı yok. Değişiklikler bağlantı gelince kaydedilecek.</span>
       </div>
-      <div class="top-actions">
-        <sc-if value="{{isMatrix}}" hint-placeholder-val="{{ true }}">
-          <span class="stat"><b class="mono">{{openCount}}</b> açık</span>
-          <span class="stat {{lateCls}}"><b class="mono">{{lateCount}}</b> geciken</span>
-          <span class="stat"><b class="mono">{{weekCount}}</b> bu hafta bitiyor</span>
-        </sc-if>
-        <button class="btn primary" onClick="{{newTask}}">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
-          Yeni görev
-        </button>
-      </div>
-    </header>
+    </sc-if>
+    <sc-if value="{{showTop}}" hint-placeholder-val="{{ false }}">
+      <header class="top">
+        <div>
+          <h1>{{viewTitle}}</h1>
+          <p class="sub">{{viewSub}}</p>
+        </div>
+      </header>
+    </sc-if>
 
     <!-- MATRIX -->
     <sc-if value="{{isMatrix}}" hint-placeholder-val="{{ true }}">
-      <div class="matrix-wrap">
+      <div class="mfilter" role="group" aria-label="Projeye göre filtrele">
+        <button class="fchip {{allProjCls}}" onClick="{{clearFilter}}" aria-pressed="{{allProjPressed}}">Tüm projeler</button>
+        <sc-for list="{{sideProjects}}" as="p" hint-placeholder-count="4">
+          <button class="fchip {{p.cls}}" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}"><span class="dot" style="background: {{p.color}}"></span>{{p.name}}</button>
+        </sc-for>
+      </div>
+      <div class="matrix-wrap {{wrapCls}}">
+        <sc-if value="{{hasBar}}" hint-placeholder-val="{{ false }}">
+          <div class="mbar">
+            <sc-if value="{{showFirstRun}}" hint-placeholder-val="{{ false }}">
+              <div class="first-run">
+                <span>{{firstRunText}}</span>
+                <sc-if value="{{firstRunNeedsProject}}" hint-placeholder-val="{{ false }}">
+                  <button class="btn primary" onClick="{{goProjects}}">Proje oluştur</button>
+                </sc-if>
+                <sc-if value="{{firstRunCanAdd}}" hint-placeholder-val="{{ true }}">
+                  <button class="btn primary" onClick="{{newTask}}">İlk görevi ekle</button>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{hasFilter}}" hint-placeholder-val="{{ false }}">
+              <button class="fpill" onClick="{{clearFilter}}" aria-label="{{filterClearLabel}}" title="Filtreyi kaldır">
+                <span class="dot" style="background: {{filterColor}}"></span>{{filterName}}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+              </button>
+            </sc-if>
+          </div>
+        </sc-if>
         <div class="axis-x">
-          <div class="axis-label">Acil</div>
-          <div class="axis-label">Acil değil</div>
+          <div class="axis-label" style="flex-grow: {{gColL}}">Acil</div>
+          <div class="axis-label" style="flex-grow: {{gColR}}">Acil değil</div>
         </div>
         <div class="axis-y">
-          <div class="axis-label">Önemli</div>
-          <div class="axis-label">Önemli değil</div>
+          <div class="axis-label" style="flex-grow: {{gRowT}}">Önemli</div>
+          <div class="axis-label" style="flex-grow: {{gRowB}}">Önemli değil</div>
         </div>
-        <div class="matrix">
-          <sc-for list="{{quads}}" as="q" hint-placeholder-count="4">
-            <section class="quad {{q.cls}}" aria-label="{{q.name}}" onDragOver="{{q.dragOver}}" onDragLeave="{{q.dragLeave}}" onDrop="{{q.drop}}">
+        <div class="matrix" onMouseLeave="{{matrixLeave}}">
+          <sc-for list="{{rows}}" as="r" hint-placeholder-count="2">
+          <div class="mrow" style="flex-grow: {{r.grow}}">
+          <sc-for list="{{r.quads}}" as="q" hint-placeholder-count="2">
+            <section class="quad {{q.cls}}" style="flex-grow: {{q.grow}}" aria-label="{{q.name}}" onMouseEnter="{{q.enter}}" onDragOver="{{q.dragOver}}" onDragLeave="{{q.dragLeave}}" onDrop="{{q.drop}}">
               <header class="quad-head">
                 <span class="q-mark" aria-hidden="true"></span>
                 <div class="grow">
                   <h2>{{q.name}}</h2>
                   <p>{{q.tag}}</p>
                 </div>
-                <span class="q-count mono">{{q.count}}</span>
+                <sc-if value="{{q.hasCount}}" hint-placeholder-val="{{ true }}"><span class="q-count num">{{q.count}}</span></sc-if>
+                <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
                 <button class="icon-btn" onClick="{{q.add}}" aria-label="{{q.addLabel}}">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
                 </button>
+                </sc-if>
               </header>
               <div class="cards">
                 <sc-for list="{{q.tasks}}" as="t" hint-placeholder-count="2">
                   <div class="card {{t.cls}}" draggable="{{t.draggable}}" onDragStart="{{t.dragStart}}" onDragEnd="{{dragEnd}}">
+                    <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
                     <button class="check" onClick="{{t.toggle}}" aria-label="{{t.checkLabel}}">
                       <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
                     </button>
+                    </sc-if>
                     <div class="card-body">
-                      <div class="card-proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</div>
-                      <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
-                      <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ true }}">
+                      <div class="line1">
+                        <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
+                        <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
+                          <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
+                        </sc-if>
+                        <span class="l1-sp"></span>
+                        <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
+                        <button class="pin {{t.pinCls}}" onClick="{{t.pin}}" aria-label="{{t.pinLabel}}" aria-pressed="{{t.pinPressed}}" title="{{t.pinLabel}}">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg>
+                        </button>
+                        </sc-if>
+                        <span class="when mono {{t.whenCls}}">{{t.when}}</span>
+                      </div>
+                      <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                         <p class="card-desc">{{t.desc}}</p>
                       </sc-if>
                       <div class="card-meta">
-                        <span class="who"><span class="av">{{t.initials}}</span>{{t.assignee}}</span>
-                        <span class="when mono {{t.whenCls}}">{{t.when}}</span>
+                        <span class="meta-l">
+                          <sc-if value="{{showProj}}" hint-placeholder-val="{{ true }}">
+                            <span class="proj"><span class="dot" style="background: {{t.color}}"></span>{{t.project}}</span>
+                          </sc-if>
+                          <span class="when m-when mono {{t.whenCls}}">{{t.when}}</span>
+                        </span>
+                        <span class="who">
+                          <span class="avs">
+                            <sc-for list="{{t.avs}}" as="a" hint-placeholder-count="1"><span class="av">{{a}}</span></sc-for>
+                          </span>
+                          <span class="who-names">{{t.assignee}}</span>
+                        </span>
                       </div>
                     </div>
                     <sc-if value="{{t.pending}}" hint-placeholder-val="{{ false }}">
                       <div class="undo-bar" role="status">
-                        <span>Tamamlandı olarak işaretlendi</span>
+                        <span class="undo-msg"><span class="undo-t">‘{{t.doneLabel}}</span><span>’ tamamlandı</span></span>
                         <button onClick="{{t.toggle}}">Geri al</button>
                       </div>
                     </sc-if>
                   </div>
                 </sc-for>
+                <sc-if value="{{loading}}" hint-placeholder-val="{{ false }}">
+                  <sc-for list="{{q.skel}}" as="k" hint-placeholder-count="2">
+                    <div class="sk" aria-hidden="true"><span style="width: {{k}}"></span><span></span></div>
+                  </sc-for>
+                </sc-if>
                 <sc-if value="{{q.empty}}" hint-placeholder-val="{{ false }}">
-                  <div class="empty">Burada görev yok. Bir kartı sürükleyip bırakın ya da + ile ekleyin.</div>
+                  <div class="empty">
+                    <sc-if value="{{firstUse}}" hint-placeholder-val="{{ false }}"><span>{{q.hint}}</span></sc-if>
+                    <sc-if value="{{notFirstUse}}" hint-placeholder-val="{{ true }}">
+                      <span class="e1">Görev yok</span>
+                      <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}"><span class="e2">Sürükleyin ya da +&nbsp;ile ekleyin</span></sc-if>
+                    </sc-if>
+                  </div>
                 </sc-if>
               </div>
             </section>
+          </sc-for>
+          </div>
           </sc-for>
         </div>
       </div>
@@ -320,7 +575,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
       <div class="page">
         <div class="panel">
           <div class="panel-head">
-            <h2>Tamamlanan görevler</h2>
+            <h2>{{doneHeading}}</h2>
             <sc-if value="{{showClearBtn}}" hint-placeholder-val="{{ true }}">
               <button class="btn danger" onClick="{{askClear}}">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
@@ -343,6 +598,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                 <div class="row-sub"><span class="dot" style="background: {{d.color}}"></span>{{d.project}} · {{d.assignee}} · {{d.quad}}</div>
               </div>
               <span class="row-sub mono">{{d.doneText}}</span>
+              <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
               <button class="btn" onClick="{{d.restore}}">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg>
                 Geri al
@@ -350,6 +606,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
               <button class="icon-btn" onClick="{{d.remove}}" aria-label="{{d.removeLabel}}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
               </button>
+              </sc-if>
             </div>
           </sc-for>
           <sc-if value="{{doneEmpty}}" hint-placeholder-val="{{ false }}">
@@ -362,39 +619,162 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     <!-- PEOPLE -->
     <sc-if value="{{isPeople}}" hint-placeholder-val="{{ false }}">
       <div class="page">
-        <div class="people-grid">
+        <div class="people-stack">
           <div class="panel">
-            <div class="panel-head"><h2>Kişi ekle</h2></div>
-            <div class="form-body">
-              <div class="field">
-                <label class="field-label" for="p-name">Ad soyad</label>
-                <input class="input" id="p-name" type="text" placeholder="Örn. Zeynep Arslan" value="{{pf.name}}" onChange="{{pfName}}">
-              </div>
-              <div class="field">
-                <label class="field-label" for="p-mail">E-posta</label>
-                <input class="input" id="p-mail" type="email" placeholder="ad@sirket.com" value="{{pf.email}}" onChange="{{pfEmail}}">
-              </div>
-              <sc-if value="{{pfHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{pf.error}}</p></sc-if>
-              <button class="btn primary" onClick="{{addPersonPage}}">Kişiyi ekle</button>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><h2>Ekip</h2><span class="row-sub">Görev atarken bu listeden seçilir</span></div>
-            <sc-for list="{{peopleList}}" as="m" hint-placeholder-count="3">
+            <div class="panel-head"><h2>Ekip</h2><span class="row-sub">Yalnızca bu listedeki e-postalar giriş yapabilir</span></div>
+            <div class="ritem">
               <div class="row">
-                <span class="av lg">{{m.initials}}</span>
+                <span class="av lg">SK</span>
                 <div class="grow">
-                  <div class="row-title">{{m.name}}</div>
-                  <div class="row-sub">{{m.email}}</div>
+                  <div class="row-title">Süleyman Kara</div>
+                  <div class="row-sub">suleyman@ornek.com · tüm projeler · şifreyle giriş</div>
                 </div>
-                <span class="row-sub mono">{{m.load}}</span>
-                <button class="icon-btn" onClick="{{m.remove}}" aria-label="{{m.removeLabel}}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
-                </button>
+                <span class="badge strong">Yönetici</span>
+                <span class="row-sub row-load num">{{meLoad}}</span>
+                <span class="row-acts" aria-hidden="true"></span>
+              </div>
+            </div>
+            <sc-for list="{{peopleList}}" as="m" hint-placeholder-count="3">
+              <div class="ritem">
+                <div class="row {{m.rowCls}}">
+                  <span class="av lg">{{m.initials}}</span>
+                  <div class="grow">
+                    <div class="row-title">{{m.name}}</div>
+                    <div class="row-sub">{{m.email}} · {{m.projects}}</div>
+                  </div>
+                  <span class="badge">{{m.role}}</span>
+                  <span class="row-sub row-load num">{{m.load}}</span>
+                  <span class="row-acts">
+                    <button class="icon-btn" onClick="{{m.edit}}" aria-label="{{m.editLabel}}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+                    </button>
+                    <button class="icon-btn" onClick="{{m.ask}}" aria-label="{{m.removeLabel}}" aria-expanded="{{m.askPressed}}">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                    </button>
+                  </span>
+                </div>
+                <sc-if value="{{m.confirming}}" hint-placeholder-val="{{ false }}">
+                  <div class="confirm-strip" role="alert">
+                    <span class="grow">{{m.warn}}</span>
+                    <button class="btn ghost" onClick="{{m.cancel}}">Vazgeç</button>
+                    <button class="btn danger-solid" onClick="{{m.remove}}">Evet, sil</button>
+                  </div>
+                </sc-if>
               </div>
             </sc-for>
             <sc-if value="{{peopleEmpty}}" hint-placeholder-val="{{ false }}">
               <div class="row"><span class="row-sub">Henüz kimse eklenmedi.</span></div>
+            </sc-if>
+          </div>
+          <sc-if value="{{pfClosed}}" hint-placeholder-val="{{ false }}">
+            <button class="btn" onClick="{{openPf}}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+              Kişi ekle
+            </button>
+          </sc-if>
+          <sc-if value="{{pfShown}}" hint-placeholder-val="{{ true }}">
+          <div class="panel">
+            <div class="panel-head"><h2>{{pfTitle}}</h2></div>
+            <div class="form-body">
+              <div class="two">
+                <div class="field">
+                  <label class="field-label" for="p-name">Ad soyad</label>
+                  <input class="input" id="p-name" type="text" placeholder="Örn. Zeynep Arslan" value="{{pf.name}}" onChange="{{pfName}}">
+                </div>
+                <div class="field">
+                  <label class="field-label" for="p-mail">E-posta</label>
+                  <input class="input" id="p-mail" type="email" placeholder="ad@sirket.com" value="{{pf.email}}" onChange="{{pfEmail}}">
+                </div>
+              </div>
+              <div class="field">
+                <span class="field-label">İzin</span>
+                <div class="seg" role="group" aria-label="İzin">
+                  <button class="{{roleEditCls}}" onClick="{{roleEdit}}" aria-pressed="{{roleEditPressed}}">Düzenleyici</button>
+                  <button class="{{roleViewCls}}" onClick="{{roleView}}" aria-pressed="{{roleViewPressed}}">Görüntüleyici</button>
+                </div>
+                <span class="hint">{{roleHint}}</span>
+              </div>
+              <div class="field">
+                <span class="field-label">Projeler</span>
+                <div class="chips">
+                  <sc-for list="{{pfProjects}}" as="o" hint-placeholder-count="4">
+                    <button class="chip {{o.sel}}" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}">
+                      <span class="dot" style="background: {{o.color}}"></span>{{o.name}}
+                    </button>
+                  </sc-for>
+                </div>
+                <span class="hint">Kişi yalnızca seçili projelerin görevlerini görür.</span>
+              </div>
+              <sc-if value="{{pfHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{pf.error}}</p></sc-if>
+              <div class="row-btns">
+                <button class="btn ghost" onClick="{{pfCancel}}">Vazgeç</button>
+                <button class="btn primary" onClick="{{savePerson}}">{{pfSaveLabel}}</button>
+              </div>
+            </div>
+          </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- PROJECTS -->
+    <sc-if value="{{isProjects}}" hint-placeholder-val="{{ false }}">
+      <div class="page">
+        <div class="people-grid">
+          <div class="panel">
+            <div class="panel-head"><h2>{{prfTitle}}</h2></div>
+            <div class="form-body">
+              <div class="field">
+                <label class="field-label" for="pr-name">Proje adı</label>
+                <input class="input" id="pr-name" type="text" placeholder="Örn. Müşteri Portalı" value="{{prf.name}}" onChange="{{prfName}}">
+              </div>
+              <div class="field">
+                <span class="field-label">Renk</span>
+                <div class="swatches">
+                  <sc-for list="{{swatches}}" as="c" hint-placeholder-count="8">
+                    <button class="sw {{c.sel}}" onClick="{{c.pick}}" aria-label="{{c.label}}" aria-pressed="{{c.pressed}}"><span style="background: {{c.hex}}"></span></button>
+                  </sc-for>
+                </div>
+              </div>
+              <sc-if value="{{prfHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{prf.error}}</p></sc-if>
+              <div class="row-btns">
+                <sc-if value="{{prfEditing}}" hint-placeholder-val="{{ false }}">
+                  <button class="btn ghost" onClick="{{prfCancel}}">Vazgeç</button>
+                </sc-if>
+                <button class="btn primary" onClick="{{saveProject}}">{{prfSaveLabel}}</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>{{projectHeading}}</h2></div>
+            <sc-for list="{{projectList}}" as="m" hint-placeholder-count="4">
+              <div class="ritem">
+                <div class="row nowrap {{m.rowCls}}">
+                  <span class="dot" style="background: {{m.color}}; width: 10px; height: 10px; flex-basis: 10px"></span>
+                  <div class="grow">
+                    <div class="row-title">{{m.name}}</div>
+                  </div>
+                  <span class="row-sub num">{{m.load}}</span>
+                  <span class="row-acts">
+                    <button class="icon-btn" onClick="{{m.edit}}" aria-label="{{m.editLabel}}">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+                    </button>
+                    <button class="icon-btn" onClick="{{m.ask}}" aria-label="{{m.removeLabel}}" aria-expanded="{{m.askPressed}}">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+                    </button>
+                  </span>
+                </div>
+                <sc-if value="{{m.confirming}}" hint-placeholder-val="{{ false }}">
+                  <div class="confirm-strip proj-strip" role="alert">
+                    <span class="grow">{{m.warn}}</span>
+                    <button class="btn ghost" onClick="{{m.cancel}}">Vazgeç</button>
+                    <button class="btn danger-solid" onClick="{{m.remove}}">Evet, sil</button>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <sc-if value="{{projectsEmpty}}" hint-placeholder-val="{{ false }}">
+              <div class="row"><span class="row-sub">Henüz proje yok. Görev ekleyebilmek için en az bir proje gerekir.</span></div>
             </sc-if>
           </div>
         </div>
@@ -402,23 +782,100 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
     </sc-if>
   </main>
 
+  <nav class="tabbar {{tabCls}}" aria-label="Görünümler">
+    <button class="tab {{navMatrix}}" onClick="{{goMatrix}}">
+      <span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"></rect></svg></span>Matris
+    </button>
+    <button class="tab {{navDone}}" onClick="{{goDone}}">
+      <span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg></span>{{doneName}}
+    </button>
+    <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
+    <button class="tab tab-new" onClick="{{newTask}}" aria-label="Yeni görev">
+      <span class="ti"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>Yeni
+    </button>
+    <button class="tab {{navPeople}}" onClick="{{goPeople}}">
+      <span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.8 2.7 2.5 3 5.2"></path></svg></span>Kişiler
+    </button>
+    <button class="tab {{navProjects}}" onClick="{{goProjects}}">
+      <span class="ti"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.4l2 2.2h8.6A1.5 1.5 0 0 1 21 9.7v8.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5Z"></path></svg></span>Projeler
+    </button>
+    </sc-if>
+  </nav>
+
+  <sc-if value="{{saveFailed}}" hint-placeholder-val="{{ false }}">
+    <div class="toast" role="alert">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5h.01"></path></svg>
+      <span>Kaydedilemedi.</span>
+      <button class="btn" onClick="{{retrySave}}">Tekrar dene</button>
+    </div>
+  </sc-if>
+
   <!-- TASK MODAL -->
   <sc-if value="{{modalOpen}}" hint-placeholder-val="{{ false }}">
     <div class="overlay">
-      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+      <div class="dialog {{dialogCls}}" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
         <div class="dialog-head">
-          <h2 id="dlg-title">{{modalTitle}}</h2>
-          <button class="icon-btn" onClick="{{closeModal}}" aria-label="Kapat">
+          <sc-if value="{{isView}}" hint-placeholder-val="{{ false }}">
+            <h2 class="vhead" id="dlg-title"><button class="vtitle" onClick="{{vw.eTitle}}" disabled="{{vw.ro}}" aria-label="{{vw.titleLabel}}"><span>{{vw.title}}</span><svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button></h2>
+          </sc-if>
+          <sc-if value="{{isFormMode}}" hint-placeholder-val="{{ true }}">
+            <h2 id="dlg-title">{{modalTitle}}</h2>
+          </sc-if>
+          <button class="icon-btn" onClick="{{closeAll}}" aria-label="Kapat">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
           </button>
         </div>
+        <sc-if value="{{isView}}" hint-placeholder-val="{{ false }}">
+          <div class="dialog-body">
+            <div class="vlist">
+              <button class="vrow" onClick="{{vw.eQ}}" disabled="{{vw.ro}}">
+                <span class="vlabel">Kutu</span>
+                <span class="vval {{vw.qCls}}"><span class="q-mark" aria-hidden="true"></span>{{vw.qName}}<small>{{vw.qTag}}</small></span>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+              <button class="vrow" onClick="{{vw.eProj}}" disabled="{{vw.ro}}">
+                <span class="vlabel">Proje</span>
+                <span class="vval"><span class="dot" style="background: {{vw.color}}"></span>{{vw.project}}</span>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+              <button class="vrow" onClick="{{vw.ePeople}}" disabled="{{vw.ro}}">
+                <span class="vlabel">Sorumlular</span>
+                <span class="vval">
+                  <sc-for list="{{vw.people}}" as="p" hint-placeholder-count="1"><span class="pchip"><span class="av">{{p.initials}}</span>{{p.name}}</span></sc-for>
+                  <sc-if value="{{vw.noPeople}}" hint-placeholder-val="{{ false }}"><span class="muted">Atanmadı</span></sc-if>
+                </span>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+              <button class="vrow" onClick="{{vw.eDates}}" disabled="{{vw.ro}}">
+                <span class="vlabel">Tarih</span>
+                <span class="vval mono"><span>{{vw.dates}}</span><sc-if value="{{vw.late}}" hint-placeholder-val="{{ false }}"><span class="late">Gecikti</span></sc-if></span>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+              <button class="vrow" onClick="{{vw.eDesc}}" disabled="{{vw.ro}}">
+                <span class="vlabel">Açıklama</span>
+                <sc-if value="{{vw.hasDesc}}" hint-placeholder-val="{{ true }}"><span class="vval desc">{{vw.desc}}</span></sc-if>
+                <sc-if value="{{vw.noDesc}}" hint-placeholder-val="{{ false }}"><span class="vval"><span class="muted">Açıklama eklenmemiş</span></span></sc-if>
+                <svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg>
+              </button>
+            </div>
+          </div>
+          <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
+            <div class="dialog-foot">
+              <span class="grow"></span>
+              <button class="btn primary" onClick="{{vw.eTitle}}">Düzenle</button>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{isFormMode}}" hint-placeholder-val="{{ true }}">
         <div class="dialog-body">
           <div class="field">
             <label class="field-label" for="f-title">Görev</label>
             <input class="input title-input" id="f-title" type="text" placeholder="Ne yapılması gerekiyor?" value="{{form.title}}" onChange="{{fTitle}}">
+            <sc-if value="{{errTitle}}" hint-placeholder-val="{{ false }}"><p class="err" role="alert">{{errText}}</p></sc-if>
           </div>
 
-          <div class="field">
+          <div class="field" id="f-q">
             <span class="field-label">Kutu</span>
             <div class="qpick">
               <sc-for list="{{qOptions}}" as="o" hint-placeholder-count="4">
@@ -428,9 +885,10 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                 </button>
               </sc-for>
             </div>
+            <sc-if value="{{errQ}}" hint-placeholder-val="{{ false }}"><p class="err" role="alert">{{errText}}</p></sc-if>
           </div>
 
-          <div class="field">
+          <div class="field" id="f-proj">
             <span class="field-label">Proje</span>
             <div class="chips">
               <sc-for list="{{projOptions}}" as="o" hint-placeholder-count="4">
@@ -439,10 +897,11 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
                 </button>
               </sc-for>
             </div>
+            <sc-if value="{{errProj}}" hint-placeholder-val="{{ false }}"><p class="err" role="alert">{{errText}}</p></sc-if>
           </div>
 
-          <div class="field">
-            <span class="field-label">Sorumlu kişi</span>
+          <div class="field" id="f-people">
+            <span class="field-label">Sorumlu kişiler <i>(birden fazla seçilebilir)</i></span>
             <div class="chips">
               <sc-for list="{{personOptions}}" as="o" hint-placeholder-count="3">
                 <button class="chip {{o.sel}}" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}">
@@ -461,6 +920,7 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
             <sc-if value="{{npHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{np.error}}</p></sc-if>
           </div>
 
+          <div class="field">
           <div class="two">
             <div class="field">
               <label class="field-label" for="f-start">Başlangıç</label>
@@ -471,29 +931,40 @@ textarea.input{min-height:84px;resize:vertical;line-height:1.45}
               <input class="input mono" id="f-end" type="date" value="{{form.end}}" onChange="{{fEnd}}">
             </div>
           </div>
+          <sc-if value="{{errDates}}" hint-placeholder-val="{{ false }}"><p class="err" role="alert">{{errText}}</p></sc-if>
+          </div>
 
           <div class="field">
             <label class="field-label" for="f-desc">Açıklama <i>(isteğe bağlı)</i></label>
             <textarea class="input" id="f-desc" placeholder="Notlar, bağlantılar, ayrıntılar…" value="{{form.desc}}" onChange="{{fDesc}}"></textarea>
           </div>
-
-          <sc-if value="{{formHasError}}" hint-placeholder-val="{{ false }}"><p class="err">{{formError}}</p></sc-if>
         </div>
         <div class="dialog-foot">
+          <sc-if value="{{askDelete}}" hint-placeholder-val="{{ false }}">
+            <div class="confirm" role="alert">
+              <span>Görev kalıcı olarak silinecek.</span>
+              <span class="grow"></span>
+              <button class="btn ghost" onClick="{{cancelDelete}}">Vazgeç</button>
+              <button class="btn danger-solid" onClick="{{deleteTask}}">Evet, sil</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{footNormal}}" hint-placeholder-val="{{ true }}">
           <sc-if value="{{isEdit}}" hint-placeholder-val="{{ false }}">
-            <button class="btn danger" onClick="{{deleteTask}}">Görevi sil</button>
+            <button class="btn danger" onClick="{{confirmDelete}}">Görevi sil</button>
           </sc-if>
           <span class="grow"></span>
           <button class="btn ghost" onClick="{{closeModal}}">Vazgeç</button>
           <button class="btn primary" onClick="{{saveModal}}">{{saveLabel}}</button>
+          </sc-if>
         </div>
+        </sc-if>
       </div>
     </div>
   </sc-if>
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","default":"live","options":["live","matrix","filtered","empty","detail","edit","new","done","people","projects","projects-edit","viewer","loading","offline"]},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   constructor(...args) {
     super(...args);
@@ -504,18 +975,31 @@ class Component extends DCLogic {
   /* ---------- static data ---------- */
   qdefs() {
     return [
-      { id: 'do', name: 'Hemen yap', tag: 'Acil · Önemli' },
-      { id: 'plan', name: 'Planla', tag: 'Önemli · Acil değil' },
-      { id: 'delegate', name: 'Devret', tag: 'Acil · Önemli değil' },
-      { id: 'drop', name: 'Bırak', tag: 'Acil değil · Önemli değil' }
+      { id: 'do', name: 'Hemen yap', tag: 'Acil · Önemli', hint: 'Bugün ilgilenilmesi gerekenler' },
+      { id: 'plan', name: 'Planla', tag: 'Acil değil · Önemli', hint: 'Önemli ama beklenebilecekler' },
+      { id: 'delegate', name: 'Devret', tag: 'Acil · Önemli değil', hint: 'Başkasına verilebilecek acil işler' },
+      { id: 'drop', name: 'Bırak', tag: 'Acil değil · Önemli değil', hint: 'Gerekirse sonra bakılacaklar' }
     ];
   }
-  projects() {
+  palette() {
     return [
-      { id: 'web', name: 'Web Sitesi', color: '#2563EB' },
-      { id: 'mob', name: 'Mobil Uygulama', color: '#0F9488' },
-      { id: 'mkt', name: 'Pazarlama', color: '#D2460C' },
-      { id: 'ops', name: 'Operasyon', color: '#8B5CF6' }
+      // muted, equal lightness (OKLCH L 0.72, C 0.07-0.095) so no project competes with the quadrant colours
+      { hex: '#5EB6B2', label: 'Deniz' }, { hex: '#7DB485', label: 'Adaçayı' }, { hex: '#C79B69', label: 'Kum' },
+      { hex: '#D08CB2', label: 'Gül' }, { hex: '#A89AD7', label: 'Lavanta' }, { hex: '#A6AB63', label: 'Zeytin' },
+      { hex: '#DA8D83', label: 'Kil' }, { hex: '#75AEC7', label: 'Çelik' }
+    ];
+  }
+  // saved data from before the palette change: old default colour -> new one
+  oldColors() {
+    return { '#2563EB': '#5EB6B2', '#0F9488': '#7DB485', '#D2460C': '#C79B69', '#8B5CF6': '#A89AD7',
+      '#CA8A04': '#A6AB63', '#DB2777': '#D08CB2', '#16A34A': '#DA8D83', '#64748B': '#75AEC7' };
+  }
+  defaultProjects() {
+    return [
+      { id: 'web', name: 'Web Sitesi', color: '#5EB6B2' },
+      { id: 'mob', name: 'Mobil Uygulama', color: '#7DB485' },
+      { id: 'mkt', name: 'Pazarlama', color: '#C79B69' },
+      { id: 'ops', name: 'Operasyon', color: '#A89AD7' }
     ];
   }
   seed() {
@@ -523,36 +1007,84 @@ class Component extends DCLogic {
     const d = (n) => { const x = new Date(); x.setDate(x.getDate() + n); return this.iso(x); };
     return {
       people: [
-        { id: 'p1', name: 'Ayşe Demir', email: 'ayse@ornek.com' },
-        { id: 'p2', name: 'Mert Kaya', email: 'mert@ornek.com' },
-        { id: 'p3', name: 'Elif Şahin', email: 'elif@ornek.com' }
+        { id: 'p1', name: 'Ayşe Demir', email: 'ayse@ornek.com', role: 'editor', projectIds: ['web', 'mob', 'mkt'] },
+        { id: 'p2', name: 'Mert Kaya', email: 'mert@ornek.com', role: 'editor', projectIds: ['web', 'ops'] },
+        { id: 'p3', name: 'Elif Şahin', email: 'elif@ornek.com', role: 'viewer', projectIds: ['web', 'mkt', 'ops'] }
       ],
       tasks: [
-        { id: 't1', q: 'do', title: 'Ödeme sayfasındaki hatayı düzelt', desc: 'Kartla ödemede 3D Secure dönüşünde boş sayfa açılıyor. Hata kayıtları #odeme kanalında paylaşıldı.', projectId: 'web', assigneeId: 'p2', start: d(-2), end: d(1), doneAt: null },
-        { id: 't2', q: 'do', title: 'Kasım bülteni metnini onayla', desc: '', projectId: 'mkt', assigneeId: 'p1', start: d(-3), end: d(-1), doneAt: null },
-        { id: 't3', q: 'plan', title: 'Q1 yol haritası taslağı', desc: 'Ekiplerden gelen talepleri topla, önceliklendir ve ilk taslağı yönetimle paylaş.', projectId: 'ops', assigneeId: 'p3', start: d(5), end: d(16), doneAt: null },
-        { id: 't4', q: 'plan', title: 'Karşılama ekranlarını yeniden tasarla', desc: 'Mevcut 5 adımlı akışı 3 adıma indir. Kullanıcı testlerinden gelen notlar Figma dosyasında.', projectId: 'mob', assigneeId: 'p1', start: d(7), end: d(23), doneAt: null },
-        { id: 't5', q: 'delegate', title: 'Toplantı odası rezervasyonları', desc: '', projectId: 'ops', assigneeId: 'p2', start: t, end: d(2), doneAt: null },
-        { id: 't6', q: 'delegate', title: 'Sosyal medya görsellerini boyutlandır', desc: 'Instagram ve LinkedIn için üçer boyut.', projectId: 'mkt', assigneeId: 'p3', start: d(1), end: d(3), doneAt: null },
-        { id: 't7', q: 'drop', title: 'Eski blog yazılarını arşivle', desc: '', projectId: 'web', assigneeId: 'p3', start: d(10), end: d(25), doneAt: null },
-        { id: 't8', q: 'do', title: 'Alan adı yenilemesi', desc: '', projectId: 'web', assigneeId: 'p2', start: d(-6), end: d(-4), doneAt: Date.now() - 86400000 }
+        { id: 't1', q: 'do', title: 'Ödeme sayfasındaki hatayı düzelt', desc: 'Kartla ödemede 3D Secure dönüşünde boş sayfa açılıyor. Hata kayıtları #odeme kanalında paylaşıldı.', projectId: 'web', assigneeIds: ['p2', 'p1'], start: d(-2), end: d(1), doneAt: null },
+        { id: 't2', q: 'do', title: 'Kasım bülteni metnini onayla', desc: '', projectId: 'mkt', assigneeIds: ['p1'], start: d(-3), end: d(-1), doneAt: null },
+        { id: 't3', q: 'plan', title: 'Q1 yol haritası taslağı', desc: 'Ekiplerden gelen talepleri topla, önceliklendir ve ilk taslağı yönetimle paylaş.', projectId: 'ops', assigneeIds: ['p3'], start: d(5), end: d(16), doneAt: null },
+        { id: 't4', q: 'plan', title: 'Karşılama ekranlarını yeniden tasarla', desc: 'Mevcut 5 adımlı akışı 3 adıma indir. Kullanıcı testlerinden gelen notlar Figma dosyasında.', projectId: 'mob', assigneeIds: ['p1'], start: d(7), end: d(23), doneAt: null },
+        { id: 't5', q: 'delegate', title: 'Toplantı odası rezervasyonları', desc: '', projectId: 'ops', assigneeIds: ['p2'], start: t, end: d(2), doneAt: null },
+        { id: 't6', q: 'delegate', title: 'Sosyal medya görsellerini boyutlandır', desc: 'Instagram ve LinkedIn için üçer boyut.', projectId: 'mkt', assigneeIds: ['p3'], start: d(1), end: d(3), doneAt: null },
+        { id: 't7', q: 'drop', title: 'Eski blog yazılarını arşivle', desc: '', projectId: 'web', assigneeIds: ['p3'], start: d(10), end: d(25), doneAt: null },
+        { id: 't8', q: 'do', title: 'Alan adı yenilemesi', desc: '', projectId: 'web', assigneeIds: ['p2'], start: d(-6), end: d(-4), doneAt: Date.now() - 86400000 }
       ]
     };
   }
   initialState() {
+    // a fixed screen (used by the design boards) starts from sample data and never saves
+    const scr = this.props && this.props.screen && this.props.screen !== 'live' ? this.props.screen : null;
+    this.preview = !!scr;
     let saved = null;
-    try { saved = JSON.parse(window.localStorage.getItem('task-table-proto-v1') || 'null'); } catch (e) { saved = null; }
-    let dark = false;
-    try { dark = window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) {}
+    if (!scr) { try { saved = JSON.parse(window.localStorage.getItem('task-table-proto-v1') || 'null'); } catch (e) { saved = null; } }
     const base = saved && saved.tasks ? saved : this.seed();
-    return {
-      view: 'matrix', dark: typeof base.dark === 'boolean' ? base.dark : dark,
-      filter: null, tasks: base.tasks, people: base.people,
-      pending: {}, dragId: null, overQ: null,
-      modal: null, confirmClear: false,
-      pf: { name: '', email: '', error: '' }
+    const OLD = this.oldColors();
+    const projects = (base.projects || this.defaultProjects()).map((p) => {
+      const c = OLD[String(p.color || '').toUpperCase()];
+      return c ? Object.assign({}, p, { color: c }) : p;
+    });
+    const tasks = base.tasks.map((t) => (t.assigneeIds ? t : Object.assign({}, t, { assigneeIds: t.assigneeId ? [t.assigneeId] : [] })));
+    const people = base.people.map((p) => Object.assign({ role: 'editor', projectIds: projects.map((x) => x.id) }, p));
+    const st = {
+      view: 'matrix',
+      filter: null, tasks: tasks, people: people,
+      projects: projects,
+      pending: {}, dragId: null, overQ: null, dropTarget: null, hoverQ: null,
+      modal: null, confirmClear: false, confirmPerson: null, confirmProject: null,
+      pf: this.emptyPf(), pfOpen: false,
+      prf: this.emptyPrf(),
+      readOnly: false, meId: 'me',
+      loading: false, offline: false, saveFailed: false
     };
+    return scr ? this.applyScreen(st, scr) : st;
   }
+  modalFor(t, mode) {
+    return { mode: mode, id: t ? t.id : null, error: null, inlineAdd: false, np: { name: '', email: '', error: '' },
+      form: t ? { title: t.title, desc: t.desc || '', q: t.q, projectId: t.projectId, assigneeIds: (t.assigneeIds || []).slice(), start: t.start || '', end: t.end || '' }
+              : { title: '', desc: '', q: '', projectId: '', assigneeIds: [], start: this.iso(new Date()), end: '' } };
+  }
+  applyScreen(st, scr) {
+    const t1 = st.tasks.find((t) => t.id === 't1');
+    if (scr === 'filtered') st.filter = 'web';
+    if (scr === 'empty') st.tasks = [];
+    if (scr === 'detail') st.modal = this.modalFor(t1, 'view');
+    if (scr === 'edit') st.modal = Object.assign(this.modalFor(t1, 'edit'), { from: 'view' });
+    if (scr === 'new') {
+      const m = this.modalFor(null, 'new');
+      m.form = Object.assign(m.form, { title: 'Basın bülteni taslağı', q: 'plan', projectId: 'mkt', assigneeIds: ['me', 'p1'] });
+      st.modal = m;
+    }
+    if (scr === 'done') st.view = 'done';
+    if (scr === 'people') {
+      const p1 = st.people.find((p) => p.id === 'p1');
+      st.view = 'people'; st.confirmPerson = 'p3'; st.pfOpen = true;
+      st.pf = { editId: p1.id, name: p1.name, email: p1.email, role: p1.role, projectIds: p1.projectIds.slice(), error: '' };
+    }
+    if (scr === 'projects') { st.view = 'projects'; st.confirmProject = 'ops'; }
+    if (scr === 'projects-edit') {
+      const pm = st.projects.find((p) => p.id === 'mkt');
+      st.view = 'projects'; st.prf = { editId: pm.id, name: pm.name, color: pm.color, error: '' };
+    }
+    if (scr === 'loading') st.loading = true;
+    if (scr === 'offline') { st.offline = true; st.saveFailed = true; }
+    if (scr === 'viewer') { st.readOnly = true; st.meId = 'p3'; }
+    return st;
+  }
+
+  emptyPf() { return { editId: null, name: '', email: '', role: 'editor', projectIds: [], error: '' }; }
+  emptyPrf(color) { return { editId: null, name: '', color: color || this.palette()[0].hex, error: '' }; }
 
   /* ---------- helpers ---------- */
   iso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -566,14 +1098,34 @@ class Component extends DCLogic {
   uid() { return Math.random().toString(36).slice(2, 10); }
   validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
-  componentDidUpdate() { this.persist(); }
-  componentWillUnmount() { Object.keys(this.timers).forEach((k) => clearTimeout(this.timers[k])); }
+  componentDidUpdate() {
+    this.persist();
+    if (this.focusId) {
+      const id = this.focusId; this.focusId = null;
+      try {
+        const el = document.getElementById(id);
+        if (el) { el.scrollIntoView({ block: 'center' }); if (el.focus && /^(INPUT|TEXTAREA)$/.test(el.tagName)) el.focus(); }
+      } catch (e) {}
+    }
+  }
+  componentWillUnmount() {
+    Object.keys(this.timers).forEach((k) => clearTimeout(this.timers[k]));
+    clearTimeout(this.hoverT);
+  }
+
+  /* ---------- hover: quadrant growth ---------- */
+  hoverTo(qid, delay) {
+    clearTimeout(this.hoverT);
+    this.hoverT = setTimeout(() => { if (this.state.hoverQ !== qid) this.setState({ hoverQ: qid }); }, delay);
+  }
+
   persist() {
+    if (this.preview) return;
     const s = this.state;
     const now = Date.now();
     // a card still fading counts as done after a reload
     const tasks = s.tasks.map((t) => (s.pending[t.id] && !t.doneAt ? Object.assign({}, t, { doneAt: now }) : t));
-    try { window.localStorage.setItem('task-table-proto-v1', JSON.stringify({ tasks: tasks, people: s.people, dark: s.dark })); } catch (e) {}
+    try { window.localStorage.setItem('task-table-proto-v1', JSON.stringify({ tasks: tasks, people: s.people, projects: s.projects })); } catch (e) {}
   }
 
   /* ---------- task actions ---------- */
@@ -596,31 +1148,51 @@ class Component extends DCLogic {
   }
 
   openNew(q) {
-    this.setState({ modal: { mode: 'new', id: null, error: '', inlineAdd: false,
+    this.setState({ modal: { mode: 'new', id: null, error: null, inlineAdd: false,
       np: { name: '', email: '', error: '' },
-      form: { title: '', desc: '', q: q || '', projectId: this.state.filter || '', assigneeId: '', start: this.iso(new Date()), end: '' } } });
+      form: { title: '', desc: '', q: q || '', projectId: this.state.filter || '', assigneeIds: [], start: this.iso(new Date()), end: '' } } });
   }
-  openEdit(t) {
-    this.setState({ modal: { mode: 'edit', id: t.id, error: '', inlineAdd: false,
+  openView(t) { this.openEdit(t, 'view'); }
+  editFromView(focusId) {
+    const m = this.state.modal;
+    this.focusId = focusId;
+    this.setState({ modal: Object.assign({}, m, { mode: 'edit', from: 'view' }) });
+  }
+  closeModal() {
+    const m = this.state.modal;
+    const t = m && m.from === 'view' ? this.state.tasks.find((x) => x.id === m.id) : null;
+    if (t) this.openView(t); else this.setState({ modal: null });
+  }
+  openEdit(t, mode) {
+    this.setState({ modal: { mode: mode || 'edit', id: t.id, error: null, inlineAdd: false,
       np: { name: '', email: '', error: '' },
-      form: { title: t.title, desc: t.desc || '', q: t.q, projectId: t.projectId, assigneeId: t.assigneeId || '', start: t.start || '', end: t.end || '' } } });
+      form: { title: t.title, desc: t.desc || '', q: t.q, projectId: t.projectId, assigneeIds: (t.assigneeIds || []).slice(), start: t.start || '', end: t.end || '' } } });
   }
-  setForm(patch) { const m = this.state.modal; this.setState({ modal: Object.assign({}, m, { error: '', form: Object.assign({}, m.form, patch) }) }); }
+  setForm(patch) { const m = this.state.modal; this.setState({ modal: Object.assign({}, m, { error: null, form: Object.assign({}, m.form, patch) }) }); }
   setNp(patch) { const m = this.state.modal; this.setState({ modal: Object.assign({}, m, { np: Object.assign({}, m.np, { error: '' }, patch) }) }); }
 
   saveModal() {
     const m = this.state.modal; const f = m.form;
-    let err = '';
-    if (!f.title.trim()) err = 'Görev adı boş olamaz.';
-    else if (!f.q) err = 'Görevin hangi kutuya gideceğini seçin.';
-    else if (!f.projectId) err = 'Bir proje seçin.';
-    else if (f.start && f.end && f.end < f.start) err = 'Bitiş tarihi başlangıçtan önce olamaz.';
-    if (err) { this.setState({ modal: Object.assign({}, m, { error: err }) }); return; }
-    const data = { title: f.title.trim(), desc: f.desc.trim(), q: f.q, projectId: f.projectId, assigneeId: f.assigneeId, start: f.start, end: f.end };
+    // the error is shown under the field it belongs to
+    let err = null;
+    if (!f.title.trim()) err = { field: 'title', text: 'Görev adı boş olamaz.' };
+    else if (!f.q) err = { field: 'q', text: 'Görevin hangi kutuya gideceğini seçin.' };
+    else if (!f.projectId) err = { field: 'proj', text: 'Bir proje seçin.' };
+    else if (f.start && f.end && f.end < f.start) err = { field: 'dates', text: 'Bitiş tarihi başlangıçtan önce olamaz.' };
+    if (err) {
+      this.focusId = { title: 'f-title', q: 'f-q', proj: 'f-proj', dates: 'f-end' }[err.field];
+      this.setState({ modal: Object.assign({}, m, { error: err }) });
+      return;
+    }
+    const data = { title: f.title.trim(), desc: f.desc.trim(), q: f.q, projectId: f.projectId, assigneeIds: f.assigneeIds, start: f.start, end: f.end };
     if (m.mode === 'new') {
       this.setState({ modal: null, tasks: this.state.tasks.concat([Object.assign({ id: this.uid(), doneAt: null }, data)]) });
     } else {
-      this.setState({ modal: null, tasks: this.state.tasks.map((t) => (t.id === m.id ? Object.assign({}, t, data) : t)) });
+      const tasks = this.state.tasks.map((t) => (t.id === m.id ? Object.assign({}, t, data) : t));
+      this.setState({ tasks: tasks, modal: null }, () => {
+        // edited from the detail view: go back to it showing the new values
+        if (m.from === 'view') { const t = tasks.find((x) => x.id === m.id); if (t) this.openView(t); }
+      });
     }
   }
   deleteTask() {
@@ -629,50 +1201,122 @@ class Component extends DCLogic {
   }
 
   /* ---------- people ---------- */
-  makePerson(name, email) {
+  makePerson(name, email, extra, editId) {
     name = (name || '').trim(); email = (email || '').trim();
     if (!name) return { error: 'Ad girin.' };
     if (!this.validEmail(email)) return { error: 'Geçerli bir e-posta girin.' };
-    if (this.state.people.some((p) => p.email.toLowerCase() === email.toLowerCase())) return { error: 'Bu e-posta zaten listede.' };
-    return { person: { id: this.uid(), name: name, email: email } };
+    if (this.state.people.some((p) => p.id !== editId && p.email.toLowerCase() === email.toLowerCase())) return { error: 'Bu e-posta zaten listede.' };
+    return { person: Object.assign({ id: editId || this.uid(), name: name, email: email }, extra) };
   }
-  addPersonPage() {
-    const r = this.makePerson(this.state.pf.name, this.state.pf.email);
-    if (r.error) { this.setState({ pf: Object.assign({}, this.state.pf, { error: r.error }) }); return; }
-    this.setState({ people: this.state.people.concat([r.person]), pf: { name: '', email: '', error: '' } });
+  savePerson() {
+    const f = this.state.pf;
+    if (!f.projectIds.length) { this.setState({ pf: Object.assign({}, f, { error: 'En az bir proje seçin.' }) }); return; }
+    const r = this.makePerson(f.name, f.email, { role: f.role, projectIds: f.projectIds.slice() }, f.editId);
+    if (r.error) { this.setState({ pf: Object.assign({}, f, { error: r.error }) }); return; }
+    const people = f.editId ? this.state.people.map((p) => (p.id === f.editId ? r.person : p)) : this.state.people.concat([r.person]);
+    this.setState({ people: people, pf: this.emptyPf(), pfOpen: false });
   }
+  editPerson(p) {
+    this.focusId = 'p-name';
+    this.setState({ confirmPerson: null, pfOpen: true, pf: { editId: p.id, name: p.name, email: p.email, role: p.role || 'editor', projectIds: (p.projectIds || []).slice(), error: '' } });
+  }
+  setPf(patch) { this.setState({ pf: Object.assign({}, this.state.pf, { error: '' }, patch) }); }
   addPersonInline() {
     const m = this.state.modal;
-    const r = this.makePerson(m.np.name, m.np.email);
+    // a person added from the task form gets editor access to that task's project
+    const r = this.makePerson(m.np.name, m.np.email, { role: 'editor', projectIds: m.form.projectId ? [m.form.projectId] : this.state.projects.map((x) => x.id) });
     if (r.error) { this.setState({ modal: Object.assign({}, m, { np: Object.assign({}, m.np, { error: r.error }) }) }); return; }
     this.setState({
       people: this.state.people.concat([r.person]),
-      modal: Object.assign({}, m, { inlineAdd: false, np: { name: '', email: '', error: '' }, form: Object.assign({}, m.form, { assigneeId: r.person.id }) })
+      modal: Object.assign({}, m, { inlineAdd: false, np: { name: '', email: '', error: '' }, form: Object.assign({}, m.form, { assigneeIds: m.form.assigneeIds.concat([r.person.id]) }) })
     });
   }
   removePerson(id) {
-    this.setState({ people: this.state.people.filter((p) => p.id !== id), tasks: this.state.tasks.map((t) => (t.assigneeId === id ? Object.assign({}, t, { assigneeId: '' }) : t)) });
+    this.setState({ confirmPerson: null, people: this.state.people.filter((p) => p.id !== id), tasks: this.state.tasks.map((t) => ((t.assigneeIds || []).indexOf(id) > -1 ? Object.assign({}, t, { assigneeIds: t.assigneeIds.filter((x) => x !== id) }) : t)),
+      pf: this.state.pf.editId === id ? this.emptyPf() : this.state.pf,
+      pfOpen: this.state.pf.editId === id ? false : this.state.pfOpen });
+  }
+
+  /* ---------- projects ---------- */
+  saveProject() {
+    const f = this.state.prf; const name = (f.name || '').trim();
+    let err = '';
+    if (!name) err = 'Proje adı girin.';
+    else if (this.state.projects.some((p) => p.id !== f.editId && p.name.toLocaleLowerCase('tr-TR') === name.toLocaleLowerCase('tr-TR'))) err = 'Bu adda bir proje zaten var.';
+    if (err) { this.setState({ prf: Object.assign({}, f, { error: err }) }); return; }
+    const projects = f.editId
+      ? this.state.projects.map((p) => (p.id === f.editId ? Object.assign({}, p, { name: name, color: f.color }) : p))
+      : this.state.projects.concat([{ id: this.uid(), name: name, color: f.color }]);
+    this.setState({ projects: projects, prf: this.emptyPrf(f.editId ? null : f.color) });
+  }
+  editProject(p) {
+    this.focusId = 'pr-name';
+    this.setState({ confirmProject: null, prf: { editId: p.id, name: p.name, color: p.color, error: '' } });
+  }
+  removeProject(id) {
+    this.setState({
+      confirmProject: null,
+      filter: this.state.filter === id ? null : this.state.filter,
+      projects: this.state.projects.filter((p) => p.id !== id),
+      prf: this.state.prf.editId === id ? this.emptyPrf() : this.state.prf,
+      people: this.state.people.map((p) => Object.assign({}, p, { projectIds: (p.projectIds || []).filter((x) => x !== id) })),
+      tasks: this.state.tasks.map((t) => (t.projectId === id ? Object.assign({}, t, { projectId: '' }) : t))
+    });
+  }
+
+  /* ---------- drag & drop ---------- */
+  dropInto(qid) {
+    const s = this.state;
+    const id = s.dragId;
+    const moved = s.tasks.find((t) => t.id === id);
+    if (!moved) { this.setState({ dragId: null, overQ: null, dropTarget: null }); return; }
+    this.setState({ tasks: s.tasks.map((t) => (t.id === id ? Object.assign({}, t, { q: qid }) : t)), dragId: null, overQ: null, dropTarget: null });
+  }
+  togglePin(id) {
+    this.setState({ tasks: this.state.tasks.map((t) => (t.id === id ? Object.assign({}, t, { pinnedAt: t.pinnedAt ? null : Date.now() }) : t)) });
   }
 
   /* ---------- render ---------- */
   renderVals() {
     const s = this.state;
     const QD = this.qdefs();
-    const PR = this.projects();
+    const PR = s.projects;
     const prById = {}; PR.forEach((p) => { prById[p.id] = p; });
-    const peById = {}; s.people.forEach((p) => { peById[p.id] = p; });
+    // the signed-in admin can always be assigned, on every project
+    const ME = { id: 'me', name: 'Süleyman Kara', email: 'suleyman@ornek.com' };
+    const peById = { me: ME }; s.people.forEach((p) => { peById[p.id] = p; });
     const qName = {}; QD.forEach((q) => { qName[q.id] = q.name; });
     const today = this.iso(new Date());
     const wk = new Date(); wk.setDate(wk.getDate() + 7); const weekEnd = this.iso(wk);
 
-    const open = s.tasks.filter((t) => !t.doneAt);
-    const done = s.tasks.filter((t) => t.doneAt).sort((a, b) => b.doneAt - a.doneAt);
+    // a viewer only sees tasks of the projects they were given
+    const meP = s.meId === 'me' ? null : s.people.find((p) => p.id === s.meId);
+    const allowed = (pid) => !meP || (meP.projectIds || []).indexOf(pid) > -1;
+    const open = s.tasks.filter((t) => !t.doneAt && allowed(t.projectId));
+    const done = s.tasks.filter((t) => t.doneAt && allowed(t.projectId)).sort((a, b) => b.doneAt - a.doneAt);
     const visible = open.filter((t) => !s.filter || t.projectId === s.filter);
     const isLate = (t) => !!t.end && t.end < today && !s.pending[t.id];
 
+    const noProj = { name: 'Projesiz', color: 'var(--line-strong)' };
+    // pinned first (in the order they were pinned), then by end date; no end date goes last
+    const order = (a, b) => {
+      if (!!a.pinnedAt !== !!b.pinnedAt) return a.pinnedAt ? -1 : 1;
+      if (a.pinnedAt && b.pinnedAt && a.pinnedAt !== b.pinnedAt) return a.pinnedAt - b.pinnedAt;
+      const ae = a.end || '9999', be = b.end || '9999';
+      if (ae !== be) return ae < be ? -1 : 1;
+      const as = a.start || '9999', bs = b.start || '9999';
+      return as < bs ? -1 : as > bs ? 1 : 0;
+    };
+    const who = (t) => (t.assigneeIds || []).map((id) => peById[id]).filter(Boolean);
+    const whoText = (list) => {
+      if (!list.length) return 'Atanmadı';
+      if (list.length === 1) return list[0].name;
+      const first = list.map((p) => p.name.split(' ')[0]);
+      return list.length === 2 ? first.join(', ') : first[0] + ' +' + (list.length - 1);
+    };
     const card = (t) => {
-      const pr = prById[t.projectId] || { name: '—', color: '#999' };
-      const pe = peById[t.assigneeId];
+      const pr = prById[t.projectId] || noProj;
+      const ppl = who(t);
       const late = isLate(t);
       let when = '';
       if (t.start && t.end) when = this.fmt(t.start) + ' – ' + this.fmt(t.end);
@@ -681,15 +1325,20 @@ class Component extends DCLogic {
       if (late) when = 'Gecikti · ' + this.fmt(t.end);
       const pending = !!s.pending[t.id];
       return {
-        id: t.id, title: t.title, desc: t.desc, hasDesc: !!t.desc,
+        id: t.id, title: t.title, doneLabel: t.title, desc: t.desc, hasDesc: !!t.desc,
         project: pr.name, color: pr.color,
-        assignee: pe ? pe.name : 'Atanmadı', initials: pe ? this.initials(pe.name) : '–',
+        assignee: whoText(ppl),
+        avs: ppl.length ? ppl.slice(0, 3).map((p) => this.initials(p.name)) : ['–'],
         when: when, whenCls: late ? 'late' : '',
-        pending: pending, draggable: !pending,
-        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging' : ''),
+        pending: pending, draggable: !pending && !s.readOnly,
+        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging ' : '') + (t.pinnedAt ? 'is-pinned' : '') + (s.readOnly ? ' ro' : ''),
+        pinCls: t.pinnedAt ? 'on' : '',
+        pinPressed: t.pinnedAt ? 'true' : 'false',
+        pinLabel: (t.pinnedAt ? 'Sabitlemeyi kaldır: ' : 'Başa sabitle: ') + t.title,
+        pin: () => this.togglePin(t.id),
         checkLabel: pending ? 'Tamamlamayı geri al: ' + t.title : 'Tamamlandı olarak işaretle: ' + t.title,
         toggle: () => this.toggleDone(t.id),
-        open: () => this.openEdit(t),
+        open: () => this.openView(t),
         dragStart: (e) => {
           try { e.dataTransfer.setData('text/plain', t.id); e.dataTransfer.effectAllowed = 'move'; } catch (err) {}
           this.setState({ dragId: t.id });
@@ -697,79 +1346,130 @@ class Component extends DCLogic {
       };
     };
 
+    const G = 1.7;
+    const growOn = !s.dragId && !s.modal ? s.hoverQ : null;
+    const colOf = { do: 0, delegate: 0, plan: 1, drop: 1 };
+    const rowOf = { do: 0, plan: 0, delegate: 1, drop: 1 };
+    const gCol = [1, 1], gRow = [1, 1];
+    if (growOn) { gCol[colOf[growOn]] = G; gRow[rowOf[growOn]] = G; }
+    // first load: muted placeholder rows at card size (title bar widths vary)
+    const SKEL = { do: ['72%', '54%', '64%'], plan: ['60%', '78%'], delegate: ['66%', '48%'], drop: ['58%'] };
     const quads = QD.map((q) => {
-      const list = visible.filter((t) => t.q === q.id);
+      const list = visible.filter((t) => t.q === q.id).sort(order);
       return {
-        id: q.id, name: q.name, tag: q.tag, count: list.length, empty: list.length === 0,
-        cls: 'q-' + q.id + (s.overQ === q.id ? ' is-over' : ''),
+        id: q.id, name: q.name, tag: q.tag, hint: q.hint, count: list.length,
+        hasCount: list.length > 0 && !s.loading, empty: list.length === 0 && !s.loading,
+        skel: s.loading ? SKEL[q.id] : [],
+        cls: 'q-' + q.id + (s.overQ === q.id ? ' is-over' : '') + (growOn === q.id ? ' is-expanded' : ''),
+        grow: gCol[colOf[q.id]],
+        enter: () => this.hoverTo(q.id, this.state.hoverQ ? 80 : 160),
         addLabel: q.name + ' kutusuna görev ekle',
-        tasks: list.map(card),
+        tasks: s.loading ? [] : list.map(card),
         add: () => this.openNew(q.id),
-        dragOver: (e) => { e.preventDefault(); if (this.state.overQ !== q.id) this.setState({ overQ: q.id }); },
-        dragLeave: (e) => { if (!e.currentTarget.contains(e.relatedTarget) && this.state.overQ === q.id) this.setState({ overQ: null }); },
+        dragOver: (e) => {
+          e.preventDefault();
+          if (this.state.overQ !== q.id || this.state.dropTarget) this.setState({ overQ: q.id, dropTarget: null });
+        },
+        dragLeave: (e) => { if (!e.currentTarget.contains(e.relatedTarget) && this.state.overQ === q.id) this.setState({ overQ: null, dropTarget: null }); },
         drop: (e) => {
           e.preventDefault();
-          let id = this.state.dragId;
-          if (!id) { try { id = e.dataTransfer.getData('text/plain'); } catch (err) {} }
-          if (id) {
-            const moved = this.state.tasks.find((t) => t.id === id);
-            const rest = this.state.tasks.filter((t) => t.id !== id);
-            if (moved) this.setState({ tasks: rest.concat([Object.assign({}, moved, { q: q.id })]), dragId: null, overQ: null });
-          } else this.setState({ overQ: null });
+          if (!this.state.dragId) {
+            let id = '';
+            try { id = e.dataTransfer.getData('text/plain'); } catch (err) {}
+            if (!id) { this.setState({ overQ: null, dropTarget: null }); return; }
+            this.setState({ dragId: id }, () => this.dropInto(q.id));
+            return;
+          }
+          this.dropInto(q.id);
         }
       };
     });
 
     const m = s.modal;
-    const f = m ? m.form : { title: '', desc: '', q: '', projectId: '', assigneeId: '', start: '', end: '' };
+    const f = m ? m.form : { title: '', desc: '', q: '', projectId: '', assigneeIds: [], start: '', end: '' };
     const np = m ? m.np : { name: '', email: '', error: '' };
 
+    // one name for finished tasks in the nav, the mobile tab and the page title
+    const DONE = 'Bitenler';
+    const filterP = s.filter ? prById[s.filter] : null;
+    const noOpen = open.length === 0;
+    const showFirstRun = noOpen && !s.readOnly && !s.loading;
+    const firstUse = noOpen && !s.readOnly && !s.filter;
+    const hasProjects = PR.length > 0;
     const titles = {
-      matrix: ['Matris', s.filter ? (prById[s.filter].name + ' projesindeki açık görevler') : 'Kartları sürükleyerek kutular arasında taşıyın'],
-      done: ['Tamamlananlar', 'Bitmiş görevleri geri alın veya silin'],
-      people: ['Kişiler', 'Görev atanabilecek kişiler']
+      matrix: ['Matris', ''],
+      done: [DONE, 'Biten görevleri geri alın veya silin'],
+      people: ['Kişiler', 'Görev atanabilecek kişiler'],
+      projects: ['Projeler', 'Görevler eklenirken bu listeden proje seçilir']
     }[s.view];
 
     return {
-      themeClass: s.dark ? 'theme-dark' : '',
-      isDark: s.dark, isLight: !s.dark,
-      themeLabel: s.dark ? 'Açık tema' : 'Koyu tema',
-      toggleTheme: () => this.setState({ dark: !this.state.dark }),
+      themeClass: 'theme-dark',
 
       navMatrix: s.view === 'matrix' ? 'active' : '',
       navDone: s.view === 'done' ? 'active' : '',
       navPeople: s.view === 'people' ? 'active' : '',
       goMatrix: () => this.setState({ view: 'matrix' }),
       goDone: () => this.setState({ view: 'done', confirmClear: false }),
-      goPeople: () => this.setState({ view: 'people' }),
-      isMatrix: s.view === 'matrix', isDone: s.view === 'done', isPeople: s.view === 'people',
+      goPeople: () => this.setState({ view: 'people', confirmPerson: null }),
+      navProjects: s.view === 'projects' ? 'active' : '',
+      goProjects: () => this.setState({ view: 'projects', confirmProject: null }),
+      isMatrix: s.view === 'matrix', isDone: s.view === 'done', isPeople: s.view === 'people', isProjects: s.view === 'projects',
+      showTop: s.view !== 'matrix',
       viewTitle: titles[0], viewSub: titles[1],
 
-      openCount: open.length, doneCount: done.length, peopleCount: s.people.length,
-      lateCount: open.filter(isLate).length,
-      lateCls: open.some(isLate) ? 'warn' : '',
-      weekCount: open.filter((t) => t.end && t.end >= today && t.end <= weekEnd).length,
+      openCount: open.length, doneCount: done.length, doneName: DONE,
+      doneHeading: done.length ? done.length + ' görev' : 'Liste',
+      projectHeading: PR.length ? PR.length + ' proje' : 'Liste',
 
+      /* filter: mobile chips use the selected style, the sidebar only bold + tick (navigation keeps the background) */
       allProjCls: s.filter ? '' : 'active',
+      allProjSide: s.filter ? '' : 'picked',
+      allProjOn: !s.filter, allProjPressed: s.filter ? 'false' : 'true',
+      hasFilter: !!filterP,
+      filterName: filterP ? filterP.name : '', filterColor: filterP ? filterP.color : '',
+      filterClearLabel: filterP ? 'Filtreyi kaldır: ' + filterP.name : '',
+      showFirstRun: showFirstRun,
+      firstRunNeedsProject: showFirstRun && !hasProjects,
+      firstRunCanAdd: showFirstRun && hasProjects,
+      firstRunText: hasProjects ? 'Henüz görev yok.' : 'Görev eklemek için önce bir proje oluşturun.',
+      hasBar: !!filterP || showFirstRun,
+      wrapCls: (filterP || showFirstRun) ? 'has-bar' : '',
       clearFilter: () => this.setState({ filter: null, view: 'matrix' }),
-      sideProjects: PR.map((p) => ({
+      sideProjects: PR.filter((p) => allowed(p.id)).map((p) => ({
         name: p.name, color: p.color,
         count: open.filter((t) => t.projectId === p.id).length,
         cls: s.filter === p.id ? 'active' : '',
+        sideCls: s.filter === p.id ? 'picked' : '',
+        on: s.filter === p.id, pressed: s.filter === p.id ? 'true' : 'false',
         pick: () => this.setState({ filter: this.state.filter === p.id ? null : p.id, view: 'matrix' })
       })),
 
       newTask: () => this.openNew(''),
-      quads: quads,
-      dragEnd: () => this.setState({ dragId: null, overQ: null }),
+      canEdit: !s.readOnly,
+      tabCls: s.readOnly ? 'ro' : '',
+      dialogCls: s.readOnly ? 'ro' : '',
+      firstUse: firstUse, notFirstUse: !firstUse,
+      loading: !!s.loading, showCounts: !s.loading,
+      offline: !!s.offline, saveFailed: !!s.saveFailed,
+      retrySave: () => this.setState({ saveFailed: false }),
+      me: meP ? { name: meP.name, initials: this.initials(meP.name), sub: meP.email, viewer: true, title: meP.name + ' · ' + meP.email + ' · Görüntüleyici' }
+              : { name: 'Süleyman Kara', initials: 'SK', sub: 'suleyman@ornek.com', viewer: false, title: 'Süleyman Kara · suleyman@ornek.com' },
+      rows: [
+        { grow: gRow[0], quads: [quads[0], quads[1]] },
+        { grow: gRow[1], quads: [quads[2], quads[3]] }
+      ],
+      gColL: gCol[0], gColR: gCol[1], gRowT: gRow[0], gRowB: gRow[1],
+      matrixLeave: () => this.hoverTo(null, 180),
+      showProj: !s.filter,
+      dragEnd: () => this.setState({ dragId: null, overQ: null, dropTarget: null }),
 
       /* done */
       doneList: done.map((t) => {
-        const pr = prById[t.projectId] || { name: '—', color: '#999' };
-        const pe = peById[t.assigneeId];
+        const pr = prById[t.projectId] || noProj;
         return {
           title: t.title, project: pr.name, color: pr.color,
-          assignee: pe ? pe.name : 'Atanmadı', quad: qName[t.q],
+          assignee: whoText(who(t)), quad: qName[t.q],
           doneText: this.fmt(this.iso(new Date(t.doneAt))),
           restore: () => this.patchTask(t.id, { doneAt: null }),
           remove: () => this.setState({ tasks: this.state.tasks.filter((x) => x.id !== t.id) }),
@@ -777,32 +1477,115 @@ class Component extends DCLogic {
         };
       }),
       doneEmpty: done.length === 0,
-      showClearBtn: done.length > 0 && !s.confirmClear,
+      showClearBtn: done.length > 0 && !s.confirmClear && !s.readOnly,
       confirmClear: s.confirmClear && done.length > 0,
       askClear: () => this.setState({ confirmClear: true }),
       cancelClear: () => this.setState({ confirmClear: false }),
       clearDone: () => this.setState({ confirmClear: false, tasks: this.state.tasks.filter((t) => !t.doneAt) }),
 
       /* people */
-      pf: s.pf, pfHasError: !!s.pf.error,
-      pfName: (e) => this.setState({ pf: Object.assign({}, this.state.pf, { name: e.target.value, error: '' }) }),
-      pfEmail: (e) => this.setState({ pf: Object.assign({}, this.state.pf, { email: e.target.value, error: '' }) }),
-      addPersonPage: () => this.addPersonPage(),
+      pf: s.pf, pfHasError: !!s.pf.error, pfEditing: !!s.pf.editId,
+      pfTitle: s.pf.editId ? 'Kişiyi düzenle' : 'Kişi ekle',
+      pfSaveLabel: s.pf.editId ? 'Değişiklikleri kaydet' : 'Kişiyi ekle',
+      pfName: (e) => this.setPf({ name: e.target.value }),
+      pfEmail: (e) => this.setPf({ email: e.target.value }),
+      pfCancel: () => this.setState({ pf: this.emptyPf(), pfOpen: false }),
+      pfShown: !!s.pfOpen, pfClosed: !s.pfOpen,
+      openPf: () => { this.focusId = 'p-name'; this.setState({ pf: this.emptyPf(), pfOpen: true }); },
+      savePerson: () => this.savePerson(),
+      roleEditCls: s.pf.role === 'editor' ? 'on' : '', roleViewCls: s.pf.role === 'viewer' ? 'on' : '',
+      roleEditPressed: s.pf.role === 'editor' ? 'true' : 'false', roleViewPressed: s.pf.role === 'viewer' ? 'true' : 'false',
+      roleEdit: () => this.setPf({ role: 'editor' }),
+      roleView: () => this.setPf({ role: 'viewer' }),
+      roleHint: s.pf.role === 'editor' ? 'Seçili projelerde görev ekleyebilir, düzenleyebilir ve tamamlayabilir.' : 'Seçili projelerin görevlerini yalnızca görebilir.',
+      pfProjects: PR.map((p) => {
+        const on = s.pf.projectIds.indexOf(p.id) > -1;
+        return { name: p.name, color: p.color, sel: on ? 'sel' : '', pressed: on ? 'true' : 'false',
+          pick: () => { const cur = this.state.pf.projectIds; this.setPf({ projectIds: on ? cur.filter((x) => x !== p.id) : cur.concat([p.id]) }); } };
+      }),
       peopleList: s.people.map((p) => {
-        const n = open.filter((t) => t.assigneeId === p.id).length;
+        const n = open.filter((t) => (t.assigneeIds || []).indexOf(p.id) > -1).length;
+        const asking = s.confirmPerson === p.id;
+        const pnames = (p.projectIds || []).map((id) => prById[id] && prById[id].name).filter(Boolean);
         return { name: p.name, email: p.email, initials: this.initials(p.name), load: n + ' açık görev',
+          role: p.role === 'viewer' ? 'Görüntüleyici' : 'Düzenleyici',
+          projects: pnames.length ? pnames.join(', ') : 'Proje yok',
+          edit: () => this.editPerson(p), editLabel: p.name + ' kişisini düzenle',
+          idle: !asking, confirming: asking, askPressed: asking ? 'true' : 'false',
+          rowCls: s.pfOpen && s.pf.editId === p.id ? 'editing' : '',
+          warn: n > 0 ? p.name + ' silinecek. ' + n + ' görevi "Atanmadı" olarak kalacak.' : p.name + ' silinecek.',
+          ask: () => this.setState({ confirmPerson: this.state.confirmPerson === p.id ? null : p.id }),
+          cancel: () => this.setState({ confirmPerson: null }),
           remove: () => this.removePerson(p.id), removeLabel: p.name + ' kişisini kaldır' };
       }),
       peopleEmpty: s.people.length === 0,
+      meLoad: open.filter((t) => (t.assigneeIds || []).indexOf('me') > -1).length + ' açık görev',
+
+      /* projects */
+      prf: s.prf, prfHasError: !!s.prf.error, prfEditing: !!s.prf.editId,
+      prfTitle: s.prf.editId ? 'Projeyi düzenle' : 'Proje ekle',
+      prfSaveLabel: s.prf.editId ? 'Değişiklikleri kaydet' : 'Projeyi ekle',
+      prfCancel: () => this.setState({ prf: this.emptyPrf() }),
+      saveProject: () => this.saveProject(),
+      prfName: (e) => this.setState({ prf: Object.assign({}, this.state.prf, { name: e.target.value, error: '' }) }),
+      swatches: this.palette().map((c) => ({
+        hex: c.hex, label: c.label,
+        sel: s.prf.color === c.hex ? 'sel' : '', pressed: s.prf.color === c.hex ? 'true' : 'false',
+        pick: () => this.setState({ prf: Object.assign({}, this.state.prf, { color: c.hex }) })
+      })),
+      projectList: PR.map((p) => {
+        const n = s.tasks.filter((t) => t.projectId === p.id).length;
+        const asking = s.confirmProject === p.id;
+        return { name: p.name, color: p.color, load: n + ' görev',
+          idle: !asking, confirming: asking, askPressed: asking ? 'true' : 'false',
+          rowCls: s.prf.editId === p.id ? 'editing' : '',
+          edit: () => this.editProject(p), editLabel: p.name + ' projesini düzenle',
+          warn: n > 0 ? p.name + ' silinecek. ' + n + ' görevi "Projesiz" olarak kalacak.' : p.name + ' silinecek.',
+          ask: () => this.setState({ confirmProject: this.state.confirmProject === p.id ? null : p.id }),
+          cancel: () => this.setState({ confirmProject: null }),
+          remove: () => this.removeProject(p.id), removeLabel: p.name + ' projesini sil' };
+      }),
+      projectsEmpty: PR.length === 0,
 
       /* modal */
       modalOpen: !!m, isEdit: !!m && m.mode === 'edit',
-      modalTitle: m && m.mode === 'edit' ? 'Görevi düzenle' : 'Yeni görev',
+      isView: !!m && m.mode === 'view', isFormMode: !!m && m.mode !== 'view',
+      modalTitle: !m || m.mode === 'view' ? '' : m.mode === 'edit' ? 'Görevi düzenle' : 'Yeni görev',
+      vw: (() => {
+        const t = m && m.mode === 'view' ? s.tasks.find((x) => x.id === m.id) : null;
+        if (!t) return { people: [] };
+        const pr = prById[t.projectId] || noProj;
+        const qd = QD.find((q) => q.id === t.q) || QD[0];
+        const ppl = who(t);
+        let dates = 'Tarih yok';
+        if (t.start && t.end) dates = this.fmt(t.start) + ' – ' + this.fmt(t.end);
+        else if (t.end) dates = 'Bitiş ' + this.fmt(t.end);
+        else if (t.start) dates = 'Başlangıç ' + this.fmt(t.start);
+        const go = (id) => () => { if (!this.state.readOnly) this.editFromView(id); };
+        return {
+          title: t.title, titleLabel: s.readOnly ? t.title : 'Görev adını düzenle: ' + t.title, qName: qd.name, qTag: qd.tag, qCls: 'q-' + qd.id,
+          project: pr.name, color: pr.color,
+          people: ppl.map((p) => ({ name: p.name, initials: this.initials(p.name) })), noPeople: ppl.length === 0,
+          dates: dates, late: isLate(t),
+          desc: t.desc, hasDesc: !!t.desc, noDesc: !t.desc,
+          ro: !!s.readOnly,
+          eTitle: go('f-title'), eQ: go('f-q'), eProj: go('f-proj'), ePeople: go('f-people'), eDates: go('f-start'), eDesc: go('f-desc')
+        };
+      })(),
+      closeAll: () => this.setState({ modal: null }),
       saveLabel: m && m.mode === 'edit' ? 'Değişiklikleri kaydet' : 'Görevi ekle',
-      form: f, formError: m ? m.error : '', formHasError: !!(m && m.error),
-      closeModal: () => this.setState({ modal: null }),
+      form: f,
+      errText: m && m.error ? m.error.text : '',
+      errTitle: !!(m && m.error && m.error.field === 'title'),
+      errQ: !!(m && m.error && m.error.field === 'q'),
+      errProj: !!(m && m.error && m.error.field === 'proj'),
+      errDates: !!(m && m.error && m.error.field === 'dates'),
+      closeModal: () => this.closeModal(),
       saveModal: () => this.saveModal(),
       deleteTask: () => this.deleteTask(),
+      askDelete: !!(m && m.askDelete), footNormal: !(m && m.askDelete),
+      confirmDelete: () => this.setState({ modal: Object.assign({}, this.state.modal, { askDelete: true }) }),
+      cancelDelete: () => this.setState({ modal: Object.assign({}, this.state.modal, { askDelete: false }) }),
       fTitle: (e) => this.setForm({ title: e.target.value }),
       fDesc: (e) => this.setForm({ desc: e.target.value }),
       fStart: (e) => this.setForm({ start: e.target.value }),
@@ -817,11 +1600,15 @@ class Component extends DCLogic {
         sel: f.projectId === p.id ? 'sel' : '', pressed: f.projectId === p.id ? 'true' : 'false',
         pick: () => this.setForm({ projectId: p.id })
       })),
-      personOptions: s.people.map((p) => ({
-        name: p.name, initials: this.initials(p.name),
-        sel: f.assigneeId === p.id ? 'sel' : '', pressed: f.assigneeId === p.id ? 'true' : 'false',
-        pick: () => this.setForm({ assigneeId: this.state.modal.form.assigneeId === p.id ? '' : p.id })
-      })),
+      // only people with access to the chosen project are offered (plus anyone already assigned)
+      personOptions: [ME].concat(s.people.filter((p) => !f.projectId || (p.projectIds || []).indexOf(f.projectId) > -1 || f.assigneeIds.indexOf(p.id) > -1)).map((p) => {
+        const on = f.assigneeIds.indexOf(p.id) > -1;
+        return {
+          name: p.id === 'me' ? p.name + ' (ben)' : p.name, initials: this.initials(p.name),
+          sel: on ? 'sel' : '', pressed: on ? 'true' : 'false',
+          pick: () => { const cur = this.state.modal.form.assigneeIds; this.setForm({ assigneeIds: on ? cur.filter((x) => x !== p.id) : cur.concat([p.id]) }); }
+        };
+      }),
       inlineAdd: !!(m && m.inlineAdd),
       toggleInlineAdd: () => this.setState({ modal: Object.assign({}, this.state.modal, { inlineAdd: !this.state.modal.inlineAdd }) }),
       np: np, npHasError: !!np.error,
