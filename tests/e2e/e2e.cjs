@@ -100,6 +100,13 @@ async function step(name, fn) {
       await shot('06-matrix-task');
     });
 
+    await step('filtered view (no project on cards)', async () => {
+      await page.locator('.side .nav-btn', { hasText: 'Web Sitesi' }).first().click();
+      await page.waitForTimeout(600);
+      await shot('06b-filtered');
+      await page.locator('.side .nav-btn', { hasText: 'Tüm projeler' }).first().click();
+    });
+
     await step('admin signs out', async () => {
       await page.getByRole('link', { name: /Çıkış/ }).or(page.getByRole('button', { name: /Çıkış/ })).first().click();
       await page.getByRole('button', { name: /Giriş bağlantısı gönder/ }).waitFor({ timeout: 10000 });

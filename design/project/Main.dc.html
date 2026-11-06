@@ -346,6 +346,21 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 .row-load{min-width:0}
 .confirm-strip{padding-left:16px}
 }
+/* wrappers that only matter in the no-project layout below */
+.t-wrap,.l1-r{display:contents}
+/* Project hidden (a project filter is active): title vertically centred on the left,
+   dates and assignees stacked on the right. Phones keep the two-line layout. */
+@media (min-width:521px){
+.card.no-proj .card-body{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-areas:"t r1" "t r2" "d d";align-items:center;column-gap:12px;row-gap:2px}
+.card.no-proj .line1{display:contents}
+.card.no-proj .t-wrap{grid-area:t;display:flex;align-items:center;gap:8px;min-width:0}
+.card.no-proj .l1-sp{display:none}
+.card.no-proj .l1-r{grid-area:r1;display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.card.no-proj .card-meta{grid-area:r2;justify-content:flex-end;min-width:max-content}
+.card.no-proj .who{max-width:none;flex:0 0 auto}
+.card.no-proj .meta-l{display:none}
+.card.no-proj .card-desc{grid-area:d}
+}
 </style>
 </helmet>
 
@@ -509,17 +524,21 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
                     </sc-if>
                     <div class="card-body">
                       <div class="line1">
+                        <span class="t-wrap">
                         <button class="card-title" onClick="{{t.open}}">{{t.title}}</button>
                         <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                           <span class="desc-ic" role="img" aria-label="Açıklaması var"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span>
                         </sc-if>
+                        </span>
                         <span class="l1-sp"></span>
+                        <span class="l1-r">
                         <sc-if value="{{canEdit}}" hint-placeholder-val="{{ true }}">
                         <button class="pin {{t.pinCls}}" onClick="{{t.pin}}" aria-label="{{t.pinLabel}}" aria-pressed="{{t.pinPressed}}" title="{{t.pinLabel}}">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg>
                         </button>
                         </sc-if>
                         <span class="when mono {{t.whenCls}}">{{t.when}}</span>
+                        </span>
                       </div>
                       <sc-if value="{{t.hasDesc}}" hint-placeholder-val="{{ false }}">
                         <p class="card-desc">{{t.desc}}</p>
@@ -1331,7 +1350,7 @@ class Component extends DCLogic {
         avs: ppl.length ? ppl.slice(0, 3).map((p) => this.initials(p.name)) : ['–'],
         when: when, whenCls: late ? 'late' : '',
         pending: pending, draggable: !pending && !s.readOnly,
-        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging ' : '') + (t.pinnedAt ? 'is-pinned' : '') + (s.readOnly ? ' ro' : ''),
+        cls: (pending ? 'is-pending ' : '') + (s.dragId === t.id ? 'is-dragging ' : '') + (t.pinnedAt ? 'is-pinned' : '') + (s.readOnly ? ' ro' : '') + (s.filter ? ' no-proj' : ''),
         pinCls: t.pinnedAt ? 'on' : '',
         pinPressed: t.pinnedAt ? 'true' : 'false',
         pinLabel: (t.pinnedAt ? 'Sabitlemeyi kaldır: ' : 'Başa sabitle: ') + t.title,

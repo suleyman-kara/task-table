@@ -32,6 +32,7 @@ export function TaskCard(p: TaskCardProps) {
     p.dragging && 'is-dragging',
     pinned && 'is-pinned',
     !canEdit && 'ro',
+    !p.showProject && 'no-proj',
   ]
     .filter(Boolean)
     .join(' ');
@@ -57,15 +58,18 @@ export function TaskCard(p: TaskCardProps) {
       )}
       <div className="card-body">
         <div className="line1">
-          <button className="card-title" onClick={p.onOpen}>
-            {t.title}
-          </button>
-          {t.desc && (
-            <span className="desc-ic" role="img" aria-label="Açıklaması var">
-              <DescIcon />
-            </span>
-          )}
+          <span className="t-wrap">
+            <button className="card-title" onClick={p.onOpen}>
+              {t.title}
+            </button>
+            {t.desc && (
+              <span className="desc-ic" role="img" aria-label="Açıklaması var">
+                <DescIcon />
+              </span>
+            )}
+          </span>
           <span className="l1-sp" />
+          <span className="l1-r">
           {canEdit && (
             <button
               className={'pin' + (pinned ? ' on' : '')}
@@ -78,6 +82,7 @@ export function TaskCard(p: TaskCardProps) {
             </button>
           )}
           <span className={`when mono ${whenCls}`}>{when}</span>
+          </span>
         </div>
         {t.desc && <p className="card-desc">{t.desc}</p>}
         <div className="card-meta">

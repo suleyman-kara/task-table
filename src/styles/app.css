@@ -333,3 +333,19 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 .row-load{min-width:0}
 .confirm-strip{padding-left:16px}
 }
+
+/* wrappers that only matter in the no-project layout below */
+.t-wrap,.l1-r{display:contents}
+/* Project hidden (a project filter is active): title vertically centred on the left,
+   dates and assignees stacked on the right. Phones keep the two-line layout. */
+@media (min-width:521px){
+.card.no-proj .card-body{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-areas:"t r1" "t r2" "d d";align-items:center;column-gap:12px;row-gap:2px}
+.card.no-proj .line1{display:contents}
+.card.no-proj .t-wrap{grid-area:t;display:flex;align-items:center;gap:8px;min-width:0}
+.card.no-proj .l1-sp{display:none}
+.card.no-proj .l1-r{grid-area:r1;display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.card.no-proj .card-meta{grid-area:r2;justify-content:flex-end;min-width:max-content}
+.card.no-proj .who{max-width:none;flex:0 0 auto}
+.card.no-proj .meta-l{display:none}
+.card.no-proj .card-desc{grid-area:d}
+}
