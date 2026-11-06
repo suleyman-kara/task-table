@@ -37,22 +37,11 @@ Toplam süre: yaklaşık 30 dakika (alan adının SSL sertifikası ayrıca birka
 2. **Production mode** (üretim modu) seçin. Kurallar zaten projede hazır, birazdan yükleyeceğiz.
 3. Konum olarak **eur3 (Europe)** ya da **europe-west3 (Frankfurt)** seçin. Bu sonradan değiştirilemez.
 
-## 5. Web uygulaması ayarlarını alın
+## 5. Web uygulaması ayarları
 
-1. Proje ana sayfasında **</>** (Web) simgesine tıklayıp bir web uygulaması ekleyin (Hosting kutusunu işaretlemenize gerek yok).
-2. Gösterilen `firebaseConfig` değerlerini bir kenara alın.
-3. Proje klasöründe `.env.example` dosyasını `.env` adıyla kopyalayın ve değerleri doldurun:
-
-```
-VITE_FIREBASE_API_KEY=...
-VITE_FIREBASE_AUTH_DOMAIN=...
-VITE_FIREBASE_PROJECT_ID=...
-VITE_FIREBASE_STORAGE_BUCKET=...
-VITE_FIREBASE_MESSAGING_SENDER_ID=...
-VITE_FIREBASE_APP_ID=...
-```
-
-Bu değerler gizli değildir (tarayıcıya zaten gönderilir). Güvenliği `firestore.rules` sağlar. Yine de `.env` dosyası depoya eklenmez.
+Bu adım tamamlandı: `tasktable-slmnkara` projesinin web ayarları `.env.production` dosyasında, proje adı `.firebaserc` dosyasında kayıtlı.
+Bu değerler gizli değildir (tarayıcıya zaten gönderilir); güvenliği `firestore.rules` sağlar.
+Başka bir Firebase projesine geçerseniz bu iki dosyayı güncelleyin.
 
 ## 6. Bilgisayarınızdan yayınlayın
 
@@ -67,17 +56,11 @@ npx firebase login
 ```
 
 ```bash
-npx firebase use --add
-```
-
-Son komutta listeden projenizi seçin, takma ad olarak `default` yazın.
-
-```bash
 npm run deploy
 ```
 
 Bu komut uygulamayı derler ve şunları yükler: web sitesi (Hosting), veritabanı kuralları ve indeksler.
-Bittiğinde `https://<proje-id>.web.app` adresinde uygulama açılır.
+Bittiğinde `https://tasktable-slmnkara.web.app` adresinde uygulama açılır.
 
 ## 7. Alan adını bağlayın
 
