@@ -2,16 +2,13 @@ import { useState, type DragEvent } from 'react';
 import { isoDate, isLate } from '../lib/dates';
 import { QUADRANTS, type Project, type QuadrantId, type Task } from '../types';
 import { CloseIcon, PlusIcon } from './icons';
-import { assignees, COL_OF, projectOf, ROW_OF, taskOrder, type Person } from './model';
+import { assignees, projectOf, taskOrder, type Person } from './model';
 import { TaskCard } from './TaskCard';
-import { GROW, useHoverGrow } from './useHoverGrow';
 
 /** First load: muted placeholder rows at card size (title bar widths vary). */
 const SKEL: Record<QuadrantId, string[]> = {
   do: ['72%', '54%', '64%'],
   plan: ['60%', '78%'],
-  delegate: ['66%', '48%'],
-  drop: ['58%'],
 };
 
 export interface MatrixProps {
@@ -23,9 +20,9 @@ export interface MatrixProps {
   projects: Project[];
   projectMap: Map<string, Project>;
   people: Map<string, Person>;
+  /** a project, the "Projesiz" pseudo project (id ''), or null for all */
   filter: Project | null;
   pending: ReadonlySet<string>;
-  dialogOpen: boolean;
   onClearFilter: () => void;
   onNew: (q: QuadrantId | '') => void;
   onOpen: (t: Task) => void;
@@ -35,28 +32,17 @@ export interface MatrixProps {
   onGoProjects: () => void;
 }
 
+/** The task list: "Hemen yap" on top, "Planla" below; cards can be dragged between the two. */
 export function Matrix(p: MatrixProps) {
   const [dragId, setDragId] = useState<string | null>(null);
   const [overQ, setOverQ] = useState<QuadrantId | null>(null);
-  const { growOn, enter, leave } = useHoverGrow(!!dragId || p.dialogOpen);
 
   const today = isoDate();
   const visible = p.filter ? p.openTasks.filter((t) => t.projectId === p.filter!.id) : p.openTasks;
   const noOpen = p.openTasks.length === 0;
-  const hasProjects = p.projects.length > 0;
   const showFirstRun = noOpen && p.canEdit && !p.loading;
   const firstUse = noOpen && p.canEdit && !p.filter;
   const hasBar = !!p.filter || showFirstRun;
-
-  let firstRunText = 'Henüz görev yok.';
-  if (!hasProjects) firstRunText = p.isAdmin ? 'Görev eklemek için önce bir proje oluşturun.' : 'Size henüz bir proje atanmadı.';
-
-  const gCol = [1, 1];
-  const gRow = [1, 1];
-  if (growOn) {
-    gCol[COL_OF[growOn]] = GROW;
-    gRow[ROW_OF[growOn]] = GROW;
-  }
 
   const endDrag = () => {
     setDragId(null);
@@ -78,11 +64,9 @@ export function Matrix(p: MatrixProps) {
     endDrag();
   };
 
-  const quad = (def: (typeof QUADRANTS)[number]) => {
+  const section = (def: (typeof QUADRANTS)[number]) => {
     const list = visible.filter((t) => t.q === def.id).sort(taskOrder);
-    const cls = ['quad', `q-${def.id}`, overQ === def.id && 'is-over', growOn === def.id && 'is-expanded']
-      .filter(Boolean)
-      .join(' ');
+    const cls = ['quad', `q-${def.id}`, overQ === def.id && 'is-over'].filter(Boolean).join(' ');
     const dnd = p.canEdit
       ? {
           onDragOver: (e: DragEvent) => {
@@ -98,19 +82,11 @@ export function Matrix(p: MatrixProps) {
         }
       : {};
     return (
-      <section
-        key={def.id}
-        className={cls}
-        style={{ flexGrow: gCol[COL_OF[def.id]] }}
-        aria-label={def.name}
-        onMouseEnter={() => enter(def.id)}
-        {...dnd}
-      >
+      <section key={def.id} className={cls} aria-label={def.name} {...dnd}>
         <header className="quad-head">
           <span className="q-mark" aria-hidden="true" />
           <div className="grow">
             <h2>{def.name}</h2>
-            <p>{def.tag}</p>
           </div>
           {list.length > 0 && !p.loading && <span className="q-count num">{list.length}</span>}
           {p.canEdit && (
@@ -175,63 +151,38 @@ export function Matrix(p: MatrixProps) {
   };
 
   return (
-    <div className={'matrix-wrap' + (hasBar ? ' has-bar' : '')}>
-      {hasBar && (
-        <div className="mbar">
-          {showFirstRun && (
-            <div className="first-run">
-              <span>{firstRunText}</span>
-              {!hasProjects && p.isAdmin && (
-                <button className="btn primary" onClick={p.onGoProjects}>
-                  Proje oluştur
-                </button>
-              )}
-              {hasProjects && (
+    <div className="list-wrap">
+      <div className="list">
+        {hasBar && (
+          <div className="mbar">
+            {showFirstRun && (
+              <div className="first-run">
+                <span>Henüz görev yok.</span>
                 <button className="btn primary" onClick={() => p.onNew('')}>
                   İlk görevi ekle
                 </button>
-              )}
-            </div>
-          )}
-          {p.filter && (
-            <button
-              className="fpill"
-              onClick={p.onClearFilter}
-              aria-label={`Filtreyi kaldır: ${p.filter.name}`}
-              title="Filtreyi kaldır"
-            >
-              <span className="dot" style={{ background: p.filter.color }} />
-              {p.filter.name}
-              <CloseIcon size={14} />
-            </button>
-          )}
-        </div>
-      )}
-      <div className="axis-x">
-        <div className="axis-label" style={{ flexGrow: gCol[0] }}>
-          Acil
-        </div>
-        <div className="axis-label" style={{ flexGrow: gCol[1] }}>
-          Acil değil
-        </div>
-      </div>
-      <div className="axis-y">
-        <div className="axis-label" style={{ flexGrow: gRow[0] }}>
-          Önemli
-        </div>
-        <div className="axis-label" style={{ flexGrow: gRow[1] }}>
-          Önemli değil
-        </div>
-      </div>
-      <div className="matrix" onMouseLeave={leave}>
-        <div className="mrow" style={{ flexGrow: gRow[0] }}>
-          {quad(QUADRANTS[0])}
-          {quad(QUADRANTS[1])}
-        </div>
-        <div className="mrow" style={{ flexGrow: gRow[1] }}>
-          {quad(QUADRANTS[2])}
-          {quad(QUADRANTS[3])}
-        </div>
+                {p.projects.length === 0 && p.isAdmin && (
+                  <button className="btn" onClick={p.onGoProjects}>
+                    Proje oluştur
+                  </button>
+                )}
+              </div>
+            )}
+            {p.filter && (
+              <button
+                className="fpill"
+                onClick={p.onClearFilter}
+                aria-label={`Filtreyi kaldır: ${p.filter.name}`}
+                title="Filtreyi kaldır"
+              >
+                <span className="dot" style={{ background: p.filter.color }} />
+                {p.filter.name}
+                <CloseIcon size={14} />
+              </button>
+            )}
+          </div>
+        )}
+        {QUADRANTS.map(section)}
       </div>
     </div>
   );

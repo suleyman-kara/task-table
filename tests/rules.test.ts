@@ -123,6 +123,38 @@ describe('editor', () => {
   });
 });
 
+describe('project-less tasks', () => {
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'tasks', 'pEd'), task('', { assigneeIds: ['ed@x.com'] }));
+      await setDoc(doc(db, 'tasks', 'pVi'), task('', { assigneeIds: ['vi@x.com'] }));
+      await setDoc(doc(db, 'tasks', 'pNone'), task(''));
+    });
+  });
+  it('admin creates and reads them', async () => {
+    const db = as(ADMIN);
+    await assertSucceeds(setDoc(doc(db, 'tasks', 'p1'), task('')));
+    await assertSucceeds(getDoc(doc(db, 'tasks', 'pNone')));
+  });
+  it('members read only those assigned to them (query must filter)', async () => {
+    const ed = as('ed@x.com');
+    await assertSucceeds(
+      getDocs(query(collection(ed, 'tasks'), where('projectId', '==', ''), where('assigneeIds', 'array-contains', 'ed@x.com'))),
+    );
+    await assertFails(getDocs(query(collection(ed, 'tasks'), where('projectId', '==', ''))));
+    await assertFails(getDoc(doc(ed, 'tasks', 'pNone')));
+    await assertSucceeds(getDoc(doc(as('vi@x.com'), 'tasks', 'pVi')));
+  });
+  it('editors create/edit them only when assigned; viewers never', async () => {
+    const ed = as('ed@x.com');
+    await assertSucceeds(setDoc(doc(ed, 'tasks', 'p2'), task('', { assigneeIds: ['ed@x.com'] })));
+    await assertFails(setDoc(doc(ed, 'tasks', 'p3'), task('', { assigneeIds: ['vi@x.com'] })));
+    await assertSucceeds(updateDoc(doc(ed, 'tasks', 'pEd'), { q: 'plan' }));
+    await assertFails(updateDoc(doc(as('vi@x.com'), 'tasks', 'pVi'), { q: 'plan' }));
+  });
+});
+
 describe('viewer', () => {
   it('reads own project tasks but cannot write', async () => {
     const db = as('vi@x.com');

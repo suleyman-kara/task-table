@@ -1,7 +1,7 @@
 /* Extracted from design/project/Main.dc.html — keep in sync with the design. */
 *{box-sizing:border-box}
 a{color:#78A6FF}a:hover{color:#A3C2FF}
-.app{--bg:#0E0E10;--panel:#161619;--panel-2:#1C1C20;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--q-do:#FF7A45;--q-plan:#78A6FF;--q-delegate:#E8AE45;--q-drop:#A3A3AC;--ring:#78A6FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.7);
+.app{--bg:#0E0E10;--panel:#161619;--panel-2:#1C1C20;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--q-do:#FF7A45;--q-plan:#78A6FF;--ring:#78A6FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.7);
 display:flex;min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.4;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
@@ -71,40 +71,26 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .icon-btn:hover{background:var(--soft);color:var(--ink)}
 a.icon-btn{text-decoration:none}
 
-/* matrix */
-.matrix-wrap{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:20px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:8px;padding:12px 16px 16px 12px}
-.matrix-wrap.has-bar{grid-template-rows:auto auto minmax(0,1fr)}
-.mbar{grid-column:2;grid-row:1;display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}
-.axis-x{grid-column:2;grid-row:1;display:flex;gap:8px}
-.axis-y{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:8px}
-.matrix{grid-column:2;grid-row:2;display:flex;flex-direction:column;gap:8px;min-height:0}
-.has-bar .axis-x{grid-row:2}
-.has-bar .axis-y,.has-bar .matrix{grid-row:3}
-.axis-x .axis-label{flex:1 1 0;min-width:0}
-.axis-y .axis-label{flex:1 1 0;min-height:0}
-.axis-label{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
-.axis-label::before,.axis-label::after{content:"";flex:1;height:1px;background:var(--line)}
-.axis-y .axis-label{writing-mode:vertical-rl;transform:rotate(180deg)}
-.axis-y .axis-label::before,.axis-y .axis-label::after{width:1px;height:auto;flex:1}
+/* task list: "Hemen yap" panel above "Planla" */
+.list-wrap{flex:1 1 auto;min-height:0;overflow-y:auto;padding:12px 24px 24px}
+.list{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.mbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0}
 .fpill{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:0 8px 0 12px;border:1px solid var(--line-strong);border-radius:999px;background:var(--soft);color:var(--ink);font-size:12px;font-weight:500;white-space:nowrap}
 .fpill svg{color:var(--muted)}
 .fpill:hover{border-color:var(--muted)}
 .fpill:hover svg{color:var(--ink)}
 .first-run{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted)}
 .first-run .btn{min-height:32px;padding:0 12px}
-.mrow{display:flex;gap:8px;flex:1 1 0;min-height:0}
-.quad{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,background .15s,flex-grow .45s cubic-bezier(.45,0,.25,1)}
-.mrow,.axis-label{transition:flex-grow .45s cubic-bezier(.45,0,.25,1)}
+.quad{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;transition:border-color .15s,background .15s}
 .quad.is-over{border-color:var(--ring);border-style:dashed;background:var(--panel-2)}
-.quad-head{display:flex;align-items:center;gap:8px;min-height:40px;padding:4px 4px 4px 12px;border-bottom:1px solid var(--line)}
+.quad-head{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 4px 4px 12px;border-bottom:1px solid var(--line);background:inherit;border-radius:12px 12px 0 0}
 .q-mark{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
-.q-do .q-mark{background:var(--q-do)}.q-plan .q-mark{background:var(--q-plan)}.q-delegate .q-mark{background:var(--q-delegate)}.q-drop .q-mark{background:var(--q-drop)}
+.q-do .q-mark{background:var(--q-do)}.q-plan .q-mark{background:var(--q-plan)}
 .quad-head h2{margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em;display:inline}
-.quad-head p{display:none;margin:0 0 0 8px;font-size:12px;color:var(--muted)}
 .quad-head .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .q-count{font-size:12px;color:var(--muted);padding:0 8px;border-radius:999px;background:var(--soft)}
-.cards{flex:1 1 auto;min-height:0;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:8px}
-.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;min-height:64px;padding:12px;color:var(--muted);font-size:13px}
+.cards{padding:8px;display:flex;flex-direction:column;gap:8px}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;min-height:88px;padding:12px;color:var(--muted);font-size:13px}
 .empty .e1{font-weight:500}
 .empty .e2{font-size:12px}
 /* skeleton (first load) */
@@ -146,15 +132,10 @@ a.icon-btn{text-decoration:none}
 .card-title::after{content:"";position:absolute;inset:0;border-radius:8px;z-index:1}
 .card-title:focus-visible{outline:none}
 .card-title:focus-visible::after{outline:2px solid var(--ring);outline-offset:2px}
-.card-desc{display:none;margin:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
 .meta-l{flex:1 1 auto;display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden}
 .m-when{display:none;flex:0 0 auto}
 .proj{flex:0 1 auto;max-width:100%;display:flex;align-items:center;gap:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:12px;color:var(--muted)}
-@media (min-width:901px){
-.quad.is-expanded .card-desc{display:block;animation:fadein .3s ease .22s both}
-}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
 .who{flex:0 1 auto;max-width:60%;display:flex;align-items:center;gap:4px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .av{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:var(--soft);border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--ink)}
 .av.lg{width:32px;height:32px;flex-basis:32px;font-size:12px}
@@ -283,18 +264,12 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 .fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:12px;font-weight:500;white-space:nowrap}
 .fchip.active{color:var(--ink);border-color:var(--ink);background:var(--soft)}
 .top{padding:16px 16px 8px}
-.matrix-wrap{display:block;padding:4px 16px 16px}
+.list-wrap{overflow:visible;padding:4px 16px 16px}
 .mbar .fpill{display:none}
-.first-run{margin-bottom:12px}
-.axis-x,.axis-y{display:none}
-.matrix{display:flex;flex-direction:column}
-.mrow{flex-direction:column;flex:none!important}
-.quad{flex:none!important}
-.quad-head p{display:inline}
-.quad-head{min-height:52px}
+.mbar:not(:has(.first-run)){display:none}
+.quad-head{position:static;min-height:52px}
 .quad-head .icon-btn{width:44px;height:44px}
 .empty .e2{display:none}
-.cards{overflow:visible}
 .card{padding:0 12px 0 0}
 .check{flex:0 0 44px;width:44px;height:44px}
 .pin{width:40px;height:40px;margin:-12px -8px -12px -4px}
@@ -339,7 +314,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 /* Project hidden (a project filter is active): title vertically centred on the left,
    dates and assignees stacked on the right. Phones keep the two-line layout. */
 @media (min-width:521px){
-.card.no-proj .card-body{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-areas:"t r1" "t r2" "d d";align-items:center;column-gap:12px;row-gap:2px}
+.card.no-proj .card-body{display:grid;grid-template-columns:minmax(0,1fr) max-content;grid-template-areas:"t r1" "t r2";align-items:center;column-gap:12px;row-gap:2px}
 .card.no-proj .line1{display:contents}
 .card.no-proj .t-wrap{grid-area:t;display:flex;align-items:center;gap:8px;min-width:0}
 .card.no-proj .l1-sp{display:none}
@@ -347,5 +322,4 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 .card.no-proj .card-meta{grid-area:r2;justify-content:flex-end;min-width:max-content}
 .card.no-proj .who{max-width:none;flex:0 0 auto}
 .card.no-proj .meta-l{display:none}
-.card.no-proj .card-desc{grid-area:d}
 }

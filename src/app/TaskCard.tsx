@@ -84,7 +84,6 @@ export function TaskCard(p: TaskCardProps) {
           <span className={`when mono ${whenCls}`}>{when}</span>
           </span>
         </div>
-        {t.desc && <p className="card-desc">{t.desc}</p>}
         <div className="card-meta">
           <span className="meta-l">
             {p.showProject && (

@@ -6,7 +6,7 @@ import { ADMIN_EMAIL } from '../config';
 import { QUADRANTS, type Member, type Project, type QuadrantId, type Task, type TaskInput } from '../types';
 import { DateField } from './DateField';
 import { CloseIcon, EditIcon } from './icons';
-import { ADMIN_PERSON, assignees, detailWhen, projectOf, type Person } from './model';
+import { ADMIN_PERSON, assignees, detailWhen, NO_PROJECT, projectOf, type Person } from './model';
 
 export type DialogState =
   | { mode: 'view'; id: string }
@@ -136,7 +136,6 @@ function DetailView({
             <span className={`vval q-${qd.id}`}>
               <span className="q-mark" aria-hidden="true" />
               {qd.name}
-              <small>{qd.tag}</small>
             </span>,
           )}
           {row(
@@ -195,8 +194,8 @@ function DetailView({
 
 /* ---------------- edit / new ---------------- */
 
-type FieldErr = { field: 'title' | 'q' | 'proj' | 'dates'; text: string } | null;
-const ERR_FOCUS = { title: 'f-title', q: 'f-q', proj: 'f-proj', dates: 'f-end' } as const;
+type FieldErr = { field: 'title' | 'q' | 'people' | 'dates'; text: string } | null;
+const ERR_FOCUS = { title: 'f-title', q: 'f-q', people: 'f-people', dates: 'f-end' } as const;
 
 function focusField(id: string) {
   const el = document.getElementById(id);
@@ -225,7 +224,8 @@ function TaskForm(p: TaskDialogProps & { task: Task | null; onCancel: () => void
           desc: '',
           q: (state.mode === 'new' ? state.q : '') as QuadrantId,
           projectId: state.mode === 'new' ? state.projectId : '',
-          assigneeIds: [],
+          // an editor's project-less task must include them: pre-select
+          assigneeIds: !p.isAdmin && state.mode === 'new' && !state.projectId ? [p.meEmail] : [],
           start: isoDate(),
           end: '',
         },
@@ -249,11 +249,20 @@ function TaskForm(p: TaskDialogProps & { task: Task | null; onCancel: () => void
   };
   const setNp = (patch: Partial<typeof np>) => setNpState((cur) => ({ ...cur, error: '', ...patch }));
 
+  // Project-less tasks are visible only to the admin and their assignees, so an editor must stay on them.
+  const mustKeepMe = !p.isAdmin && !form.projectId;
+
+  const pickProject = (projectId: string) => {
+    const addMe = !p.isAdmin && !projectId && !form.assigneeIds.includes(p.meEmail);
+    setForm({ projectId, ...(addMe ? { assigneeIds: [...form.assigneeIds, p.meEmail] } : {}) });
+  };
+
   const save = () => {
     let err: FieldErr = null;
     if (!form.title.trim()) err = { field: 'title', text: 'Görev adı boş olamaz.' };
     else if (!form.q) err = { field: 'q', text: 'Görevin hangi kutuya gideceğini seçin.' };
-    else if (!form.projectId) err = { field: 'proj', text: 'Bir proje seçin.' };
+    else if (mustKeepMe && !form.assigneeIds.includes(p.meEmail))
+      err = { field: 'people', text: 'Projesiz görevde kendinizi sorumlu olarak bırakın.' };
     else if (badDate.start || badDate.end) err = { field: 'dates', text: 'Tarihi gg.aa.yyyy biçiminde girin.' };
     else if (form.start && form.end && form.end < form.start) err = { field: 'dates', text: 'Bitiş tarihi başlangıçtan önce olamaz.' };
     if (err) {
@@ -293,7 +302,8 @@ function TaskForm(p: TaskDialogProps & { task: Task | null; onCancel: () => void
     setInlineAdd(false);
   };
 
-  // only people with access to the chosen project are offered (plus anyone already assigned)
+  // only people with access to the chosen project are offered (plus anyone already assigned);
+  // a project-less task can go to anyone
   const personOptions: Person[] = [
     ADMIN_PERSON,
     ...p.members
@@ -347,7 +357,7 @@ function TaskForm(p: TaskDialogProps & { task: Task | null; onCancel: () => void
                   <span className="q-mark" aria-hidden="true" />
                   <span>
                     <b>{q.name}</b>
-                    <small>{q.tag}</small>
+                    <small>{q.hint}</small>
                   </span>
                 </button>
               );
@@ -362,15 +372,18 @@ function TaskForm(p: TaskDialogProps & { task: Task | null; onCancel: () => void
             {p.projects.map((pr) => {
               const sel = form.projectId === pr.id;
               return (
-                <button key={pr.id} className={'chip' + (sel ? ' sel' : '')} onClick={() => setForm({ projectId: pr.id })} aria-pressed={sel}>
+                <button key={pr.id} className={'chip' + (sel ? ' sel' : '')} onClick={() => pickProject(pr.id)} aria-pressed={sel}>
                   <span className="dot" style={{ background: pr.color }} />
                   {pr.name}
                 </button>
               );
             })}
-            {p.projects.length === 0 && <span className="hint">Henüz proje yok.</span>}
+            <button className={'chip' + (!form.projectId ? ' sel' : '')} onClick={() => pickProject('')} aria-pressed={!form.projectId}>
+              <span className="dot" style={{ background: NO_PROJECT.color }} />
+              {NO_PROJECT.name}
+            </button>
           </div>
-          {errFor('proj')}
+          {mustKeepMe && <p className="hint">Projesiz görevleri yalnızca yönetici ve atanan kişiler görür.</p>}
         </div>
 
         <div className="field" id="f-people">
@@ -428,6 +441,7 @@ function TaskForm(p: TaskDialogProps & { task: Task | null; onCancel: () => void
             </div>
           )}
           {np.error && <p className="err">{np.error}</p>}
+          {errFor('people')}
         </div>
 
         <div className="field">

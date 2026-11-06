@@ -34,6 +34,17 @@ service cloud.firestore {
       return isAdmin() || (isMember() && me().role == 'editor' && projectId in me().projectIds);
     }
 
+    // Project-less tasks (projectId == ''): the admin sees all of them; a member sees and
+    // (as editor) edits the ones they are assigned to.
+    function canReadTask(d) {
+      return canRead(d.projectId)
+        || (d.projectId == '' && isMember() && myEmail() in d.assigneeIds);
+    }
+    function canWriteTask(d) {
+      return canWrite(d.projectId)
+        || (d.projectId == '' && isMember() && me().role == 'editor' && myEmail() in d.assigneeIds);
+    }
+
     function isDate(v) { return v is string && (v == '' || v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')); }
     function isMsOrNull(v) { return v == null || v is int; }
 
@@ -43,6 +54,7 @@ service cloud.firestore {
         && d.keys().hasAll(['title', 'q', 'projectId', 'assigneeIds', 'start', 'end'])
         && d.title is string && d.title.size() > 0 && d.title.size() <= 200
         && (!('desc' in d) || (d.desc is string && d.desc.size() <= 5000))
+        // 'delegate' / 'drop' are legacy values (sections removed); the app writes 'do' / 'plan'.
         && d.q in ['do', 'plan', 'delegate', 'drop']
         && d.projectId is string
         && d.assigneeIds is list && d.assigneeIds.size() <= 30
@@ -88,14 +100,15 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // Members must query with where('projectId', 'in', <their projectIds>).
+    // Members query with where('projectId', 'in', <their projectIds>) and, for project-less
+    // tasks, where('projectId', '==', '') + where('assigneeIds', 'array-contains', <their email>).
     match /tasks/{taskId} {
-      allow read: if canRead(resource.data.projectId);
-      allow create: if canWrite(request.resource.data.projectId) && validTask(request.resource.data);
-      allow update: if canWrite(resource.data.projectId)
-                    && canWrite(request.resource.data.projectId)
+      allow read: if canReadTask(resource.data);
+      allow create: if canWriteTask(request.resource.data) && validTask(request.resource.data);
+      allow update: if canWriteTask(resource.data)
+                    && canWriteTask(request.resource.data)
                     && validTask(request.resource.data);
-      allow delete: if canWrite(resource.data.projectId);
+      allow delete: if canWriteTask(resource.data);
     }
   }
 }

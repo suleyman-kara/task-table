@@ -100,6 +100,45 @@ async function step(name, fn) {
       await shot('06-matrix-task');
     });
 
+    await step('quadrant picker has two options', async () => {
+      await page.getByRole('button', { name: /Yeni görev/ }).first().click();
+      const names = await page.locator('.qopt b').allTextContents();
+      if (names.join('|') !== 'Hemen yap|Planla') throw new Error('qopts: ' + names.join('|'));
+      await page.getByRole('button', { name: /^Vazgeç$/ }).click();
+    });
+
+    await step('admin creates a project-less task in Planla', async () => {
+      await page.getByRole('button', { name: /Yeni görev/ }).first().click();
+      await page.locator('.dialog').getByLabel('Görev', { exact: true }).fill('Ofis internetini yenile');
+      await page.locator('.qopt', { hasText: 'Planla' }).click();
+      await page.locator('.dialog .chip', { hasText: 'Projesiz' }).click();
+      await page.locator('.dialog .chip', { hasText: 'Ayşe' }).click();
+      await shot('06a-form-projectless');
+      await page.getByRole('button', { name: /Görevi ekle/ }).click();
+      const card = page.locator('section.q-plan .card', { hasText: 'Ofis internetini' }).first();
+      await card.waitFor({ timeout: 10000 });
+      if (!(await card.getByText('Projesiz').count())) throw new Error('card does not show Projesiz');
+      // Hemen yap is above Planla
+      const [a, b] = await Promise.all(['q-do', 'q-plan'].map((c) => page.locator('section.' + c).boundingBox()));
+      if (!(a && b && a.y < b.y)) throw new Error('Hemen yap is not above Planla');
+      await shot('06c-list-two-sections');
+    });
+
+    await step('Projesiz filter shows only project-less tasks', async () => {
+      await page.locator('.side .nav-btn', { hasText: 'Projesiz' }).first().click();
+      await page.locator('.card', { hasText: 'Ofis internetini' }).first().waitFor({ timeout: 5000 });
+      if (await page.locator('.card', { hasText: 'Ödeme sayfasındaki' }).count()) throw new Error('project task visible under Projesiz');
+      await shot('06d-filter-projectless');
+      await page.locator('.side .nav-btn', { hasText: 'Tüm projeler' }).first().click();
+    });
+
+    await step('drag a task from Hemen yap to Planla and back', async () => {
+      await page.locator('section.q-do .card', { hasText: 'Ödeme sayfasındaki' }).dragTo(page.locator('section.q-plan'));
+      await page.locator('section.q-plan .card', { hasText: 'Ödeme sayfasındaki' }).waitFor({ timeout: 5000 });
+      await page.locator('section.q-plan .card', { hasText: 'Ödeme sayfasındaki' }).dragTo(page.locator('section.q-do'));
+      await page.locator('section.q-do .card', { hasText: 'Ödeme sayfasındaki' }).waitFor({ timeout: 5000 });
+    });
+
     await step('filtered view (no project on cards)', async () => {
       await page.locator('.side .nav-btn', { hasText: 'Web Sitesi' }).first().click();
       await page.waitForTimeout(600);
@@ -133,6 +172,27 @@ async function step(name, fn) {
       await shot('08-member-matrix');
     });
 
+    await step('member sees the project-less task assigned to them', async () => {
+      await page.locator('.card', { hasText: 'Ofis internetini' }).first().waitFor({ timeout: 10000 });
+    });
+
+    await step('editor form: Projesiz pre-selects themselves and needs them', async () => {
+      await page.getByRole('button', { name: /Yeni görev/ }).first().click();
+      await page.locator('.dialog .chip', { hasText: 'Projesiz' }).click();
+      await page.getByText('Projesiz görevleri yalnızca yönetici ve atanan kişiler görür.').waitFor({ timeout: 3000 });
+      const me = page.locator('.dialog .chip', { hasText: '(ben)' });
+      if ((await me.getAttribute('aria-pressed')) !== 'true') throw new Error('editor not pre-selected');
+      await page.locator('.dialog').getByLabel('Görev', { exact: true }).fill('Kendi notum');
+      await page.locator('.qopt', { hasText: 'Hemen yap' }).click();
+      await me.click();
+      await page.getByRole('button', { name: /Görevi ekle/ }).click();
+      await page.getByText('Projesiz görevde kendinizi sorumlu olarak bırakın.').waitFor({ timeout: 3000 });
+      await shot('08b-editor-projectless-error');
+      await me.click();
+      await page.getByRole('button', { name: /Görevi ekle/ }).click();
+      await page.locator('.card', { hasText: 'Kendi notum' }).first().waitFor({ timeout: 10000 });
+    });
+
     await step('editor cannot see Kişiler/Projeler nav', async () => {
       const n = await page.locator('.side .nav-btn', { hasText: 'Kişiler' }).count();
       if (n) throw new Error('Kişiler visible for editor');
@@ -153,6 +213,7 @@ async function step(name, fn) {
       await page.goto('http://127.0.0.1:5173/#');
       await page.locator('.tabbar').waitFor({ timeout: 10000 });
       await shot('11-mobile');
+      await page.screenshot({ path: `${OUT}/11b-mobile-full.png`, fullPage: true });
     });
   } catch (e) {
     await shot('zz-failure');

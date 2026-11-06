@@ -1,7 +1,7 @@
 import { initials } from '../lib/people';
 import type { Me, Project } from '../types';
 import { DoneIcon, FolderIcon, LogoutIcon, MatrixIcon, PeopleIcon, PlusIcon, TickIcon } from './icons';
-import type { View } from './model';
+import { NO_PROJECT, NO_PROJECT_FILTER, type View } from './model';
 
 export function BrandMark() {
   return (
@@ -31,6 +31,8 @@ export interface NavProps {
   projects: Project[];
   projectCounts: Map<string, number>;
   filterId: string | null;
+  /** open project-less tasks; null hides the "Projesiz" filter */
+  noProjectCount: number | null;
   onView: (v: View) => void;
   onFilter: (id: string | null) => void;
   onNew: () => void;
@@ -109,6 +111,18 @@ export function Sidebar(p: NavProps) {
               </button>
             );
           })}
+          {p.noProjectCount !== null && (
+            <button
+              className={'nav-btn' + (p.filterId === NO_PROJECT_FILTER ? ' picked' : '')}
+              onClick={() => p.onFilter(p.filterId === NO_PROJECT_FILTER ? null : NO_PROJECT_FILTER)}
+              aria-pressed={p.filterId === NO_PROJECT_FILTER}
+            >
+              <span className="dot" style={{ background: NO_PROJECT.color }} />
+              <span className="grow">{NO_PROJECT.name}</span>
+              {p.filterId === NO_PROJECT_FILTER && tick}
+              {p.showCounts && <span className="nav-count num">{p.noProjectCount}</span>}
+            </button>
+          )}
         </div>
       </div>
 
