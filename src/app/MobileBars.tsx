@@ -1,7 +1,7 @@
 import { initials } from '../lib/people';
 import type { Me, Project } from '../types';
 import { DoneIcon, FolderIcon, LogoutIcon, MatrixIcon, PeopleIcon, PlusIcon } from './icons';
-import type { View } from './model';
+import { NO_PROJECT, NO_PROJECT_FILTER, type View } from './model';
 import { BrandMark, ROLE_LABEL } from './Sidebar';
 
 export function MobileTop({ me, onLogout }: { me: Me; onLogout: () => void }) {
@@ -26,10 +26,12 @@ export function MobileTop({ me, onLogout }: { me: Me; onLogout: () => void }) {
 export function MobileFilter({
   projects,
   filterId,
+  showNoProject,
   onFilter,
 }: {
   projects: Project[];
   filterId: string | null;
+  showNoProject: boolean;
   onFilter: (id: string | null) => void;
 }) {
   return (
@@ -46,6 +48,16 @@ export function MobileFilter({
           </button>
         );
       })}
+      {showNoProject && (
+        <button
+          className={'fchip' + (filterId === NO_PROJECT_FILTER ? ' active' : '')}
+          onClick={() => onFilter(filterId === NO_PROJECT_FILTER ? null : NO_PROJECT_FILTER)}
+          aria-pressed={filterId === NO_PROJECT_FILTER}
+        >
+          <span className="dot" style={{ background: NO_PROJECT.color }} />
+          {NO_PROJECT.name}
+        </button>
+      )}
     </div>
   );
 }

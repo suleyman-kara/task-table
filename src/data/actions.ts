@@ -74,6 +74,17 @@ export function deleteTasks(ids: string[]): void {
   });
 }
 
+/** One-off: tasks still in the removed Devret / Bırak sections go to Planla. */
+export function migrateLegacyQuadrants(ids: string[]): void {
+  fireAndReport('migrateLegacyQuadrants', async () => {
+    for (let i = 0; i < ids.length; i += 400) {
+      const batch = writeBatch(db);
+      ids.slice(i, i + 400).forEach((id) => batch.update(doc(db, 'tasks', id), { q: 'plan', updatedAt: now() }));
+      await batch.commit();
+    }
+  });
+}
+
 // ---------- projects (admin) ----------
 
 export function createProject(name: string, color: string): void {

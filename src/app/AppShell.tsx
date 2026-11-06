@@ -9,7 +9,7 @@ import { ProjectsPage } from '../pages/ProjectsPage';
 import type { Me, Project, QuadrantId, Task } from '../types';
 import { Matrix } from './Matrix';
 import { MobileFilter, MobileTop, TabBar } from './MobileBars';
-import { peopleById, VIEW_HASH, VIEW_TITLES, viewFromHash, type View } from './model';
+import { NO_PROJECT_AS_FILTER, NO_PROJECT_FILTER, peopleById, VIEW_HASH, VIEW_TITLES, viewFromHash, type View } from './model';
 import { Sidebar } from './Sidebar';
 import { NetBar, SaveToast } from './StatusBars';
 import { TaskDialog, type DialogState } from './TaskDialog';
@@ -62,8 +62,13 @@ export function AppShell({ me: sessionMe }: { me: Me }) {
     return m;
   }, [openTasks]);
 
+  const noProjectCount = projectCounts.get('') || 0;
   // A filter on a project that is gone (deleted, access removed) falls back to all projects.
-  const filter: Project | null = (filterId && projectMap.get(filterId)) || null;
+  // "Projesiz" stays picked even when its last task is completed.
+  const filter: Project | null =
+    filterId === NO_PROJECT_FILTER ? NO_PROJECT_AS_FILTER : (filterId && projectMap.get(filterId)) || null;
+  const filterKey = filter ? filter.id || NO_PROJECT_FILTER : null;
+  const showNoProject = noProjectCount > 0 || filterKey === NO_PROJECT_FILTER;
 
   const pickFilter = (id: string | null) => {
     setFilterId(id);
@@ -88,7 +93,8 @@ export function AppShell({ me: sessionMe }: { me: Me }) {
     doneCount,
     projects,
     projectCounts,
-    filterId: filter ? filter.id : null,
+    filterId: filterKey,
+    noProjectCount: showNoProject ? noProjectCount : null,
     onView: go,
     onFilter: pickFilter,
     onNew: () => openNew(''),
@@ -114,7 +120,7 @@ export function AppShell({ me: sessionMe }: { me: Me }) {
 
         {view === 'matrix' && (
           <>
-            <MobileFilter projects={projects} filterId={nav.filterId} onFilter={pickFilter} />
+            <MobileFilter projects={projects} filterId={nav.filterId} showNoProject={showNoProject} onFilter={pickFilter} />
             <Matrix
               loading={loading}
               canEdit={canEdit}
@@ -125,7 +131,6 @@ export function AppShell({ me: sessionMe }: { me: Me }) {
               people={people}
               filter={filter}
               pending={pending}
-              dialogOpen={!!dialog}
               onClearFilter={() => pickFilter(null)}
               onNew={openNew}
               onOpen={(t: Task) => setDialog({ mode: 'view', id: t.id })}

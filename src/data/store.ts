@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { collection, onSnapshot, query, where, type QuerySnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { Me, Member, Project, Task } from '../types';
+import { migrateLegacyQuadrants } from './actions';
 
 export interface AppData {
   status: 'loading' | 'ready' | 'error';
@@ -22,7 +23,7 @@ function normaliseTask(t: Partial<Task> & { id: string }): Task {
     id: t.id,
     title: t.title || '',
     desc: t.desc || '',
-    q: t.q || 'do',
+    q: t.q === 'do' ? 'do' : 'plan', // legacy 'delegate' / 'drop' read as 'plan'
     projectId: t.projectId || '',
     assigneeIds: t.assigneeIds || [],
     start: t.start || '',
@@ -33,6 +34,15 @@ function normaliseTask(t: Partial<Task> & { id: string }): Task {
     updatedAt: t.updatedAt,
     createdBy: t.createdBy,
   };
+}
+
+/** Admin only: move tasks from the removed Devret / Bırak sections to Planla, once. */
+let migrated = false;
+function migrateLegacy(raw: Task[]) {
+  if (migrated) return;
+  const ids = raw.filter((t) => (t.q as string) === 'delegate' || (t.q as string) === 'drop').map((t) => t.id);
+  migrated = true;
+  if (ids.length) migrateLegacyQuadrants(ids);
 }
 
 function useOnline(): boolean {
@@ -82,22 +92,27 @@ export function useAppData(sessionMe: Me): AppData {
 
   useEffect(() => {
     // Admin reads everything; members must ask only for their projects (enforced by the rules).
-    if (projectKey === '') {
-      setTasks([]);
-      return;
-    }
-    const ids = projectKey === '*' ? null : projectKey.split(',');
+    const ids = projectKey === '*' ? null : projectKey ? projectKey.split(',') : [];
     const chunks: string[][] = ids ? Array.from({ length: Math.ceil(ids.length / 30) }, (_, i) => ids.slice(i * 30, i * 30 + 30)) : [];
     const parts = new Map<number, Task[]>();
     const publish = (expected: number) => {
       if (parts.size === expected) setTasks([...parts.values()].flat());
     };
-    const unsubs = (ids ? chunks.map((c) => query(collection(db, 'tasks'), where('projectId', 'in', c))) : [collection(db, 'tasks')]).map(
+    // Members: tasks of their projects + project-less tasks assigned to them.
+    const queries = ids
+      ? [
+          ...chunks.map((c) => query(collection(db, 'tasks'), where('projectId', 'in', c))),
+          query(collection(db, 'tasks'), where('projectId', '==', ''), where('assigneeIds', 'array-contains', sessionMe.email)),
+        ]
+      : [collection(db, 'tasks')];
+    const unsubs = queries.map(
       (qry, i, all) =>
         onSnapshot(
           qry,
           (s) => {
-            parts.set(i, rows<Task>(s).map(normaliseTask));
+            const raw = rows<Task>(s);
+            if (!ids) migrateLegacy(raw);
+            parts.set(i, raw.map(normaliseTask));
             publish(all.length);
           },
           (e) => {
@@ -107,7 +122,7 @@ export function useAppData(sessionMe: Me): AppData {
         ),
     );
     return () => unsubs.forEach((u) => u());
-  }, [projectKey]);
+  }, [projectKey, sessionMe.email]);
 
   const visibleProjects = useMemo(() => {
     if (!projects) return [];

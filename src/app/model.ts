@@ -1,6 +1,6 @@
 import { ADMIN_EMAIL, ADMIN_NAME } from '../config';
 import { shortDate } from '../lib/dates';
-import type { Member, Project, QuadrantId, Task } from '../types';
+import type { Member, Project, Task } from '../types';
 
 /** Someone who can be assigned to a task: the admin plus every member. */
 export interface Person {
@@ -31,6 +31,11 @@ export function whoText(list: Person[]): string {
 }
 
 export const NO_PROJECT: Pick<Project, 'name' | 'color'> = { name: 'Projesiz', color: 'var(--line-strong)' };
+
+/** Filter key for project-less tasks (project ids are never this). */
+export const NO_PROJECT_FILTER = '__none__';
+/** The "Projesiz" filter as a pseudo project: its id '' matches `task.projectId`. */
+export const NO_PROJECT_AS_FILTER: Project = { id: '', ...NO_PROJECT };
 
 export function projectOf(t: Task, projects: Map<string, Project>): Pick<Project, 'name' | 'color'> {
   return projects.get(t.projectId) || NO_PROJECT;
@@ -80,7 +85,3 @@ export const VIEW_TITLES: Record<Exclude<View, 'matrix'>, [string, string]> = {
   people: ['Kişiler', 'Görev atanabilecek kişiler'],
   projects: ['Projeler', 'Görevler eklenirken bu listeden proje seçilir'],
 };
-
-/** Matrix layout: column (urgent / not urgent) and row (important / not important) of each box. */
-export const COL_OF: Record<QuadrantId, 0 | 1> = { do: 0, delegate: 0, plan: 1, drop: 1 };
-export const ROW_OF: Record<QuadrantId, 0 | 1> = { do: 0, plan: 0, delegate: 1, drop: 1 };

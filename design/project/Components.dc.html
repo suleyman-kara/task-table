@@ -14,7 +14,7 @@
 body{margin:0}
 *{box-sizing:border-box}
 a{color:#78A6FF}a:hover{color:#A3C2FF}
-.sheet{--bg:#0E0E10;--panel:#161619;--panel-2:#1C1C20;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--q-do:#FF7A45;--q-plan:#78A6FF;--q-delegate:#E8AE45;--q-drop:#A3A3AC;--ring:#78A6FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.7);
+.sheet{--bg:#0E0E10;--panel:#161619;--panel-2:#1C1C20;--line:#29292E;--line-strong:#3B3B42;--ink:#ECECEE;--muted:#A3A3AC;--soft:#232328;--primary:#ECECEE;--on-primary:#141416;--danger:#FF6B81;--q-do:#FF7A45;--q-plan:#78A6FF;--ring:#78A6FF;--shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -12px rgba(0,0,0,.7);
 width:1440px;padding:56px 64px 72px;background:var(--bg);color:var(--ink);font-family:'Geist',system-ui,-apple-system,sans-serif;font-size:13px;line-height:1.4;-webkit-font-smoothing:antialiased;color-scheme:dark}
 button{font:inherit;color:inherit;cursor:pointer}
 .mono{font-family:'Geist Mono',ui-monospace,monospace;font-feature-settings:"tnum"}
@@ -86,8 +86,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .me-role{display:block;margin:2px 0}
 .me-role .badge{display:inline-block;line-height:18px}
 
-.axis-label{width:100%;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
-.axis-label::before,.axis-label::after{content:"";flex:1;height:1px;background:var(--line)}
 .fpill{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:0 8px 0 12px;border:1px solid var(--line-strong);border-radius:999px;background:var(--soft);color:var(--ink);font-size:12px;font-weight:500;white-space:nowrap}
 .fpill svg{color:var(--muted)}
 .first-run{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted)}
@@ -97,9 +95,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .quad-head{display:flex;align-items:center;gap:8px;min-height:40px;padding:4px 4px 4px 12px;border-bottom:1px solid var(--line)}
 .quad-head:last-child{border-bottom:0}
 .q-mark{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
-.q-do .q-mark{background:var(--q-do)}.q-plan .q-mark{background:var(--q-plan)}.q-delegate .q-mark{background:var(--q-delegate)}.q-drop .q-mark{background:var(--q-drop)}
+.q-do .q-mark{background:var(--q-do)}.q-plan .q-mark{background:var(--q-plan)}
+.qlist{display:flex;flex-direction:column;gap:12px}
 .quad-head h2{margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em;display:inline}
-.quad-head p{display:none;margin:0 0 0 8px;font-size:12px;color:var(--muted)}
 .quad-head .grow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .q-count{font-size:12px;color:var(--muted);padding:0 8px;border-radius:999px;background:var(--soft)}
 .cards{padding:8px;display:flex;flex-direction:column;gap:8px}
@@ -140,7 +138,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .desc-ic{flex:0 0 auto;display:inline-flex;margin-left:-4px;color:var(--muted)}
 .l1-sp{flex:1 1 0;min-width:0;margin-left:-8px}
 .card-title{display:block;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:none;text-align:left;font-weight:500;font-size:13px;line-height:1.35;color:var(--ink)}
-.card-desc{margin:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
 .meta-l{flex:1 1 auto;display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden}
 .m-when{display:none;flex:0 0 auto}
@@ -262,9 +259,8 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 .mfilter::-webkit-scrollbar{display:none}
 .fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-size:12px;font-weight:500;white-space:nowrap}
 .fchip.active{color:var(--ink);border-color:var(--ink);background:var(--soft)}
-.mbody{padding:4px 16px 16px;display:flex;flex-direction:column;gap:8px}
+.mbody{padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px}
 .mphone .quad-head{min-height:52px}
-.mphone .quad-head p{display:inline}
 .mphone .quad-head .icon-btn{width:44px;height:44px}
 .mphone .empty .e2{display:none}
 .mphone .card{padding:0 12px 0 0}
@@ -357,7 +353,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
         <div class="tok"><i style="background: #FF6B81"></i><code>--danger</code><span>Gecikme / sil / hata · #FF6B81</span></div>
         <div class="tok"><i style="background: #78A6FF"></i><code>--ring</code><span>Odak / bırakma · #78A6FF</span></div>
         <div class="tok"><i style="background: #FF7A45"></i><code>--q-do</code><span>Hemen yap · #FF7A45</span></div>
-        <div class="tok"><i style="background: #E8AE45"></i><code>--q-delegate</code><span>Devret · #E8AE45</span></div>
+        <div class="tok"><i style="background: #78A6FF"></i><code>--q-plan</code><span>Planla · #78A6FF</span></div>
       </div>
       <span class="cap">Proje renkleri (eşit açıklıkta, kutu renkleriyle yarışmaz) · ilk dördü varsayılan projeler</span>
       <div class="tokens pal">
@@ -382,7 +378,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
         <div><span class="cap">14 · 600</span><span style="font-size: 14px; font-weight: 600">Panel başlığı</span></div>
         <div><span class="cap">13 · 500</span><span style="font-size: 13px; font-weight: 500">Görev adı, düğme, menü</span></div>
         <div><span class="cap">12 · 400</span><span style="font-size: 12px; color: var(--muted)">Alan etiketi, ikincil satır, tarih</span></div>
-        <div><span class="cap">12 · 500 · büyük harf</span><span style="font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted)">Eksen ve menü etiketi</span></div>
+        <div><span class="cap">12 · 500 · büyük harf</span><span style="font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted)">Menü ve bölüm etiketi</span></div>
         <div><span class="cap">Geist 12 · tabular</span><span class="num" style="font-size: 12px; color: var(--muted)">7 · 12 · 3 açık görev</span></div>
         <div><span class="cap">Geist Mono 12</span><span class="mono" style="font-size: 12px; color: var(--muted)">4 Kas – 12 Kas</span></div>
       </div>
@@ -449,7 +445,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
           <div class="brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>Task Table</div>
           <button class="new-btn" style="width: 100%"><span class="plus" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span>Yeni görev</button>
           <div class="nav">
-            <button class="nav-btn active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"></rect></svg><span class="grow">Matris</span><span class="nav-count num">7</span></button>
+            <button class="nav-btn active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"></rect></svg><span class="grow">Matris</span><span class="nav-count num">8</span></button>
             <button class="nav-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg><span class="grow">Bitenler</span><span class="nav-count num">1</span></button>
             <button class="nav-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.8 2.7 2.5 3 5.2"></path></svg><span class="grow">Kişiler</span></button>
             <button class="nav-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.4l2 2.2h8.6A1.5 1.5 0 0 1 21 9.7v8.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5Z"></path></svg><span class="grow">Projeler</span></button>
@@ -462,6 +458,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
               <button class="nav-btn"><span class="dot" style="background: #7DB485"></span><span class="grow">Mobil Uygulama</span><span class="nav-count num">1</span></button>
               <button class="nav-btn"><span class="dot" style="background: #C79B69"></span><span class="grow">Pazarlama</span><span class="nav-count num">2</span></button>
               <button class="nav-btn"><span class="dot" style="background: #A89AD7"></span><span class="grow">Operasyon</span><span class="nav-count num">2</span></button>
+              <button class="nav-btn"><span class="dot" style="background: var(--muted)"></span><span class="grow">Projesiz</span><span class="nav-count num">1</span></button>
             </div>
           </div>
           <div class="side-foot">
@@ -475,7 +472,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
         <div class="stack">
           <span class="cap">Görünüm: seçili olan zeminle belirginleşir</span>
           <span class="cap">Matris ve Bitenler sayı gösterir (Geist, tabular); Kişiler ve Projeler göstermez</span>
-          <span class="cap">Filtre: seçili proje kalın yazı ve onay işaretiyle (zemin yok)</span>
+          <span class="cap">Filtre: seçili proje kalın yazı ve onay işaretiyle (zemin yok). “Projesiz” (gri nokta) en sonda, yalnızca projesiz görev varken</span>
           <span class="cap">Alt kısım: giriş yapan kişi ve çıkış</span>
           <div class="side-mock" style="padding: 8px 12px; margin-top: 8px">
             <div class="me">
@@ -491,26 +488,31 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
 
     <!-- 06 matrix -->
     <section class="group">
-      <h2 class="g-title"><b>06</b> Matris: eksen, filtre ve kutu başlıkları</h2>
+      <h2 class="g-title"><b>06</b> Matris: filtre ve iki bölümlü liste</h2>
       <div class="specimen">
         <button class="fpill" aria-label="Filtreyi kaldır: Web Sitesi"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
-        <span class="cap">Etkin filtre (masaüstü, matrisin üstünde); × ile kaldırılır</span>
+        <span class="cap">Etkin filtre (masaüstü, listenin üstünde); × ile kaldırılır</span>
       </div>
       <div class="specimen">
         <div class="first-run"><span>Henüz görev yok.</span><button class="btn primary">İlk görevi ekle</button></div>
         <span class="cap">İlk kullanım çubuğu (düğme 32px)</span>
       </div>
-      <div class="specimen">
-        <div class="first-run"><span>Görev eklemek için önce bir proje oluşturun.</span><button class="btn primary">Proje oluştur</button></div>
+      <div class="qlist">
+        <section class="quad q-do">
+          <header class="quad-head"><span class="q-mark"></span><div class="grow"><h2>Hemen yap</h2></div><span class="q-count num">2</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
+          <div class="cards">
+            <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Kasım bülteni metnini onayla</span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono late">Gecikti · 4 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #C79B69"></span>Pazarlama</span></span><span class="who"><span class="avs"><span class="av">AD</span></span><span class="who-names">Ayşe Demir</span></span></div></div></div>
+            <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Vergi beyannamesi hatırlatması</span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">6 Kas – 10 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: var(--muted)"></span>Projesiz</span></span><span class="who"><span class="avs"><span class="av">SK</span></span><span class="who-names">Süleyman Kara</span></span></div></div></div>
+          </div>
+        </section>
+        <section class="quad q-plan">
+          <header class="quad-head"><span class="q-mark"></span><div class="grow"><h2>Planla</h2></div><span class="q-count num">1</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
+          <div class="cards">
+            <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Q1 yol haritası taslağı</span><span class="desc-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">11 Kas – 22 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #A89AD7"></span>Operasyon</span></span><span class="who"><span class="avs"><span class="av">EŞ</span></span><span class="who-names">Elif Şahin</span></span></div></div></div>
+          </div>
+        </section>
       </div>
-      <div class="axis-label">Acil</div>
-      <div class="quad">
-        <header class="quad-head q-do"><span class="q-mark"></span><div class="grow"><h2>Hemen yap</h2><p>Acil · Önemli</p></div><span class="q-count num">3</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
-        <header class="quad-head q-plan"><span class="q-mark"></span><div class="grow"><h2>Planla</h2><p>Acil değil · Önemli</p></div><span class="q-count num">2</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
-        <header class="quad-head q-delegate"><span class="q-mark"></span><div class="grow"><h2>Devret</h2><p>Acil · Önemli değil</p></div><span class="q-count num">2</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
-        <header class="quad-head q-drop"><span class="q-mark"></span><div class="grow"><h2>Bırak</h2><p>Acil değil · Önemli değil</p></div><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
-      </div>
-      <span class="cap">Kutu başlığı 15 · 600, en az 40px. Sayaç Geist tabular; 0 iken gizli (Bırak). Alt satır (“Acil · Önemli”, “Acil değil · Önemli” …) masaüstünde gizli; yalnızca mobilde görünür (bkz. 15).</span>
+      <span class="cap">Tek, tam genişlikte liste: “Hemen yap” her zaman üstte, “Planla” altında; aralarında 12px. Her bölüm ayrı kutu: renk işareti, ad (15 · 600, başlık en az 40px), sayaç (Geist tabular; 0 iken gizli) ve +. Kartlar bölüm içinde önce sabitlenenler, sonra bitiş tarihine göre. Kart iki bölüm arasında sürüklenebilir. Liste sayfa yüksekliğini aşınca birlikte kayar.</span>
     </section>
 
     <!-- 07 quad states -->
@@ -522,21 +524,21 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
             <header class="quad-head q-plan"><span class="q-mark"></span><div class="grow"><h2>Planla</h2></div><span class="q-count num">2</span></header>
             <div class="cards"><div class="card is-dragging"><button class="check"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Q1 yol haritası taslağı</span><span class="l1-sp"></span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #A89AD7"></span>Operasyon</span></span></div></div></div></div>
           </div>
-          <span class="cap">Kart sürüklenirken bırakılacak kutu (kesikli mavi çerçeve, --panel-2 zemin)</span>
+          <span class="cap">Kart sürüklenirken bırakılacak bölüm (kesikli mavi çerçeve, --panel-2 zemin)</span>
         </div>
         <div class="stack">
           <div class="quad">
-            <header class="quad-head q-drop"><span class="q-mark"></span><div class="grow"><h2>Bırak</h2></div></header>
+            <header class="quad-head q-plan"><span class="q-mark"></span><div class="grow"><h2>Planla</h2></div></header>
             <div class="cards"><div class="empty"><span class="e1">Görev yok</span><span class="e2">Sürükleyin ya da +&nbsp;ile ekleyin</span></div></div>
           </div>
-          <span class="cap">Boş kutu: sayaç gizli; ikinci satır yalnızca düzenleyicide (mobilde gizli)</span>
+          <span class="cap">Boş bölüm: sayaç gizli; ikinci satır yalnızca düzenleyicide (mobilde gizli)</span>
         </div>
         <div class="stack">
           <div class="quad">
             <header class="quad-head q-do"><span class="q-mark"></span><div class="grow"><h2>Hemen yap</h2></div></header>
-            <div class="cards"><div class="empty"><span>Bugün ilgilenilmesi gerekenler</span></div></div>
+            <div class="cards"><div class="empty"><span>Şu anda yapılanlar ve hemen ilgilenilmesi gerekenler</span></div></div>
           </div>
-          <span class="cap">İlk kullanım (hiç açık görev yok, filtre yok): her kutuda ipucu · Planla “Önemli ama beklenebilecekler” · Devret “Başkasına verilebilecek acil işler” · Bırak “Gerekirse sonra bakılacaklar”</span>
+          <span class="cap">İlk kullanım (hiç açık görev yok, filtre yok): iki bölümde de ipucu · Planla “Sıradaki ve ileri tarihli işler”</span>
         </div>
         <div class="stack">
           <div class="quad">
@@ -573,8 +575,8 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
           <span class="cap">Süresi geçmiş</span>
         </div>
         <div class="stack">
-          <div class="surf"><div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Ödeme sayfasındaki hatayı düzelt</span><span class="desc-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">3 Kas – 6 Kas</span></div><p class="card-desc">Kartla ödemede 3D Secure dönüşünde boş sayfa açılıyor.</p><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi</span></span><span class="who"><span class="avs"><span class="av">MK</span><span class="av">AD</span><span class="av">SK</span></span><span class="who-names">Mert +2</span></span></div></div></div></div>
-          <span class="cap">Kutu büyümüş: açıklamanın ilk satırı · birden fazla sorumlu (24px, -4px bindirme, 2px halka)</span>
+          <div class="surf"><div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Ödeme sayfasındaki hatayı düzelt</span><span class="desc-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">3 Kas – 6 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi</span></span><span class="who"><span class="avs"><span class="av">MK</span><span class="av">AD</span><span class="av">SK</span></span><span class="who-names">Mert +2</span></span></div></div></div></div>
+          <span class="cap">Üç sorumlu (24px, -4px bindirme, 2px halka)</span>
         </div>
         <div class="stack">
           <div class="surf"><div class="card is-pending"><button class="check" aria-label="Tamamlamayı geri al"><span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span></button><div class="card-body"><div class="line1"><span class="card-title">Toplantı odası rezervasyonları</span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">5 Kas – 7 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #A89AD7"></span>Operasyon</span></span><span class="who"><span class="avs"><span class="av">MK</span></span><span class="who-names">Mert Kaya</span></span></div></div><div class="undo-bar"><span class="undo-msg"><span class="undo-t">‘Toplantı odası rezervasyonları</span><span>’ tamamlandı</span></span><button>Geri al</button></div></div></div>
@@ -589,8 +591,12 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
           <span class="cap">İki sorumlu: ilk adlar virgülle; üçten fazlası “Mert +2”</span>
         </div>
         <div class="stack">
-          <div class="surf"><div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Eski blog yazılarını arşivle</span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">Bitiş 30 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: var(--line-strong)"></span>Projesiz</span></span><span class="who"><span class="avs"><span class="av">–</span></span><span class="who-names">Atanmadı</span></span></div></div></div></div>
+          <div class="surf"><div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Eski blog yazılarını arşivle</span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">Bitiş 30 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: var(--muted)"></span>Projesiz</span></span><span class="who"><span class="avs"><span class="av">–</span></span><span class="who-names">Atanmadı</span></span></div></div></div></div>
           <span class="cap">Yalnızca bitiş tarihi · projesiz · atanmamış</span>
+        </div>
+        <div class="stack">
+          <div class="surf"><div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Vergi beyannamesi hatırlatması</span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">6 Kas – 10 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: var(--muted)"></span>Projesiz</span></span><span class="who"><span class="avs"><span class="av">SK</span></span><span class="who-names">Süleyman Kara</span></span></div></div></div></div>
+          <span class="cap">Projesiz görev: gri nokta (--muted) + “Projesiz”; yalnızca yönetici ve atanan kişiler görür</span>
         </div>
       </div>
       <span class="cap">Kartlar kutunun içinde (--panel zemin üzerinde) gösterilmiştir.</span>
@@ -617,20 +623,20 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
       <h2 class="g-title"><b>10</b> Seçiciler</h2>
       <div class="field"><span class="field-label">Kutu</span>
         <div class="qpick">
-          <button class="qopt q-do sel"><span class="q-mark"></span><span><b>Hemen yap</b><small>Acil · Önemli</small></span></button>
-          <button class="qopt q-plan"><span class="q-mark"></span><span><b>Planla</b><small>Acil değil · Önemli</small></span></button>
-          <button class="qopt q-delegate"><span class="q-mark"></span><span><b>Devret</b><small>Acil · Önemli değil</small></span></button>
-          <button class="qopt q-drop"><span class="q-mark"></span><span><b>Bırak</b><small>Acil değil · Önemli değil</small></span></button>
+          <button class="qopt q-do sel"><span class="q-mark"></span><span><b>Hemen yap</b><small>Şu anda yapılanlar ve hemen ilgilenilmesi gerekenler</small></span></button>
+          <button class="qopt q-plan"><span class="q-mark"></span><span><b>Planla</b><small>Sıradaki ve ileri tarihli işler</small></span></button>
         </div>
         <p class="err">Görevin hangi kutuya gideceğini seçin.</p>
       </div>
-      <div class="field"><span class="field-label">Proje</span>
+      <div class="field"><span class="field-label">Proje <i>(isteğe bağlı)</i></span>
         <div class="chips">
-          <button class="chip sel"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi</button>
+          <button class="chip"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi</button>
           <button class="chip"><span class="dot" style="background: #7DB485"></span>Mobil Uygulama</button>
           <button class="chip"><span class="dot" style="background: #C79B69"></span>Pazarlama</button>
           <button class="chip"><span class="dot" style="background: #A89AD7"></span>Operasyon</button>
+          <button class="chip sel"><span class="dot" style="background: var(--muted)"></span>Projesiz</button>
         </div>
+        <span class="hint">Projesiz görevleri yalnızca yönetici ve atanan kişiler görür.</span>
       </div>
       <div class="field"><span class="field-label">Sorumlu kişiler <i>(birden fazla seçilebilir)</i></span>
         <div class="chips">
@@ -645,6 +651,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
         <div class="field"><span class="field-label">İzin</span><div class="seg w"><button class="on">Düzenleyici</button><button>Görüntüleyici</button></div></div>
         <div class="field"><span class="field-label">Renk</span><div class="swatches"><button class="sw sel"><span style="background: #5EB6B2"></span></button><button class="sw"><span style="background: #7DB485"></span></button><button class="sw"><span style="background: #C79B69"></span></button><button class="sw"><span style="background: #D08CB2"></span></button><button class="sw"><span style="background: #A89AD7"></span></button><button class="sw"><span style="background: #A6AB63"></span></button><button class="sw"><span style="background: #DA8D83"></span></button><button class="sw"><span style="background: #75AEC7"></span></button></div></div>
       </div>
+      <span class="cap">Kutu seçicide yalnızca iki seçenek. Proje zorunlu değil: “Projesiz” çipi en sonda, proje seçili değilken seçili; o zaman sorumlu olarak tüm kişiler ve yönetici “(ben)” önerilir, altında bilgi notu gösterilir. Bir proje seçilince yalnızca o projeye erişen kişiler önerilir.</span>
       <span class="cap">Seçili durum tek tip: --ink çerçeve + --soft zemin (kutu, proje, kişi, mobil filtre)</span>
     </section>
 
@@ -675,7 +682,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
           </div>
           <div class="dialog-body">
             <div class="vlist">
-              <button class="vrow"><span class="vlabel">Kutu</span><span class="vval q-do"><span class="q-mark"></span>Hemen yap<small>Acil · Önemli</small></span><span></span></button>
+              <button class="vrow"><span class="vlabel">Kutu</span><span class="vval q-do"><span class="q-mark"></span>Hemen yap</span><span></span></button>
               <button class="vrow hov"><span class="vlabel">Proje</span><span class="vval"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi</span><svg class="edit-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>
               <button class="vrow"><span class="vlabel">Sorumlular</span><span class="vval"><span class="pchip"><span class="av">MK</span>Mert Kaya</span><span class="pchip"><span class="av">AD</span>Ayşe Demir</span></span><span></span></button>
               <button class="vrow"><span class="vlabel">Tarih</span><span class="vval mono">3 Kas – 6 Kas</span><span></span></button>
@@ -802,17 +809,20 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
             <button class="fchip"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi</button>
             <button class="fchip"><span class="dot" style="background: #7DB485"></span>Mobil Uygulama</button>
             <button class="fchip"><span class="dot" style="background: #C79B69"></span>Pazarlama</button>
+            <button class="fchip"><span class="dot" style="background: #A89AD7"></span>Operasyon</button>
+            <button class="fchip"><span class="dot" style="background: var(--muted)"></span>Projesiz</button>
           </div>
           <div class="mbody">
             <section class="quad q-do">
-              <header class="quad-head"><span class="q-mark"></span><div class="grow"><h2>Hemen yap</h2><p>Acil · Önemli</p></div><span class="q-count num">2</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
+              <header class="quad-head"><span class="q-mark"></span><div class="grow"><h2>Hemen yap</h2></div><span class="q-count num">3</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
               <div class="cards">
                 <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Kasım bülteni metnini onayla</span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono late">Gecikti · 4 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #C79B69"></span>Pazarlama</span><span class="when m-when mono late">Gecikti · 4 Kas</span></span><span class="who"><span class="avs"><span class="av">AD</span></span><span class="who-names">Ayşe Demir</span></span></div></div></div>
                 <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Ödeme sayfasındaki hatayı düzelt</span><span class="desc-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">3 Kas – 6 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi</span><span class="when m-when mono">3 Kas – 6 Kas</span></span><span class="who"><span class="avs"><span class="av">MK</span><span class="av">AD</span></span><span class="who-names">Mert, Ayşe</span></span></div></div></div>
+                <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Vergi beyannamesi hatırlatması</span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">6 Kas – 10 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: var(--muted)"></span>Projesiz</span><span class="when m-when mono">6 Kas – 10 Kas</span></span><span class="who"><span class="avs"><span class="av">SK</span></span><span class="who-names">Süleyman Kara</span></span></div></div></div>
               </div>
             </section>
             <section class="quad q-plan">
-              <header class="quad-head"><span class="q-mark"></span><div class="grow"><h2>Planla</h2><p>Acil değil · Önemli</p></div><span class="q-count num">2</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
+              <header class="quad-head"><span class="q-mark"></span><div class="grow"><h2>Planla</h2></div><span class="q-count num">2</span><button class="icon-btn" aria-label="Görev ekle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button></header>
               <div class="cards">
                 <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Q1 yol haritası taslağı</span><span class="desc-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">10 Kas – 21 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #A89AD7"></span>Operasyon</span><span class="when m-when mono">10 Kas – 21 Kas</span></span><span class="who"><span class="avs"><span class="av">EŞ</span></span><span class="who-names">Elif Şahin</span></span></div></div></div>
                 <div class="card"><button class="check" aria-label="Tamamla"><span></span></button><div class="card-body"><div class="line1"><span class="card-title">Karşılama ekranlarını yeniden tasarla</span><span class="desc-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"></path></svg></span><span class="l1-sp"></span><span class="pin"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l-1 6 4 4H6l4-4-1-6Z"></path><path d="M12 13v8"></path></svg></span><span class="when mono">12 Kas – 28 Kas</span></div><div class="card-meta"><span class="meta-l"><span class="proj"><span class="dot" style="background: #7DB485"></span>Mobil Uygulama</span><span class="when m-when mono">12 Kas – 28 Kas</span></span><span class="who"><span class="avs"><span class="av">AD</span></span><span class="who-names">Ayşe Demir</span></span></div></div></div>
@@ -839,18 +849,17 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
                 <div class="field"><label class="field-label">Görev</label><input class="input title-input" type="text" value="Ödeme sayfasındaki hatayı düzelt"></div>
                 <div class="field"><span class="field-label">Kutu</span>
                   <div class="qpick">
-                    <button class="qopt q-do sel"><span class="q-mark"></span><span><b>Hemen yap</b><small>Acil · Önemli</small></span></button>
-                    <button class="qopt q-plan"><span class="q-mark"></span><span><b>Planla</b><small>Acil değil · Önemli</small></span></button>
-                    <button class="qopt q-delegate"><span class="q-mark"></span><span><b>Devret</b><small>Acil · Önemli değil</small></span></button>
-                    <button class="qopt q-drop"><span class="q-mark"></span><span><b>Bırak</b><small>Acil değil · Önemli değil</small></span></button>
+                    <button class="qopt q-do sel"><span class="q-mark"></span><span><b>Hemen yap</b></span></button>
+                    <button class="qopt q-plan"><span class="q-mark"></span><span><b>Planla</b></span></button>
                   </div>
                 </div>
-                <div class="field"><span class="field-label">Proje</span>
+                <div class="field"><span class="field-label">Proje <i>(isteğe bağlı)</i></span>
                   <div class="chips">
                     <button class="chip sel"><span class="dot" style="background: #5EB6B2"></span>Web Sitesi</button>
                     <button class="chip"><span class="dot" style="background: #7DB485"></span>Mobil Uygulama</button>
                     <button class="chip"><span class="dot" style="background: #C79B69"></span>Pazarlama</button>
                     <button class="chip"><span class="dot" style="background: #A89AD7"></span>Operasyon</button>
+                    <button class="chip"><span class="dot" style="background: var(--muted)"></span>Projesiz</button>
                   </div>
                 </div>
                 <div class="field"><span class="field-label">Sorumlu kişiler <i>(birden fazla seçilebilir)</i></span>
@@ -883,9 +892,9 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
           <div class="stack">
             <span class="cap">Üst çubuk (.mtop): marka, kişi, çıkış · yükseklik 61px, yapışkan</span>
             <span class="cap">Filtre satırı (.mfilter): yatay kaydırılır; seçili çip tek tip seçili stilde</span>
-            <span class="cap">Kutu başlığı en az 52px; alt satır (“Acil · Önemli”) görünür; boş kutuda yalnızca “Görev yok”. Proje filtresi seçiliyken kartta proje adı gösterilmez.</span>
+            <span class="cap">Aynı sıra: Hemen yap üstte, Planla altında; bölüm başlığı en az 52px; boş bölümde yalnızca “Görev yok”. Filtre çiplerinde en sonda “Projesiz” (projesiz görev varken). Proje filtresi seçiliyken kartta proje adı gösterilmez.</span>
             <span class="cap">≤ 520px kart: 1. satırda yalnızca başlık (en çok 2 satır); 2. satırda proje · tarih ve yalnızca avatarlar (adlar gizli)</span>
-            <span class="cap">≤ 520px pencere: gövde kaydırılır, başlık ve alt çubuk sabit; alt çubukta ilk satır metin düğmeleri (Görevi sil, Vazgeç), altında tam genişlikte kaydet. Tarih alanları alt alta.</span>
+            <span class="cap">≤ 520px pencere: kutu seçicide ipucu satırı gizli; gövde kaydırılır, başlık ve alt çubuk sabit; alt çubukta ilk satır metin düğmeleri (Görevi sil, Vazgeç), altında tam genişlikte kaydet. Tarih alanları alt alta.</span>
             <span class="cap">Tüm dokunma hedefleri en az 44px: simge düğmeleri, tamamlama yuvarlağı, raptiye, çipler, düğmeler, renk seçici, satır işlemleri</span>
             <span class="cap">Alt sekmeler (.tabbar): sabit, 56px; seçili sekmede simge zemini --soft</span>
           </div>
@@ -1035,7 +1044,7 @@ textarea.input{min-height:88px;padding:8px 12px;resize:vertical;line-height:1.45
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7749}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7984}}'>
 class Component extends DCLogic {
   renderVals() { return {}; }
 }
