@@ -3,7 +3,10 @@
 **Ekip görevlerini iki net kutuda tutan, davetle girilen sade bir görev tablosu.**
 Bir görev ya *şimdi* yapılır ya da *sonraya* planlanır. Başka hiçbir şey ekranı kalabalıklaştırmaz.
 
-Canlı adres: **https://task.suleymankara.com**
+> **Proje tamamlandı ve arşivlendi.** Task Table final sürümüne ulaştı ve artık geliştirilmeyecek.
+> Canlı sürüm kapatıldı; Firebase projesi ve `task.suleymankara.com` adresi kaldırıldı.
+> Bu depo yalnızca kod, tasarım ve belge arşivi olarak salt okunur durumda tutulmaktadır.
+> Kendi Firebase projenizle çalıştırmak için [docs/SETUP.md](docs/SETUP.md) rehberini izleyebilirsiniz.
 
 ![Task Table — ana liste](docs/screenshots/matris.png)
 
